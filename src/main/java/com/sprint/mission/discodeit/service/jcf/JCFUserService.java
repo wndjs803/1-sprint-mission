@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.service.jcf;
 
 import com.sprint.mission.Main;
+import com.sprint.mission.discodeit.ErrorMessage;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.service.UserService;
@@ -23,12 +24,13 @@ public class JCFUserService implements UserService {
     public void createUser(String name, String nickname, String email, String password,
                            String profileImageUrl) {
         User newUser = new User(name, nickname, email, password, profileImageUrl, true, new ArrayList<>());
+        // 비밀 번호 암호화
         data.put(newUser.getId(), newUser);
     }
 
     @Override
     public User findUserById(UUID id) {
-        return Optional.of(data.get(id)).orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
+        return Optional.of(data.get(id)).orElseThrow(() -> new RuntimeException(ErrorMessage.USER_NOT_FOUND));
     }
 
     @Override
@@ -37,8 +39,16 @@ public class JCFUserService implements UserService {
     }
 
     @Override
-    public void updateUser(UUID id, User user) {
+    public void updateUser(UUID id, String name, String nickname, String email, String password, String profileImageUrl) {
+        User findUser = Optional.of(data.get(id)).orElseThrow(() -> new RuntimeException(ErrorMessage.USER_NOT_FOUND));
 
+        findUser.updateName(name);
+        findUser.updateNickname(nickname);
+        findUser.updateNickname(email);
+        findUser.updatePassword(password); // 추후 비밀 번호 암호화
+        findUser.updateProfileImageUrl(profileImageUrl);
+
+        data.put(findUser.getId(), findUser);
     }
 
     @Override
