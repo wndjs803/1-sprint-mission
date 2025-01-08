@@ -52,7 +52,7 @@ public class JCFUserService implements UserService {
     @Override
     public void deleteUser(UUID id) {
         if(!data.containsKey(id)){
-            throw new RuntimeException(ErrorMessage.USER_NOT_FOUND)
+            throw new RuntimeException(ErrorMessage.USER_NOT_FOUND);
         }
         data.remove(id);
     }
