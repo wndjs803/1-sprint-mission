@@ -12,10 +12,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class JCFUserService implements UserService {
-    private final Map<UUID, User> data;
+    private final Map<UUID, User> userData;
 
     public JCFUserService() {
-        this.data = new HashMap<>();
+        this.userData = new HashMap<>();
     }
 
     @Override
@@ -23,17 +23,17 @@ public class JCFUserService implements UserService {
                            String profileImageUrl) {
         User newUser = new User(name, nickname, email, password, profileImageUrl, true, new ArrayList<>());
         // 비밀 번호 암호화
-        data.put(newUser.getId(), newUser);
+        userData.put(newUser.getId(), newUser);
     }
 
     @Override
     public User findUserById(UUID id) {
-        return Optional.of(data.get(id)).orElseThrow(() -> new RuntimeException(ErrorMessage.USER_NOT_FOUND));
+        return Optional.of(userData.get(id)).orElseThrow(() -> new RuntimeException(ErrorMessage.USER_NOT_FOUND));
     }
 
     @Override
     public List<User> findAllUsers() {
-        return (List<User>) data.values();
+        return (List<User>) userData.values();
     }
 
     @Override
@@ -46,14 +46,14 @@ public class JCFUserService implements UserService {
         findUser.updatePassword(password); // 추후 비밀 번호 암호화
         findUser.updateProfileImageUrl(profileImageUrl);
 
-        data.put(findUser.getId(), findUser);
+        userData.put(findUser.getId(), findUser);
     }
 
     @Override
     public void deleteUser(UUID id) {
-        if(!data.containsKey(id)){
+        if(!userData.containsKey(id)){
             throw new RuntimeException(ErrorMessage.USER_NOT_FOUND);
         }
-        data.remove(id);
+        userData.remove(id);
     }
 }
