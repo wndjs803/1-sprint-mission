@@ -21,6 +21,7 @@ public class JCFUserService implements UserService {
     @Override
     public void createUser(String name, String nickname, String email, String password,
                            String profileImageUrl) {
+        // 추후 중복 검사
         User newUser = new User(name, nickname, email, password, profileImageUrl, true, new ArrayList<>());
         // 비밀 번호 암호화
         userData.put(newUser.getId(), newUser);
