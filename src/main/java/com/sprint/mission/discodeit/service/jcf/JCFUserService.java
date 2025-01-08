@@ -1,8 +1,6 @@
 package com.sprint.mission.discodeit.service.jcf;
 
-import com.sprint.mission.Main;
 import com.sprint.mission.discodeit.ErrorMessage;
-import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.service.UserService;
 
@@ -53,6 +51,6 @@ public class JCFUserService implements UserService {
 
     @Override
     public void deleteUser(UUID id) {
-
+        data.remove(id);
     }
 }
