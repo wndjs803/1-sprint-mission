@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 public class JCFUserService implements UserService {
@@ -27,7 +28,7 @@ public class JCFUserService implements UserService {
 
     @Override
     public User findUserById(UUID id) {
-        return data.get(id);
+        return Optional.of(data.get(id)).orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
     }
 
     @Override
