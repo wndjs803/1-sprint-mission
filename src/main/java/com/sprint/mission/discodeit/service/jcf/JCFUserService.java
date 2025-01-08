@@ -38,7 +38,7 @@ public class JCFUserService implements UserService {
 
     @Override
     public void updateUser(UUID id, String name, String nickname, String email, String password, String profileImageUrl) {
-        User findUser = Optional.of(data.get(id)).orElseThrow(() -> new RuntimeException(ErrorMessage.USER_NOT_FOUND));
+        User findUser = findUserById(id);
 
         findUser.updateName(name);
         findUser.updateNickname(nickname);
