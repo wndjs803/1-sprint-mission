@@ -13,7 +13,7 @@ public class User {
     private String profileImageUrl;
     private boolean active;
     private List<Channel> channelList;
-    private Long createdAt;
+    private final Long createdAt;
     private Long updatedAt;
 
     public User(String name, String nickname, String email, String password,
