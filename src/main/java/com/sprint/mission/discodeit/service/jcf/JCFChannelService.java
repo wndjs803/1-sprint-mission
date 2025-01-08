@@ -37,7 +37,11 @@ public class JCFChannelService implements ChannelService {
 
     @Override
     public void updateChannelName(UUID id, String name) {
+        Channel findChannel = findChannelById(id);
 
+        findChannel.updateName(name);
+
+        channelData.put(id, findChannel);
     }
 
     @Override
