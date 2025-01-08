@@ -32,7 +32,7 @@ public class JCFChannelService implements ChannelService {
 
     @Override
     public List<Channel> findAllChannels() {
-        return null;
+        return (List<Channel>) channelData.values();
     }
 
     @Override
