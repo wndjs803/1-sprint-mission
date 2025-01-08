@@ -27,7 +27,7 @@ public class JCFUserService implements UserService {
 
     @Override
     public User findUserById(UUID id) {
-        return null;
+        return data.get(id);
     }
 
     @Override
