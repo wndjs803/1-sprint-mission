@@ -32,7 +32,7 @@ public class JCFUserService implements UserService {
 
     @Override
     public List<User> findAllUsers() {
-        return null;
+        return (List<User>) data.values();
     }
 
     @Override
