@@ -66,9 +66,6 @@ public class JCFChannelService implements ChannelService {
             throw new RuntimeException(ErrorMessage.NOT_CHANNEL_CREATOR);
         }
 
-        // 채널 삭제하기 전 모든 유저의 채널 목록에서 해당 채널 삭제
-        findChannel.getChannelUserList().forEach(user -> user.deleteChannel(findChannel));
-
         // 채널 삭제
         channelData.remove(channelId);
     }
