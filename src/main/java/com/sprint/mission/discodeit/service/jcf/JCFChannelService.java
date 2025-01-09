@@ -21,11 +21,13 @@ public class JCFChannelService implements ChannelService {
         this.jcfUserService = jcfUserService;
     }
     @Override
-    public void createChannel(UUID channelOwnerId, String name) {
+    public Channel createChannel(UUID channelOwnerId, String name) {
         User channelOwner = jcfUserService.findUserById(channelOwnerId);
         // 추후 중복 검사
-        Channel channel = new Channel(name, channelOwner, new ArrayList<>(), new ArrayList<>());
-        channelData.put(channel.getId(), channel);
+        Channel newChannel = new Channel(name, channelOwner, new ArrayList<>(), new ArrayList<>());
+        channelData.put(newChannel.getId(), newChannel);
+
+        return newChannel;
     }
 
     @Override
@@ -35,7 +37,7 @@ public class JCFChannelService implements ChannelService {
 
     @Override
     public List<Channel> findAllChannels() {
-        return (List<Channel>) channelData.values();
+        return new ArrayList<>(channelData.values());
     }
 
     @Override
@@ -51,7 +53,7 @@ public class JCFChannelService implements ChannelService {
 
         channelData.put(channelId, findChannel);
 
-        // updateAt 수정
+        // updateAt 수
     }
 
     @Override
