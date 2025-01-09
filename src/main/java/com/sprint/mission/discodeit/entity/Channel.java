@@ -1,25 +1,17 @@
 package com.sprint.mission.discodeit.entity;
 
-import com.sprint.mission.discodeit.global.UtilMethod;
-
 import java.util.List;
-import java.util.UUID;
 
-public class Channel {
-    private final UUID id;
+public class Channel extends BaseEntity{
     private String name;
     private User channelOwner;
     private final List<User> channelUserList;
-    private final Long createdAt;
-    private Long updatedAt;
 
     public Channel(String name, User channelOwner, List<User> channelUserList) {
-        this.id = UUID.randomUUID();
+        super();
         this.name = name;
         this.channelOwner = channelOwner;
         this.channelUserList = channelUserList;
-        this.createdAt = UtilMethod.getCurrentTime();
-        this.updatedAt = 0L;
     }
 
     public User getChannelOwner() {
@@ -28,10 +20,6 @@ public class Channel {
 
     public void updateChannelOwner(User channelOwner) {
         this.channelOwner = channelOwner;
-    }
-
-    public UUID getId() {
-        return id;
     }
 
     public String getName() {
@@ -52,17 +40,5 @@ public class Channel {
 
     public void deleteChannelUser(User user){
         this.channelUserList.remove(user);
-    }
-
-    public Long getCreatedAt() {
-        return createdAt;
-    }
-
-    public Long getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void updateUpdatedAt(Long updatedAt) {
-        this.updatedAt = updatedAt;
     }
 }

@@ -4,25 +4,16 @@ import com.sprint.mission.discodeit.global.UtilMethod;
 
 import java.util.UUID;
 
-public class Message {
-    private final UUID id;
+public class Message extends BaseEntity{
     private final User sendUser;
     private final Channel channel;
     private String content;
-    private final Long createdAt;
-    private Long updatedAt;
 
     public Message(User sendUser, Channel channel, String content) {
-        this.id = UUID.randomUUID();
+        super();
         this.sendUser = sendUser;
         this.channel = channel;
         this.content = content;
-        this.createdAt = UtilMethod.getCurrentTime();
-        this.updatedAt = 0L;
-    }
-
-    public UUID getId() {
-        return id;
     }
 
     public User getSendUser() {
@@ -39,17 +30,5 @@ public class Message {
 
     public void updateContent(String content) {
         this.content = content;
-    }
-
-    public Long getCreatedAt() {
-        return createdAt;
-    }
-
-    public Long getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void updateUpdatedAt(Long updatedAt) {
-        this.updatedAt = updatedAt;
     }
 }
