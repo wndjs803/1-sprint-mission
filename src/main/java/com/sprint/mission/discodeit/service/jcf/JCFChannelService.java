@@ -32,7 +32,7 @@ public class JCFChannelService implements ChannelService {
 
     @Override
     public Channel findChannelById(UUID channelId) {
-        return Optional.of(channelData.get(channelId)).orElseThrow(() -> new RuntimeException(ErrorMessage.CHANNEL_NOT_FOUND));
+        return Optional.ofNullable(channelData.get(channelId)).orElseThrow(() -> new RuntimeException(ErrorMessage.CHANNEL_NOT_FOUND));
     }
 
     @Override
