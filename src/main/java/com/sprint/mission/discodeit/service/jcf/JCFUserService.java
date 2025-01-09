@@ -19,22 +19,24 @@ public class JCFUserService implements UserService {
     }
 
     @Override
-    public void createUser(String name, String nickname, String email, String password,
+    public User createUser(String name, String nickname, String email, String password,
                            String profileImageUrl) {
         // 추후 중복 검사
         User newUser = new User(name, nickname, email, password, profileImageUrl, true, new ArrayList<>());
         // 비밀 번호 암호화
         userData.put(newUser.getId(), newUser);
+
+        return newUser;
     }
 
     @Override
     public User findUserById(UUID id) {
-        return Optional.of(userData.get(id)).orElseThrow(() -> new RuntimeException(ErrorMessage.USER_NOT_FOUND));
+        return Optional.ofNullable(userData.get(id)).orElseThrow(() -> new RuntimeException(ErrorMessage.USER_NOT_FOUND));
     }
 
     @Override
     public List<User> findAllUsers() {
-        return (List<User>) userData.values();
+        return new ArrayList<>(userData.values());
     }
 
     @Override
@@ -43,7 +45,7 @@ public class JCFUserService implements UserService {
 
         findUser.updateName(name);
         findUser.updateNickname(nickname);
-        findUser.updateNickname(email);
+        findUser.updateEmail(email);
         findUser.updatePassword(password); // 추후 비밀 번호 암호화
         findUser.updateProfileImageUrl(profileImageUrl);
 
