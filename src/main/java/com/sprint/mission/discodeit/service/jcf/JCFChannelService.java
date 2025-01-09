@@ -40,9 +40,12 @@ public class JCFChannelService implements ChannelService {
 
     @Override
     public void updateChannelName(UUID channelOwnerId, UUID channelId, String name) {
-        // 채널 주인만 수정 가능하도록
-
         Channel findChannel = findChannelById(channelId);
+        User findUser = jcfUserService.findUserById(channelOwnerId);
+
+        if(findChannel.getChannelOwner().getId() != findUser.getId()){
+            throw new RuntimeException(ErrorMessage.NOT_CHANNEL_CREATOR);
+        }
 
         findChannel.updateName(name);
 

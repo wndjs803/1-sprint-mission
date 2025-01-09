@@ -23,6 +23,14 @@ public class Channel {
         this.updatedAt = 0L;
     }
 
+    public User getChannelOwner() {
+        return channelOwner;
+    }
+
+    public void updateChannelOwner(User channelOwner) {
+        this.channelOwner = channelOwner;
+    }
+
     public UUID getId() {
         return id;
     }
