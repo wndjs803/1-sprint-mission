@@ -46,12 +46,13 @@ public class JCFChannelService implements ChannelService {
 
     @Override
     public void deleteChannel(UUID id) {
-
     }
 
     @Override
     public void inviteUsers(UUID id, List<User> invitedUserList) {
+        Channel findChannel = findChannelById(id);
 
+        invitedUserList.forEach(user -> findChannel.addChannelUser(user));
     }
 
     @Override

@@ -37,8 +37,9 @@ public class Channel {
         return channelUserList;
     }
 
-    public void updateChannelUserList(List<User> channelUserList) {
-        this.channelUserList = channelUserList;
+    public void addChannelUser(User user){
+        this.channelUserList.add(user);
+        user.addChannel(this);
     }
 
     public List<Message> getMessageList() {

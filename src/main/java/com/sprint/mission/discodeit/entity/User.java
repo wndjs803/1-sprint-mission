@@ -94,8 +94,8 @@ public class User {
         this.active = !this.active;
     }
 
-    public void updateChannelList(List<Channel> channelList) {
-        this.channelList = channelList;
+    public void addChannel(Channel channel){
+        this.channelList.add(channel);
     }
 
     public void updateUpdatedAt(Long updatedAt) {
