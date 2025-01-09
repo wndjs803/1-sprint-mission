@@ -29,6 +29,7 @@ public class JCFChannelService implements ChannelService {
     private static class LazyHolder {
         private static final JCFChannelService INSTANCE = new JCFChannelService(JCFUserService.getInstance());
     }
+
     @Override
     public Channel createChannel(UUID channelOwnerId, String name) {
         User channelOwner = jcfUserService.findUserById(channelOwnerId);
