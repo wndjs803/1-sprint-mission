@@ -65,6 +65,15 @@ public class JCFMessageService implements MessageService {
 
     @Override
     public void deleteMessage(UUID sendUserId, UUID messageId) {
+        // 메세지 조회
+        Message findMessage = findMessageById(messageId);
 
+        // 메세지 생성자가 맞는지 확인
+        if(findMessage.getSendUser().getId() != sendUserId){
+            throw new RuntimeException(ErrorMessage.NOT_MESSAGE_CREATOR);
+        }
+
+        // 메세지 삭제
+        messageData.remove(messageId);
     }
 }
