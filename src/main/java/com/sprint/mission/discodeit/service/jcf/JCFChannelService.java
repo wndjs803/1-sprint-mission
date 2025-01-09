@@ -1,10 +1,12 @@
 package com.sprint.mission.discodeit.service.jcf;
 
 import com.sprint.mission.discodeit.ErrorMessage;
+import com.sprint.mission.discodeit.UtilMethod;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.service.ChannelService;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,17 +45,16 @@ public class JCFChannelService implements ChannelService {
     @Override
     public void updateChannelName(UUID channelOwnerId, UUID channelId, String name) {
         Channel findChannel = findChannelById(channelId);
-        User findUser = jcfUserService.findUserById(channelOwnerId);
+        jcfUserService.findUserById(channelOwnerId);
 
-        if(findChannel.getChannelOwner().getId() != findUser.getId()){
+        if(findChannel.getChannelOwner().getId() != channelOwnerId){
             throw new RuntimeException(ErrorMessage.NOT_CHANNEL_CREATOR);
         }
 
         findChannel.updateName(name);
+        findChannel.updateUpdatedAt(UtilMethod.getCurrentTime());
 
         channelData.put(channelId, findChannel);
-
-        // updateAt 수
     }
 
     @Override

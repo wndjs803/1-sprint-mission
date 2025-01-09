@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.service.jcf;
 
 import com.sprint.mission.discodeit.ErrorMessage;
+import com.sprint.mission.discodeit.UtilMethod;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.service.UserService;
 
@@ -48,10 +49,9 @@ public class JCFUserService implements UserService {
         findUser.updateEmail(email);
         findUser.updatePassword(password); // 추후 비밀 번호 암호화
         findUser.updateProfileImageUrl(profileImageUrl);
+        findUser.updateUpdatedAt(UtilMethod.getCurrentTime());
 
         userData.put(findUser.getId(), findUser);
-
-        // updateAt 수정
     }
 
     @Override
