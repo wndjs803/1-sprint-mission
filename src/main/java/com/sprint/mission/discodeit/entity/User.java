@@ -98,6 +98,10 @@ public class User {
         this.channelList.add(channel);
     }
 
+    public void deleteChannel(Channel channel){
+        this.channelList.remove(channel);
+    }
+
     public void updateUpdatedAt(Long updatedAt) {
         this.updatedAt = updatedAt;
     }

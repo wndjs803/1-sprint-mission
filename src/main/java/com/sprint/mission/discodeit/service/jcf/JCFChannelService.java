@@ -60,11 +60,15 @@ public class JCFChannelService implements ChannelService {
     public void inviteUsers(UUID channelId, List<User> invitedUserList) {
         Channel findChannel = findChannelById(channelId);
 
+        // 유저의 진위 여부에 대한 검증이 필요한가?
+
         invitedUserList.forEach(user -> findChannel.addChannelUser(user));
     }
 
     @Override
     public void leaveUsers(UUID channelId, List<User> leaveUserList) {
+        Channel findChannel = findChannelById(channelId);
 
+        leaveUserList.forEach(user -> findChannel.deleteChannelUser(user));
     }
 }

@@ -52,6 +52,11 @@ public class Channel {
         user.addChannel(this);
     }
 
+    public void deleteChannelUser(User user){
+        this.channelUserList.remove(user);
+        user.deleteChannel(this);
+    }
+
     public List<Message> getMessageList() {
         return messageList;
     }
