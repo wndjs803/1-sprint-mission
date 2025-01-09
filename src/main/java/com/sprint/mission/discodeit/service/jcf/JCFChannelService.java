@@ -16,10 +16,8 @@ import java.util.UUID;
 public class JCFChannelService implements ChannelService {
     private final Map<UUID, Channel> channelData;
     private final JCFUserService jcfUserService;
-    private final JCFMessageService jcfMessageService;
 
-    public JCFChannelService(JCFUserService jcfUserService, JCFMessageService jcfMessageService) {
-        this.jcfMessageService = jcfMessageService;
+    public JCFChannelService(JCFUserService jcfUserService) {
         this.channelData = new HashMap<>();
         this.jcfUserService = jcfUserService;
     }
@@ -27,7 +25,7 @@ public class JCFChannelService implements ChannelService {
     public Channel createChannel(UUID channelOwnerId, String name) {
         User channelOwner = jcfUserService.findUserById(channelOwnerId);
         // 추후 중복 검사
-        Channel newChannel = new Channel(name, channelOwner, new ArrayList<>(), new ArrayList<>());
+        Channel newChannel = new Channel(name, channelOwner, new ArrayList<>());
         channelData.put(newChannel.getId(), newChannel);
 
         return newChannel;
@@ -60,18 +58,19 @@ public class JCFChannelService implements ChannelService {
 
     @Override
     public void deleteChannel(UUID channelOwnerId, UUID channelId) {
-        // 채널 주인인지 확인
+        // 채널 생성자 존재 유무 확인
         jcfUserService.findUserById(channelOwnerId);
-
         Channel findChannel = findChannelById(channelId);
+
+        if(findChannel.getChannelOwner().getId() != channelOwnerId){
+            throw new RuntimeException(ErrorMessage.NOT_CHANNEL_CREATOR);
+        }
 
         // 채널 삭제하기 전 모든 유저의 채널 목록에서 해당 채널 삭제
         findChannel.getChannelUserList().forEach(user -> user.deleteChannel(findChannel));
 
-        // 채널 내 메세지 삭제
-//        findChannel.getMessageList().forEach(message -> );
-
         // 채널 삭제
+        channelData.remove(channelId);
     }
 
     @Override

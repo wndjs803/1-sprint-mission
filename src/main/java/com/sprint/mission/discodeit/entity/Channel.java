@@ -10,16 +10,14 @@ public class Channel {
     private String name;
     private User channelOwner;
     private final List<User> channelUserList;
-    private List<Message> messageList;
     private final Long createdAt;
     private Long updatedAt;
 
-    public Channel(String name, User channelOwner, List<User> channelUserList, List<Message> messageList) {
+    public Channel(String name, User channelOwner, List<User> channelUserList) {
         this.id = UUID.randomUUID();
         this.name = name;
         this.channelOwner = channelOwner;
         this.channelUserList = channelUserList;
-        this.messageList = messageList;
         this.createdAt = UtilMethod.getCurrentTime();
         this.updatedAt = 0L;
     }
@@ -56,14 +54,6 @@ public class Channel {
     public void deleteChannelUser(User user){
         this.channelUserList.remove(user);
         user.deleteChannel(this);
-    }
-
-    public List<Message> getMessageList() {
-        return messageList;
-    }
-
-    public void updateMessageList(List<Message> messageList) {
-        this.messageList = messageList;
     }
 
     public Long getCreatedAt() {
