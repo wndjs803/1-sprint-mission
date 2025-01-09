@@ -1,4 +1,4 @@
-package com.sprint.mission.discodeit;
+package com.sprint.mission.discodeit.global;
 
 public class UtilMethod {
     public static Long getCurrentTime(){

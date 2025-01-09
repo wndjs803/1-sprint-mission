@@ -1,8 +1,7 @@
 package com.sprint.mission.discodeit.entity;
 
-import com.sprint.mission.discodeit.UtilMethod;
+import com.sprint.mission.discodeit.global.UtilMethod;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,7 +13,7 @@ public class User {
     private String password;
     private String profileImageUrl;
     private boolean active;
-    private List<Channel> channelList;
+    private final List<Channel> channelList;
     private final Long createdAt;
     private Long updatedAt;
 

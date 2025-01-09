@@ -1,8 +1,7 @@
 package com.sprint.mission.discodeit.entity;
 
-import com.sprint.mission.discodeit.UtilMethod;
+import com.sprint.mission.discodeit.global.UtilMethod;
 
-import java.time.Instant;
 import java.util.UUID;
 
 public class Message {

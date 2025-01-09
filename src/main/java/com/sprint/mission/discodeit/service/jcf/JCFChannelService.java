@@ -1,12 +1,11 @@
 package com.sprint.mission.discodeit.service.jcf;
 
-import com.sprint.mission.discodeit.ErrorMessage;
-import com.sprint.mission.discodeit.UtilMethod;
+import com.sprint.mission.discodeit.global.ErrorMessage;
+import com.sprint.mission.discodeit.global.UtilMethod;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.service.ChannelService;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,8 +16,10 @@ import java.util.UUID;
 public class JCFChannelService implements ChannelService {
     private final Map<UUID, Channel> channelData;
     private final JCFUserService jcfUserService;
+    private final JCFMessageService jcfMessageService;
 
-    public JCFChannelService(JCFUserService jcfUserService) {
+    public JCFChannelService(JCFUserService jcfUserService, JCFMessageService jcfMessageService) {
+        this.jcfMessageService = jcfMessageService;
         this.channelData = new HashMap<>();
         this.jcfUserService = jcfUserService;
     }
@@ -60,10 +61,15 @@ public class JCFChannelService implements ChannelService {
     @Override
     public void deleteChannel(UUID channelOwnerId, UUID channelId) {
         // 채널 주인인지 확인
+        jcfUserService.findUserById(channelOwnerId);
 
-        // 채널 삭제하기 전 유저의 채널 목록에서 해당 채널 삭제
+        Channel findChannel = findChannelById(channelId);
+
+        // 채널 삭제하기 전 모든 유저의 채널 목록에서 해당 채널 삭제
+        findChannel.getChannelUserList().forEach(user -> user.deleteChannel(findChannel));
 
         // 채널 내 메세지 삭제
+//        findChannel.getMessageList().forEach(message -> );
 
         // 채널 삭제
     }
