@@ -1,5 +1,7 @@
 package com.sprint.mission.discodeit.entity;
 
+import com.sprint.mission.discodeit.UtilMethod;
+
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
@@ -19,7 +21,7 @@ public class Channel {
         this.channelOwner = channelOwner;
         this.channelUserList = channelUserList;
         this.messageList = messageList;
-        this.createdAt = Instant.now().toEpochMilli();
+        this.createdAt = UtilMethod.getCurrentTime();
         this.updatedAt = 0L;
     }
 
@@ -73,7 +75,7 @@ public class Channel {
         return updatedAt;
     }
 
-    public void UpdatedAt(Long updatedAt) {
+    public void updateUpdatedAt(Long updatedAt) {
         this.updatedAt = updatedAt;
     }
 }

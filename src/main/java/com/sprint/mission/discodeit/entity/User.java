@@ -1,5 +1,7 @@
 package com.sprint.mission.discodeit.entity;
 
+import com.sprint.mission.discodeit.UtilMethod;
+
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
@@ -26,7 +28,7 @@ public class User {
         this.profileImageUrl = profileImageUrl;
         this.active = active;
         this.channelList = channelList;
-        this.createdAt = Instant.now().toEpochMilli();
+        this.createdAt = UtilMethod.getCurrentTime();
         this.updatedAt = 0L;
     }
 

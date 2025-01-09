@@ -1,5 +1,7 @@
 package com.sprint.mission.discodeit.entity;
 
+import com.sprint.mission.discodeit.UtilMethod;
+
 import java.time.Instant;
 import java.util.UUID;
 
@@ -16,7 +18,7 @@ public class Message {
         this.sendUser = sendUser;
         this.channel = channel;
         this.content = content;
-        this.createdAt = Instant.now().toEpochMilli();
+        this.createdAt = UtilMethod.getCurrentTime();
         this.updatedAt = 0L;
     }
 
