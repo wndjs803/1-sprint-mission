@@ -6,6 +6,7 @@ import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.service.MessageService;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,7 +50,17 @@ public class JCFMessageService implements MessageService {
 
     @Override
     public void updateMessage(UUID sendUserId, UUID messageId, String content) {
+        jcfUserService.findUserById(sendUserId);
+        Message findMessage = findMessageById(messageId);
 
+        if(findMessage.getSendUser().getId() != sendUserId){
+            throw new RuntimeException(ErrorMessage.NOT_MESSAGE_CREATOR);
+        }
+
+        findMessage.updateContent(content);
+        findMessage.updateUpdatedAt(Instant.now().toEpochMilli());
+
+        messageData.put(findMessage.getId(), findMessage);
     }
 
     @Override

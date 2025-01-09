@@ -9,5 +9,6 @@ public class ErrorMessage {
     public static final String NOT_CHANNEL_CREATOR = "채널 생성자가 아닙니다.";
 
     // Message
-    public static final String MESSAGE_NOT_FOUND = "메세지를 찾을 수 없습니다.";
+    public static final String MESSAGE_NOT_FOUND = "메세지 찾을 수 없습니다.";
+    public static final String NOT_MESSAGE_CREATOR = "메세지 생성자가 아닙니다.";
 }
