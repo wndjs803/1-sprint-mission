@@ -17,9 +17,17 @@ public class JCFChannelService implements ChannelService {
     private final Map<UUID, Channel> channelData;
     private final JCFUserService jcfUserService;
 
-    public JCFChannelService(JCFUserService jcfUserService) {
+    private JCFChannelService(JCFUserService jcfUserService) {
         this.channelData = new HashMap<>();
         this.jcfUserService = jcfUserService;
+    }
+
+    public static JCFChannelService getInstance() {
+        return LazyHolder.INSTANCE;
+    }
+
+    private static class LazyHolder {
+        private static final JCFChannelService INSTANCE = new JCFChannelService(JCFUserService.getInstance());
     }
     @Override
     public Channel createChannel(UUID channelOwnerId, String name) {

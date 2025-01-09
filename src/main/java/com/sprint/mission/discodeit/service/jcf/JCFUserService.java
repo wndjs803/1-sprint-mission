@@ -15,8 +15,16 @@ import java.util.UUID;
 public class JCFUserService implements UserService {
     private final Map<UUID, User> userData;
 
-    public JCFUserService() {
+    private JCFUserService() {
         this.userData = new HashMap<>();
+    }
+
+    public static JCFUserService getInstance() {
+        return LazyHolder.INSTANCE;
+    }
+
+    private static class LazyHolder {
+        private static final JCFUserService INSTANCE = new JCFUserService();
     }
 
     @Override
