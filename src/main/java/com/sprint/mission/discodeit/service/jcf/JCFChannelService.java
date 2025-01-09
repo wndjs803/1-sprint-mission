@@ -50,10 +50,19 @@ public class JCFChannelService implements ChannelService {
         findChannel.updateName(name);
 
         channelData.put(channelId, findChannel);
+
+        // updateAt 수정
     }
 
     @Override
     public void deleteChannel(UUID channelOwnerId, UUID channelId) {
+        // 채널 주인인지 확인
+
+        // 채널 삭제하기 전 유저의 채널 목록에서 해당 채널 삭제
+
+        // 채널 내 메세지 삭제
+
+        // 채널 삭제
     }
 
     @Override

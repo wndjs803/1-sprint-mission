@@ -48,6 +48,8 @@ public class JCFUserService implements UserService {
         findUser.updateProfileImageUrl(profileImageUrl);
 
         userData.put(findUser.getId(), findUser);
+
+        // updateAt 수정
     }
 
     @Override
@@ -56,5 +58,7 @@ public class JCFUserService implements UserService {
             throw new RuntimeException(ErrorMessage.USER_NOT_FOUND);
         }
         userData.remove(id);
+
+        // 참여하고 있는 채널에서 유저 삭제
     }
 }
