@@ -23,7 +23,7 @@ public class JCFUserService implements UserService {
     public User createUser(String name, String nickname, String email, String password,
                            String profileImageUrl) {
         // 추후 중복 검사
-        User newUser = new User(name, nickname, email, password, profileImageUrl, true, new ArrayList<>());
+        User newUser = new User(name, nickname, email, password, profileImageUrl, true);
         // 비밀 번호 암호화
         userData.put(newUser.getId(), newUser);
 
@@ -60,7 +60,5 @@ public class JCFUserService implements UserService {
             throw new RuntimeException(ErrorMessage.USER_NOT_FOUND);
         }
         userData.remove(id);
-
-        // 참여하고 있는 채널에서 유저 삭제
     }
 }

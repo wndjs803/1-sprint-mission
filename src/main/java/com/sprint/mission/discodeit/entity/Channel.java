@@ -48,12 +48,10 @@ public class Channel {
 
     public void addChannelUser(User user){
         this.channelUserList.add(user);
-        user.addChannel(this);
     }
 
     public void deleteChannelUser(User user){
         this.channelUserList.remove(user);
-        user.deleteChannel(this);
     }
 
     public Long getCreatedAt() {

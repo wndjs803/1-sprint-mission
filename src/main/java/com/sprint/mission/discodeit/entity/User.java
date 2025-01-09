@@ -13,12 +13,11 @@ public class User {
     private String password;
     private String profileImageUrl;
     private boolean active;
-    private final List<Channel> channelList;
     private final Long createdAt;
     private Long updatedAt;
 
     public User(String name, String nickname, String email, String password,
-                String profileImageUrl, boolean active, List<Channel> channelList) {
+                String profileImageUrl, boolean active) {
         this.id = UUID.randomUUID();
         this.name = name;
         this.nickname = nickname;
@@ -26,7 +25,6 @@ public class User {
         this.password = password;
         this.profileImageUrl = profileImageUrl;
         this.active = active;
-        this.channelList = channelList;
         this.createdAt = UtilMethod.getCurrentTime();
         this.updatedAt = 0L;
     }
@@ -59,9 +57,6 @@ public class User {
         return active;
     }
 
-    public List<Channel> getChannelList() {
-        return channelList;
-    }
 
     public Long getCreatedAt() {
         return createdAt;
@@ -93,14 +88,6 @@ public class User {
 
     public void updateActive(){
         this.active = !this.active;
-    }
-
-    public void addChannel(Channel channel){
-        this.channelList.add(channel);
-    }
-
-    public void deleteChannel(Channel channel){
-        this.channelList.remove(channel);
     }
 
     public void updateUpdatedAt(Long updatedAt) {
