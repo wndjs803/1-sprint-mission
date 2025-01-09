@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ChannelService {
-    void createChannel(String name);
-    Channel findChannelById(UUID id);
+    void createChannel(UUID id, String name);
+    Channel findChannelById(UUID channelId);
     List<Channel> findAllChannels();
-    void updateChannelName(UUID id, String name);
-    void deleteChannel(UUID id);
-    void inviteUsers(UUID id, List<User> invitedUserList);
-    void leaveUsers(UUID id, List<User> leaveUserList);
+    void updateChannelName(UUID channelOwnerId, UUID channelId, String name);
+    void deleteChannel(UUID channelOwnerId, UUID channelId);
+    void inviteUsers(UUID channelId, List<User> invitedUserList);
+    void leaveUsers(UUID channelId, List<User> leaveUserList);
 }

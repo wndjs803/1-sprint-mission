@@ -7,14 +7,16 @@ import java.util.UUID;
 public class Channel {
     private final UUID id;
     private String name;
-    private List<User> channelUserList;
+    private User channelOwner;
+    private final List<User> channelUserList;
     private List<Message> messageList;
     private final Long createdAt;
     private Long updatedAt;
 
-    public Channel(String name, List<User> channelUserList, List<Message> messageList) {
+    public Channel(String name, User channelOwner, List<User> channelUserList, List<Message> messageList) {
         this.id = UUID.randomUUID();
         this.name = name;
+        this.channelOwner = channelOwner;
         this.channelUserList = channelUserList;
         this.messageList = messageList;
         this.createdAt = Instant.now().toEpochMilli();
