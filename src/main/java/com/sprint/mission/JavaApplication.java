@@ -172,6 +172,14 @@ public class JavaApplication {
         System.out.println(findMessage1.getContent());
         System.out.println();
 
+        // 메세지 목록 조회
+        System.out.println("메세지 목록 조회");
+
+        List<Message> findMessagList = messageService.findAllMessage();
+
+        findMessagList.forEach(message -> System.out.println(message.getContent()));
+        System.out.println();
+
         // 메세지 수정
         System.out.println("메세지 수정");
         System.out.println("변경 전");
