@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.service.file;
 
+import com.sprint.mission.discodeit.common.ErrorMessage;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
@@ -8,6 +9,7 @@ import com.sprint.mission.discodeit.service.MessageService;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class FileMessageService implements MessageService {
@@ -48,12 +50,18 @@ public class FileMessageService implements MessageService {
 
     @Override
     public Message findMessageByIdOrThrow(UUID messageId) {
-        return null;
+        List<Message> messageList = fileStorage.load(directory);
+
+        Optional<Message> optionalMessage = messageList.stream()
+                .filter(channel -> channel.getId().equals(messageId))
+                .findFirst();
+
+        return optionalMessage.orElseThrow(() -> new RuntimeException(ErrorMessage.MESSAGE_NOT_FOUND.getMessage()));
     }
 
     @Override
     public List<Message> findAllMessage() {
-        return null;
+        return fileStorage.load(directory);
     }
 
     @Override
