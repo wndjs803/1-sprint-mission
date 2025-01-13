@@ -8,6 +8,7 @@ import com.sprint.mission.discodeit.service.MessageService;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -66,7 +67,18 @@ public class FileMessageService implements MessageService {
 
     @Override
     public void updateMessage(UUID sendUserId, UUID messageId, String content) {
+        fileUserService.findUserByIdOrThrow(sendUserId);
+        Message foundMessage = findMessageByIdOrThrow(messageId);
 
+        if(foundMessage.isNotOwner(sendUserId)){
+            throw new RuntimeException(ErrorMessage.NOT_MESSAGE_CREATOR.getMessage());
+        }
+
+        foundMessage.updateContent(content);
+        foundMessage.updateUpdatedAt(Instant.now().toEpochMilli());
+
+        Path filePath = directory.resolve(foundMessage.getId().toString().concat(".ser"));
+        fileStorage.save(filePath, foundMessage);
     }
 
     @Override
