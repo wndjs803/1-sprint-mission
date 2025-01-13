@@ -55,7 +55,7 @@ public class JCFChannelService implements ChannelService {
         Channel foundChannel = findChannelByIdOrThrow(channelId);
         jcfUserService.findUserByIdOrThrow(channelOwnerId);
 
-        if(foundChannel.getChannelOwner().getId() != channelOwnerId){
+        if(foundChannel.isNotOwner(channelOwnerId)) {
             throw new RuntimeException(ErrorMessage.NOT_CHANNEL_CREATOR);
         }
 
@@ -71,7 +71,7 @@ public class JCFChannelService implements ChannelService {
         jcfUserService.findUserByIdOrThrow(channelOwnerId);
         Channel foundChannel = findChannelByIdOrThrow(channelId);
 
-        if(foundChannel.getChannelOwner().getId() != channelOwnerId){
+        if(foundChannel.isNotOwner(channelOwnerId)){
             throw new RuntimeException(ErrorMessage.NOT_CHANNEL_CREATOR);
         }
 

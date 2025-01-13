@@ -62,7 +62,7 @@ public class JCFMessageService implements MessageService {
         jcfUserService.findUserByIdOrThrow(sendUserId);
         Message foundMessage = findMessageByIdOrThrow(messageId);
 
-        if(foundMessage.getSendUser().getId() != sendUserId){
+        if(foundMessage.isNotOwner(sendUserId)){
             throw new RuntimeException(ErrorMessage.NOT_MESSAGE_CREATOR);
         }
 
@@ -78,7 +78,7 @@ public class JCFMessageService implements MessageService {
         Message foundMessage = findMessageByIdOrThrow(messageId);
 
         // 메세지 생성자가 맞는지 확인
-        if(foundMessage.getSendUser().getId() != sendUserId){
+        if(foundMessage.isNotOwner(sendUserId)){
             throw new RuntimeException(ErrorMessage.NOT_MESSAGE_CREATOR);
         }
 

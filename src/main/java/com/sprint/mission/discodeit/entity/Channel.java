@@ -4,6 +4,7 @@ import com.sprint.mission.discodeit.common.ErrorMessage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Channel extends BaseEntity{
     private String name;
@@ -51,5 +52,9 @@ public class Channel extends BaseEntity{
             throw new IllegalArgumentException(ErrorMessage.USER_NOT_NULL);
         }
         this.channelUserList.remove(user);
+    }
+
+    public boolean isNotOwner(UUID channelOwnerId){
+        return !(this.channelOwner.getId() == channelOwnerId);
     }
 }

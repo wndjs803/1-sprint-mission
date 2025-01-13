@@ -1,5 +1,7 @@
 package com.sprint.mission.discodeit.entity;
 
+import java.util.UUID;
+
 public class Message extends BaseEntity{
     private final User sendUser;
     private final Channel channel;
@@ -26,5 +28,9 @@ public class Message extends BaseEntity{
 
     public void updateContent(String content) {
         this.content = content;
+    }
+
+    public boolean isNotOwner(UUID sendUserId) {
+        return !(this.sendUser.getId() == sendUserId);
     }
 }
