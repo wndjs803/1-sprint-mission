@@ -56,7 +56,7 @@ public class FileChannelService implements ChannelService {
 
     @Override
     public List<Channel> findAllChannels() {
-        return null;
+        return fileStorage.load(directory);
     }
 
     @Override
