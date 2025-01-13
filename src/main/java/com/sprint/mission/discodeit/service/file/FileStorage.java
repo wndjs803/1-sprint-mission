@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class FileStorage {
     public void init(Path directory) {
@@ -55,6 +56,31 @@ public class FileStorage {
             }
         } else {
             return new ArrayList<>();
+        }
+    }
+
+    public void remove(Path directory, Object object) {
+        if (Files.exists(directory)) {
+            try {
+                Files.list(directory)
+                        .forEach(path -> {
+                            try (
+                                    FileInputStream fis = new FileInputStream(path.toFile());
+                                    ObjectInputStream ois = new ObjectInputStream(fis)
+                            ) {
+                                Object data = ois.readObject();
+                                if(data.equals(object)){
+                                    Files.deleteIfExists(path);
+                                }
+                            } catch (IOException | ClassNotFoundException e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+
         }
     }
 }

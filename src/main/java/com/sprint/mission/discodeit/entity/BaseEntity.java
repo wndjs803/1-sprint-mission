@@ -3,6 +3,7 @@ package com.sprint.mission.discodeit.entity;
 import com.sprint.mission.discodeit.common.UtilMethod;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.UUID;
 
 public abstract class BaseEntity implements Serializable {
@@ -31,5 +32,18 @@ public abstract class BaseEntity implements Serializable {
 
     public void updateUpdatedAt(Long updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        BaseEntity that = (BaseEntity) object;
+        return Objects.equals(id, that.id) && Objects.equals(createdAt, that.createdAt);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, createdAt);
     }
 }

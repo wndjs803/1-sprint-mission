@@ -62,6 +62,7 @@ public class FileUserService implements UserService {
 
     @Override
     public void deleteUser(UUID id) {
-
+        User user = findUserByIdOrThrow(id);
+        fileStorage.remove(directory, user);
     }
 }
