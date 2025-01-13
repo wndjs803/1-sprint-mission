@@ -41,7 +41,7 @@ public class FileUserService implements UserService {
 
     @Override
     public List<User> findAllUsers() {
-        return null;
+        return fileStorage.load(directory);
     }
 
     @Override
