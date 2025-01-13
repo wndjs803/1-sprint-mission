@@ -78,7 +78,16 @@ public class FileChannelService implements ChannelService {
 
     @Override
     public void deleteChannel(UUID channelOwnerId, UUID channelId) {
+        // 채널 생성자 존재 유무 확인
+        fileUserService.findUserByIdOrThrow(channelOwnerId);
+        Channel foundChannel = findChannelByIdOrThrow(channelId);
 
+        if(foundChannel.isNotOwner(channelOwnerId)){
+            throw new RuntimeException(ErrorMessage.NOT_CHANNEL_CREATOR.getMessage());
+        }
+
+        // 채널 삭제
+        fileStorage.remove(directory, foundChannel);
     }
 
     @Override
