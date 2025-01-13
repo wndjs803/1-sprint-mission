@@ -39,7 +39,7 @@ public class JCFMessageService implements MessageService {
         User sendUser = jcfUserService.findUserByIdOrThrow(sendUserId);
         Channel foundChannel = jcfChannelService.findChannelByIdOrThrow(channelId);
 
-        Message message = new Message(sendUser, foundChannel, content);
+        Message message = Message.of(sendUser, foundChannel, content);
 
         messageData.put(message.getId(), message);
 

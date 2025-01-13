@@ -7,11 +7,15 @@ public class Message extends BaseEntity{
     private final Channel channel;
     private String content;
 
-    public Message(User sendUser, Channel channel, String content) {
+    private Message(User sendUser, Channel channel, String content) {
         super();
         this.sendUser = sendUser;
         this.channel = channel;
         this.content = content;
+    }
+
+    public static Message of(User sendUser, Channel channel, String content) {
+        return new Message(sendUser, channel, content);
     }
 
     public User getSendUser() {

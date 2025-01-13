@@ -8,7 +8,7 @@ public class User extends BaseEntity {
     private String profileImageUrl;
     private boolean active;
 
-    public User(String name, String nickname, String email, String password,
+    private User(String name, String nickname, String email, String password,
                 String profileImageUrl, boolean active) {
         super();
         this.name = name;
@@ -17,6 +17,11 @@ public class User extends BaseEntity {
         this.password = password;
         this.profileImageUrl = profileImageUrl;
         this.active = active;
+    }
+
+    public static User of(String name, String nickname, String email, String password,
+                          String profileImageUrl, boolean active) {
+        return new User(name, nickname, email, password, profileImageUrl, active);
     }
 
 

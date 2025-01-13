@@ -31,7 +31,7 @@ public class JCFUserService implements UserService {
     public User createUser(String name, String nickname, String email, String password,
                            String profileImageUrl) {
         // 추후 중복 검사
-        User user = new User(name, nickname, email, password, profileImageUrl, true);
+        User user = User.of(name, nickname, email, password, profileImageUrl, true);
         // 비밀 번호 암호화
         userData.put(user.getId(), user);
 
