@@ -32,7 +32,7 @@ public class JCFChannelService implements ChannelService {
 
     @Override
     public Channel createChannel(UUID channelOwnerId, String name) {
-        User channelOwner = jcfUserService.findUserById(channelOwnerId);
+        User channelOwner = jcfUserService.findUserByIdOrThrow(channelOwnerId);
         // 추후 중복 검사
         Channel newChannel = new Channel(name, channelOwner);
         channelData.put(newChannel.getId(), newChannel);
@@ -53,7 +53,7 @@ public class JCFChannelService implements ChannelService {
     @Override
     public void updateChannelName(UUID channelOwnerId, UUID channelId, String name) {
         Channel findChannel = findChannelByIdOrThrow(channelId);
-        jcfUserService.findUserById(channelOwnerId);
+        jcfUserService.findUserByIdOrThrow(channelOwnerId);
 
         if(findChannel.getChannelOwner().getId() != channelOwnerId){
             throw new RuntimeException(ErrorMessage.NOT_CHANNEL_CREATOR);
@@ -68,7 +68,7 @@ public class JCFChannelService implements ChannelService {
     @Override
     public void deleteChannel(UUID channelOwnerId, UUID channelId) {
         // 채널 생성자 존재 유무 확인
-        jcfUserService.findUserById(channelOwnerId);
+        jcfUserService.findUserByIdOrThrow(channelOwnerId);
         Channel findChannel = findChannelByIdOrThrow(channelId);
 
         if(findChannel.getChannelOwner().getId() != channelOwnerId){

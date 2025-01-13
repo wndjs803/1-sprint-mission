@@ -36,7 +36,7 @@ public class JCFMessageService implements MessageService {
 
     @Override
     public Message createMessage(UUID sendUserId, UUID channelId, String content) {
-        User findUser = jcfUserService.findUserById(sendUserId);
+        User findUser = jcfUserService.findUserByIdOrThrow(sendUserId);
         Channel findChannel = jcfChannelService.findChannelByIdOrThrow(channelId);
 
         Message newMessage = new Message(findUser, findChannel, content);
@@ -59,7 +59,7 @@ public class JCFMessageService implements MessageService {
 
     @Override
     public void updateMessage(UUID sendUserId, UUID messageId, String content) {
-        jcfUserService.findUserById(sendUserId);
+        jcfUserService.findUserByIdOrThrow(sendUserId);
         Message findMessage = findMessageByIdOrThrow(messageId);
 
         if(findMessage.getSendUser().getId() != sendUserId){
