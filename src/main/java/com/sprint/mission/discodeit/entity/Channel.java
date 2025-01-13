@@ -11,10 +11,14 @@ public class Channel extends BaseEntity{
     private User channelOwner;
     private final List<User> channelUserList = new ArrayList<>();
 
-    public Channel(String name, User channelOwner) {
+    private Channel(String name, User channelOwner) {
         super();
         this.name = name;
         this.channelOwner = channelOwner;
+    }
+
+    public static Channel of(String name, User channelOwner) {
+        return new Channel(name, channelOwner);
     }
 
     public User getChannelOwner() {
