@@ -41,7 +41,7 @@ public class JCFChannelService implements ChannelService {
     }
 
     @Override
-    public Channel findChannelById(UUID channelId) {
+    public Channel findChannelByIdOrThrow(UUID channelId) {
         return Optional.ofNullable(channelData.get(channelId)).orElseThrow(() -> new RuntimeException(ErrorMessage.CHANNEL_NOT_FOUND));
     }
 
@@ -52,7 +52,7 @@ public class JCFChannelService implements ChannelService {
 
     @Override
     public void updateChannelName(UUID channelOwnerId, UUID channelId, String name) {
-        Channel findChannel = findChannelById(channelId);
+        Channel findChannel = findChannelByIdOrThrow(channelId);
         jcfUserService.findUserById(channelOwnerId);
 
         if(findChannel.getChannelOwner().getId() != channelOwnerId){
@@ -69,7 +69,7 @@ public class JCFChannelService implements ChannelService {
     public void deleteChannel(UUID channelOwnerId, UUID channelId) {
         // 채널 생성자 존재 유무 확인
         jcfUserService.findUserById(channelOwnerId);
-        Channel findChannel = findChannelById(channelId);
+        Channel findChannel = findChannelByIdOrThrow(channelId);
 
         if(findChannel.getChannelOwner().getId() != channelOwnerId){
             throw new RuntimeException(ErrorMessage.NOT_CHANNEL_CREATOR);
@@ -81,7 +81,7 @@ public class JCFChannelService implements ChannelService {
 
     @Override
     public void inviteUsers(UUID channelId, List<User> invitedUserList) {
-        Channel findChannel = findChannelById(channelId);
+        Channel findChannel = findChannelByIdOrThrow(channelId);
 
         // 유저의 진위 여부에 대한 검증이 필요한가?
 
@@ -90,7 +90,7 @@ public class JCFChannelService implements ChannelService {
 
     @Override
     public void leaveUsers(UUID channelId, List<User> leaveUserList) {
-        Channel findChannel = findChannelById(channelId);
+        Channel findChannel = findChannelByIdOrThrow(channelId);
 
         leaveUserList.forEach(user -> findChannel.deleteChannelUser(user));
     }

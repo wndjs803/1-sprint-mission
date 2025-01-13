@@ -39,7 +39,7 @@ public class JCFUserService implements UserService {
     }
 
     @Override
-    public User findUserById(UUID id) {
+    public User findUserByIdOrThrow(UUID id) {
         return Optional.ofNullable(userData.get(id)).orElseThrow(() -> new RuntimeException(ErrorMessage.USER_NOT_FOUND));
     }
 
@@ -50,7 +50,7 @@ public class JCFUserService implements UserService {
 
     @Override
     public void updateUser(UUID id, String name, String nickname, String email, String password, String profileImageUrl) {
-        User findUser = findUserById(id);
+        User findUser = findUserByIdOrThrow(id);
 
         findUser.updateName(name);
         findUser.updateNickname(nickname);

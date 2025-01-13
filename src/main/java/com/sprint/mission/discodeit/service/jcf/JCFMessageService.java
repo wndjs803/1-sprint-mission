@@ -37,7 +37,7 @@ public class JCFMessageService implements MessageService {
     @Override
     public Message createMessage(UUID sendUserId, UUID channelId, String content) {
         User findUser = jcfUserService.findUserById(sendUserId);
-        Channel findChannel = jcfChannelService.findChannelById(channelId);
+        Channel findChannel = jcfChannelService.findChannelByIdOrThrow(channelId);
 
         Message newMessage = new Message(findUser, findChannel, content);
 
@@ -47,7 +47,7 @@ public class JCFMessageService implements MessageService {
     }
 
     @Override
-    public Message findMessageById(UUID messageId) {
+    public Message findMessageByIdOrThrow(UUID messageId) {
         return Optional.ofNullable(messageData.get(messageId))
                 .orElseThrow(() -> new RuntimeException(ErrorMessage.MESSAGE_NOT_FOUND));
     }
@@ -60,7 +60,7 @@ public class JCFMessageService implements MessageService {
     @Override
     public void updateMessage(UUID sendUserId, UUID messageId, String content) {
         jcfUserService.findUserById(sendUserId);
-        Message findMessage = findMessageById(messageId);
+        Message findMessage = findMessageByIdOrThrow(messageId);
 
         if(findMessage.getSendUser().getId() != sendUserId){
             throw new RuntimeException(ErrorMessage.NOT_MESSAGE_CREATOR);
@@ -75,7 +75,7 @@ public class JCFMessageService implements MessageService {
     @Override
     public void deleteMessage(UUID sendUserId, UUID messageId) {
         // 메세지 조회
-        Message findMessage = findMessageById(messageId);
+        Message findMessage = findMessageByIdOrThrow(messageId);
 
         // 메세지 생성자가 맞는지 확인
         if(findMessage.getSendUser().getId() != sendUserId){
