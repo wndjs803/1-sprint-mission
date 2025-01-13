@@ -31,11 +31,11 @@ public class JCFUserService implements UserService {
     public User createUser(String name, String nickname, String email, String password,
                            String profileImageUrl) {
         // 추후 중복 검사
-        User newUser = new User(name, nickname, email, password, profileImageUrl, true);
+        User user = new User(name, nickname, email, password, profileImageUrl, true);
         // 비밀 번호 암호화
-        userData.put(newUser.getId(), newUser);
+        userData.put(user.getId(), user);
 
-        return newUser;
+        return user;
     }
 
     @Override
@@ -50,16 +50,16 @@ public class JCFUserService implements UserService {
 
     @Override
     public void updateUser(UUID id, String name, String nickname, String email, String password, String profileImageUrl) {
-        User findUser = findUserByIdOrThrow(id);
+        User foundUser = findUserByIdOrThrow(id);
 
-        findUser.updateName(name);
-        findUser.updateNickname(nickname);
-        findUser.updateEmail(email);
-        findUser.updatePassword(password); // 추후 비밀 번호 암호화
-        findUser.updateProfileImageUrl(profileImageUrl);
-        findUser.updateUpdatedAt(UtilMethod.getCurrentTime());
+        foundUser.updateName(name);
+        foundUser.updateNickname(nickname);
+        foundUser.updateEmail(email);
+        foundUser.updatePassword(password); // 추후 비밀 번호 암호화
+        foundUser.updateProfileImageUrl(profileImageUrl);
+        foundUser.updateUpdatedAt(UtilMethod.getCurrentTime());
 
-        userData.put(findUser.getId(), findUser);
+        userData.put(foundUser.getId(), foundUser);
     }
 
     @Override

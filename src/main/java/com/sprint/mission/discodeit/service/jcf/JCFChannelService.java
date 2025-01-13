@@ -34,10 +34,10 @@ public class JCFChannelService implements ChannelService {
     public Channel createChannel(UUID channelOwnerId, String name) {
         User channelOwner = jcfUserService.findUserByIdOrThrow(channelOwnerId);
         // 추후 중복 검사
-        Channel newChannel = new Channel(name, channelOwner);
-        channelData.put(newChannel.getId(), newChannel);
+        Channel channel = new Channel(name, channelOwner);
+        channelData.put(channel.getId(), channel);
 
-        return newChannel;
+        return channel;
     }
 
     @Override
@@ -52,26 +52,26 @@ public class JCFChannelService implements ChannelService {
 
     @Override
     public void updateChannelName(UUID channelOwnerId, UUID channelId, String name) {
-        Channel findChannel = findChannelByIdOrThrow(channelId);
+        Channel foundChannel = findChannelByIdOrThrow(channelId);
         jcfUserService.findUserByIdOrThrow(channelOwnerId);
 
-        if(findChannel.getChannelOwner().getId() != channelOwnerId){
+        if(foundChannel.getChannelOwner().getId() != channelOwnerId){
             throw new RuntimeException(ErrorMessage.NOT_CHANNEL_CREATOR);
         }
 
-        findChannel.updateName(name);
-        findChannel.updateUpdatedAt(UtilMethod.getCurrentTime());
+        foundChannel.updateName(name);
+        foundChannel.updateUpdatedAt(UtilMethod.getCurrentTime());
 
-        channelData.put(channelId, findChannel);
+        channelData.put(channelId, foundChannel);
     }
 
     @Override
     public void deleteChannel(UUID channelOwnerId, UUID channelId) {
         // 채널 생성자 존재 유무 확인
         jcfUserService.findUserByIdOrThrow(channelOwnerId);
-        Channel findChannel = findChannelByIdOrThrow(channelId);
+        Channel foundChannel = findChannelByIdOrThrow(channelId);
 
-        if(findChannel.getChannelOwner().getId() != channelOwnerId){
+        if(foundChannel.getChannelOwner().getId() != channelOwnerId){
             throw new RuntimeException(ErrorMessage.NOT_CHANNEL_CREATOR);
         }
 
@@ -81,17 +81,17 @@ public class JCFChannelService implements ChannelService {
 
     @Override
     public void inviteUsers(UUID channelId, List<User> invitedUserList) {
-        Channel findChannel = findChannelByIdOrThrow(channelId);
+        Channel foundChannel = findChannelByIdOrThrow(channelId);
 
         // 유저의 진위 여부에 대한 검증이 필요한가?
 
-        invitedUserList.forEach(user -> findChannel.addChannelUser(user));
+        invitedUserList.forEach(user -> foundChannel.addChannelUser(user));
     }
 
     @Override
     public void leaveUsers(UUID channelId, List<User> leaveUserList) {
-        Channel findChannel = findChannelByIdOrThrow(channelId);
+        Channel foundChannel = findChannelByIdOrThrow(channelId);
 
-        leaveUserList.forEach(user -> findChannel.deleteChannelUser(user));
+        leaveUserList.forEach(user -> foundChannel.deleteChannelUser(user));
     }
 }

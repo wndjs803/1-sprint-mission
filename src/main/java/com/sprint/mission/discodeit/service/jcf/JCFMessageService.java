@@ -36,14 +36,14 @@ public class JCFMessageService implements MessageService {
 
     @Override
     public Message createMessage(UUID sendUserId, UUID channelId, String content) {
-        User findUser = jcfUserService.findUserByIdOrThrow(sendUserId);
-        Channel findChannel = jcfChannelService.findChannelByIdOrThrow(channelId);
+        User sendUser = jcfUserService.findUserByIdOrThrow(sendUserId);
+        Channel foundChannel = jcfChannelService.findChannelByIdOrThrow(channelId);
 
-        Message newMessage = new Message(findUser, findChannel, content);
+        Message message = new Message(sendUser, foundChannel, content);
 
-        messageData.put(newMessage.getId(), newMessage);
+        messageData.put(message.getId(), message);
 
-        return newMessage;
+        return message;
     }
 
     @Override
@@ -60,25 +60,25 @@ public class JCFMessageService implements MessageService {
     @Override
     public void updateMessage(UUID sendUserId, UUID messageId, String content) {
         jcfUserService.findUserByIdOrThrow(sendUserId);
-        Message findMessage = findMessageByIdOrThrow(messageId);
+        Message foundMessage = findMessageByIdOrThrow(messageId);
 
-        if(findMessage.getSendUser().getId() != sendUserId){
+        if(foundMessage.getSendUser().getId() != sendUserId){
             throw new RuntimeException(ErrorMessage.NOT_MESSAGE_CREATOR);
         }
 
-        findMessage.updateContent(content);
-        findMessage.updateUpdatedAt(Instant.now().toEpochMilli());
+        foundMessage.updateContent(content);
+        foundMessage.updateUpdatedAt(Instant.now().toEpochMilli());
 
-        messageData.put(findMessage.getId(), findMessage);
+        messageData.put(foundMessage.getId(), foundMessage);
     }
 
     @Override
     public void deleteMessage(UUID sendUserId, UUID messageId) {
         // 메세지 조회
-        Message findMessage = findMessageByIdOrThrow(messageId);
+        Message foundMessage = findMessageByIdOrThrow(messageId);
 
         // 메세지 생성자가 맞는지 확인
-        if(findMessage.getSendUser().getId() != sendUserId){
+        if(foundMessage.getSendUser().getId() != sendUserId){
             throw new RuntimeException(ErrorMessage.NOT_MESSAGE_CREATOR);
         }
 
