@@ -1,7 +1,7 @@
 package com.sprint.mission.discodeit.service.jcf;
 
-import com.sprint.mission.discodeit.global.ErrorMessage;
-import com.sprint.mission.discodeit.global.UtilMethod;
+import com.sprint.mission.discodeit.common.ErrorMessage;
+import com.sprint.mission.discodeit.common.UtilMethod;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.service.UserService;
 

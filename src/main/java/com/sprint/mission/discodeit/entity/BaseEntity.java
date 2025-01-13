@@ -1,6 +1,6 @@
 package com.sprint.mission.discodeit.entity;
 
-import com.sprint.mission.discodeit.global.UtilMethod;
+import com.sprint.mission.discodeit.common.UtilMethod;
 
 import java.util.UUID;
 

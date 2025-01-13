@@ -1,6 +1,6 @@
 package com.sprint.mission.discodeit.entity;
 
-import com.sprint.mission.discodeit.global.ErrorMessage;
+import com.sprint.mission.discodeit.common.ErrorMessage;
 
 import java.util.ArrayList;
 import java.util.List;

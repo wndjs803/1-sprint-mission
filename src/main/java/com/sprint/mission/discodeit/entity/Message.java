@@ -1,9 +1,5 @@
 package com.sprint.mission.discodeit.entity;
 
-import com.sprint.mission.discodeit.global.UtilMethod;
-
-import java.util.UUID;
-
 public class Message extends BaseEntity{
     private final User sendUser;
     private final Channel channel;

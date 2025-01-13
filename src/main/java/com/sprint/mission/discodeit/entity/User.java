@@ -1,10 +1,5 @@
 package com.sprint.mission.discodeit.entity;
 
-import com.sprint.mission.discodeit.global.UtilMethod;
-
-import java.util.List;
-import java.util.UUID;
-
 public class User extends BaseEntity {
     private String name;
     private String nickname;
