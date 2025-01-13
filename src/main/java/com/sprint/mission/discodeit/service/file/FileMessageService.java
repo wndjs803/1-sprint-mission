@@ -83,6 +83,12 @@ public class FileMessageService implements MessageService {
 
     @Override
     public void deleteMessage(UUID sendUserId, UUID messageId) {
+        Message foundMessage = findMessageByIdOrThrow(messageId);
 
+        if(foundMessage.isNotOwner(sendUserId)){
+            throw new RuntimeException(ErrorMessage.NOT_MESSAGE_CREATOR.getMessage());
+        }
+
+        fileStorage.remove(directory, foundMessage);
     }
 }
