@@ -1,11 +1,13 @@
 package com.sprint.mission.discodeit.service.file;
 
+import com.sprint.mission.discodeit.common.ErrorMessage;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.service.UserService;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class FileUserService implements UserService {
@@ -28,7 +30,13 @@ public class FileUserService implements UserService {
 
     @Override
     public User findUserByIdOrThrow(UUID id) {
-        return null;
+        List<User> userList = fileStorage.load(directory);
+
+        Optional<User> optionalUser =  userList.stream()
+                .filter(user -> user.getId() == id)
+                .findFirst();
+
+        return optionalUser.orElseThrow(() -> new RuntimeException(ErrorMessage.USER_NOT_FOUND));
     }
 
     @Override
