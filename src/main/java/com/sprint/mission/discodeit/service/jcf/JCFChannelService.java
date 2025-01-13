@@ -34,7 +34,7 @@ public class JCFChannelService implements ChannelService {
     public Channel createChannel(UUID channelOwnerId, String name) {
         User channelOwner = jcfUserService.findUserById(channelOwnerId);
         // 추후 중복 검사
-        Channel newChannel = new Channel(name, channelOwner, new ArrayList<>());
+        Channel newChannel = new Channel(name, channelOwner);
         channelData.put(newChannel.getId(), newChannel);
 
         return newChannel;

@@ -1,17 +1,19 @@
 package com.sprint.mission.discodeit.entity;
 
+import com.sprint.mission.discodeit.global.ErrorMessage;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class Channel extends BaseEntity{
     private String name;
     private User channelOwner;
-    private final List<User> channelUserList;
+    private final List<User> channelUserList = new ArrayList<>();
 
-    public Channel(String name, User channelOwner, List<User> channelUserList) {
+    public Channel(String name, User channelOwner) {
         super();
         this.name = name;
         this.channelOwner = channelOwner;
-        this.channelUserList = channelUserList;
     }
 
     public User getChannelOwner() {
@@ -19,6 +21,9 @@ public class Channel extends BaseEntity{
     }
 
     public void updateChannelOwner(User channelOwner) {
+        if (channelOwner == null){
+            throw new IllegalArgumentException(ErrorMessage.CHANNEL_OWNER_NOT_NULL);
+        }
         this.channelOwner = channelOwner;
     }
 
@@ -35,10 +40,16 @@ public class Channel extends BaseEntity{
     }
 
     public void addChannelUser(User user){
+        if (user == null) {
+            throw new IllegalArgumentException(ErrorMessage.USER_NOT_NULL);
+        }
         this.channelUserList.add(user);
     }
 
     public void deleteChannelUser(User user){
+        if (user == null) {
+            throw new IllegalArgumentException(ErrorMessage.USER_NOT_NULL);
+        }
         this.channelUserList.remove(user);
     }
 }
