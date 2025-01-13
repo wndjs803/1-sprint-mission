@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.service.file;
 
+import com.sprint.mission.discodeit.common.ErrorMessage;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.service.ChannelService;
@@ -7,6 +8,7 @@ import com.sprint.mission.discodeit.service.ChannelService;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class FileChannelService implements ChannelService {
@@ -32,7 +34,7 @@ public class FileChannelService implements ChannelService {
     @Override
     public Channel createChannel(UUID channelOwnerId, String name) {
         User channelOwner = fileUserService.findUserByIdOrThrow(channelOwnerId);
-        // 추후 중복 검사
+
         Channel channel = Channel.of(name, channelOwner);
 
         Path filePath = directory.resolve(channel.getId().toString().concat(".ser"));
@@ -43,7 +45,13 @@ public class FileChannelService implements ChannelService {
 
     @Override
     public Channel findChannelByIdOrThrow(UUID channelId) {
-        return null;
+        List<Channel> channelList = fileStorage.load(directory);
+
+        Optional<Channel> optionalChannel = channelList.stream()
+                .filter(channel -> channel.getId().equals(channelId))
+                .findFirst();
+
+        return optionalChannel.orElseThrow(() -> new RuntimeException(ErrorMessage.CHANNEL_NOT_FOUND.getMessage()));
     }
 
     @Override
