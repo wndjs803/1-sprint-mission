@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.service.file;
 
 import com.sprint.mission.discodeit.common.ErrorMessage;
+import com.sprint.mission.discodeit.common.UtilMethod;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.service.UserService;
 
@@ -22,8 +23,8 @@ public class FileUserService implements UserService {
     @Override
     public User createUser(String name, String nickname, String email, String password, String profileImageUrl) {
         User user = User.of(name, nickname, email, password, profileImageUrl, true);
-
-        fileStorage.save(directory, user);
+        Path filePath = directory.resolve(user.getId().toString().concat(".ser"));
+        fileStorage.save(filePath, user);
 
         return user;
     }
@@ -33,8 +34,8 @@ public class FileUserService implements UserService {
         List<User> userList = fileStorage.load(directory);
 
         Optional<User> optionalUser =  userList.stream()
-                .filter(user -> user.getId() == id)
-                .findFirst();
+                .filter(user -> user.getId().equals(id))
+                .findAny();
 
         return optionalUser.orElseThrow(() -> new RuntimeException(ErrorMessage.USER_NOT_FOUND.getMessage()));
     }
@@ -46,7 +47,17 @@ public class FileUserService implements UserService {
 
     @Override
     public void updateUser(UUID id, String name, String nickname, String email, String password, String profileImageUrl) {
+        User foundUser = findUserByIdOrThrow(id);
 
+        foundUser.updateName(name);
+        foundUser.updateNickname(nickname);
+        foundUser.updateEmail(email);
+        foundUser.updatePassword(password);
+        foundUser.updateProfileImageUrl(profileImageUrl);
+        foundUser.updateUpdatedAt(UtilMethod.getCurrentTime());
+
+        Path filePath = directory.resolve(foundUser.getId().toString().concat(".ser"));
+        fileStorage.save(filePath, foundUser);
     }
 
     @Override
