@@ -12,7 +12,7 @@ public abstract class BaseEntity {
     public BaseEntity() {
         this.id = UUID.randomUUID();
         this.createdAt = UtilMethod.getCurrentTime();
-        this.updatedAt = 0L;
+        this.updatedAt = createdAt;
     }
 
     public UUID getId() {
