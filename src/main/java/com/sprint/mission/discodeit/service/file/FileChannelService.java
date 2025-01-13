@@ -83,11 +83,23 @@ public class FileChannelService implements ChannelService {
 
     @Override
     public void inviteUsers(UUID channelId, List<User> invitedUserList) {
+        Channel foundChannel = findChannelByIdOrThrow(channelId);
 
+        // 유저의 진위 여부에 대한 검증이 필요한가?
+
+        invitedUserList.forEach(user -> foundChannel.addChannelUser(user));
+
+        Path filePath = directory.resolve(foundChannel.getId().toString().concat(".ser"));
+        fileStorage.save(filePath, foundChannel);
     }
 
     @Override
     public void leaveUsers(UUID channelId, List<User> leaveUserList) {
+        Channel foundChannel = findChannelByIdOrThrow(channelId);
 
+        leaveUserList.forEach(user -> foundChannel.deleteChannelUser(user));
+
+        Path filePath = directory.resolve(foundChannel.getId().toString().concat(".ser"));
+        fileStorage.save(filePath, foundChannel);
     }
 }
