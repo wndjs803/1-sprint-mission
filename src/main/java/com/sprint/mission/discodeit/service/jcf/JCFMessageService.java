@@ -49,7 +49,7 @@ public class JCFMessageService implements MessageService {
     @Override
     public Message findMessageByIdOrThrow(UUID messageId) {
         return Optional.ofNullable(messageData.get(messageId))
-                .orElseThrow(() -> new RuntimeException(ErrorMessage.MESSAGE_NOT_FOUND));
+                .orElseThrow(() -> new RuntimeException(ErrorMessage.MESSAGE_NOT_FOUND.getMessage()));
     }
 
     @Override
@@ -63,7 +63,7 @@ public class JCFMessageService implements MessageService {
         Message foundMessage = findMessageByIdOrThrow(messageId);
 
         if(foundMessage.isNotOwner(sendUserId)){
-            throw new RuntimeException(ErrorMessage.NOT_MESSAGE_CREATOR);
+            throw new RuntimeException(ErrorMessage.NOT_MESSAGE_CREATOR.getMessage());
         }
 
         foundMessage.updateContent(content);
@@ -79,7 +79,7 @@ public class JCFMessageService implements MessageService {
 
         // 메세지 생성자가 맞는지 확인
         if(foundMessage.isNotOwner(sendUserId)){
-            throw new RuntimeException(ErrorMessage.NOT_MESSAGE_CREATOR);
+            throw new RuntimeException(ErrorMessage.NOT_MESSAGE_CREATOR.getMessage());
         }
 
         // 메세지 삭제

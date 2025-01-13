@@ -27,7 +27,7 @@ public class Channel extends BaseEntity{
 
     public void updateChannelOwner(User channelOwner) {
         if (channelOwner == null){
-            throw new IllegalArgumentException(ErrorMessage.CHANNEL_OWNER_NOT_NULL);
+            throw new IllegalArgumentException(ErrorMessage.CHANNEL_OWNER_NOT_NULL.getMessage());
         }
         this.channelOwner = channelOwner;
     }
@@ -46,14 +46,14 @@ public class Channel extends BaseEntity{
 
     public void addChannelUser(User user){
         if (user == null) {
-            throw new IllegalArgumentException(ErrorMessage.USER_NOT_NULL);
+            throw new IllegalArgumentException(ErrorMessage.USER_NOT_NULL.getMessage());
         }
         this.channelUserList.add(user);
     }
 
     public void deleteChannelUser(User user){
         if (user == null) {
-            throw new IllegalArgumentException(ErrorMessage.USER_NOT_NULL);
+            throw new IllegalArgumentException(ErrorMessage.USER_NOT_NULL.getMessage());
         }
         this.channelUserList.remove(user);
     }

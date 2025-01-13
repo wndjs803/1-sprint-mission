@@ -40,7 +40,7 @@ public class JCFUserService implements UserService {
 
     @Override
     public User findUserByIdOrThrow(UUID id) {
-        return Optional.ofNullable(userData.get(id)).orElseThrow(() -> new RuntimeException(ErrorMessage.USER_NOT_FOUND));
+        return Optional.ofNullable(userData.get(id)).orElseThrow(() -> new RuntimeException(ErrorMessage.USER_NOT_FOUND.getMessage()));
     }
 
     @Override
@@ -65,7 +65,7 @@ public class JCFUserService implements UserService {
     @Override
     public void deleteUser(UUID id) {
         if(!userData.containsKey(id)){
-            throw new RuntimeException(ErrorMessage.USER_NOT_FOUND);
+            throw new RuntimeException(ErrorMessage.USER_NOT_FOUND.getMessage());
         }
         userData.remove(id);
     }

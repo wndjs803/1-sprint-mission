@@ -42,7 +42,8 @@ public class JCFChannelService implements ChannelService {
 
     @Override
     public Channel findChannelByIdOrThrow(UUID channelId) {
-        return Optional.ofNullable(channelData.get(channelId)).orElseThrow(() -> new RuntimeException(ErrorMessage.CHANNEL_NOT_FOUND));
+        return Optional.ofNullable(channelData.get(channelId))
+                .orElseThrow(() -> new RuntimeException(ErrorMessage.CHANNEL_NOT_FOUND.getMessage()));
     }
 
     @Override
@@ -56,7 +57,7 @@ public class JCFChannelService implements ChannelService {
         jcfUserService.findUserByIdOrThrow(channelOwnerId);
 
         if(foundChannel.isNotOwner(channelOwnerId)) {
-            throw new RuntimeException(ErrorMessage.NOT_CHANNEL_CREATOR);
+            throw new RuntimeException(ErrorMessage.NOT_CHANNEL_CREATOR.getMessage());
         }
 
         foundChannel.updateName(name);
@@ -72,7 +73,7 @@ public class JCFChannelService implements ChannelService {
         Channel foundChannel = findChannelByIdOrThrow(channelId);
 
         if(foundChannel.isNotOwner(channelOwnerId)){
-            throw new RuntimeException(ErrorMessage.NOT_CHANNEL_CREATOR);
+            throw new RuntimeException(ErrorMessage.NOT_CHANNEL_CREATOR.getMessage());
         }
 
         // 채널 삭제

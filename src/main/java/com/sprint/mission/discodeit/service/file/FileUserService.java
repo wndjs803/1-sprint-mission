@@ -36,7 +36,7 @@ public class FileUserService implements UserService {
                 .filter(user -> user.getId() == id)
                 .findFirst();
 
-        return optionalUser.orElseThrow(() -> new RuntimeException(ErrorMessage.USER_NOT_FOUND));
+        return optionalUser.orElseThrow(() -> new RuntimeException(ErrorMessage.USER_NOT_FOUND.getMessage()));
     }
 
     @Override
