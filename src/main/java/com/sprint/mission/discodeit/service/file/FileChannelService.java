@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.service.file;
 
 import com.sprint.mission.discodeit.common.ErrorMessage;
+import com.sprint.mission.discodeit.common.UtilMethod;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.service.ChannelService;
@@ -61,7 +62,18 @@ public class FileChannelService implements ChannelService {
 
     @Override
     public void updateChannelName(UUID channelOwnerId, UUID channelId, String name) {
+        Channel foundChannel = findChannelByIdOrThrow(channelId);
+        fileUserService.findUserByIdOrThrow(channelOwnerId);
 
+        if(foundChannel.isNotOwner(channelOwnerId)) {
+            throw new RuntimeException(ErrorMessage.NOT_CHANNEL_CREATOR.getMessage());
+        }
+
+        foundChannel.updateName(name);
+        foundChannel.updateUpdatedAt(UtilMethod.getCurrentTime());
+
+        Path filePath = directory.resolve(foundChannel.getId().toString().concat(".ser"));
+        fileStorage.save(filePath, foundChannel);
     }
 
     @Override
