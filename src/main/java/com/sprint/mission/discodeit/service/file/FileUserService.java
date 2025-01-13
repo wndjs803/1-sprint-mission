@@ -15,9 +15,17 @@ public class FileUserService implements UserService {
     private final FileStorage fileStorage;
     private final Path directory = Paths.get(System.getProperty("user.dir"), "data", "user");
 
-    public FileUserService(FileStorage fileStorage) {
+    private FileUserService(FileStorage fileStorage) {
         this.fileStorage = fileStorage;
         fileStorage.init(directory);
+    }
+
+    public static FileUserService getInstance() {
+        return LazyHolder.INSTANCE;
+    }
+
+    private static class LazyHolder {
+        private static final FileUserService INSTANCE = new FileUserService(new FileStorage());
     }
 
     @Override
