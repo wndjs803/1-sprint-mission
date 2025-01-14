@@ -3,6 +3,8 @@ package com.sprint.mission.discodeit.service.file;
 import com.sprint.mission.discodeit.common.ErrorMessage;
 import com.sprint.mission.discodeit.common.UtilMethod;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.repository.file.FileStorage;
+import com.sprint.mission.discodeit.repository.file.FileUserRepository;
 import com.sprint.mission.discodeit.service.UserService;
 
 import java.nio.file.Path;
@@ -12,50 +14,33 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class FileUserService implements UserService {
-    private final FileStorage fileStorage;
-    private final Path directory = Paths.get(System.getProperty("user.dir"), "data", "user");
+    private final FileUserRepository fileUserRepository;
 
-    private FileUserService(FileStorage fileStorage) {
-        this.fileStorage = fileStorage;
-        fileStorage.init(directory);
-    }
-
-    public static FileUserService getInstance() {
-        return LazyHolder.INSTANCE;
-    }
-
-    private static class LazyHolder {
-        private static final FileUserService INSTANCE = new FileUserService(new FileStorage());
+    public FileUserService(FileUserRepository fileUserRepository) {
+        this.fileUserRepository = fileUserRepository;
     }
 
     @Override
     public User createUser(String name, String nickname, String email, String password, String profileImageUrl) {
         User user = User.of(name, nickname, email, password, profileImageUrl, true);
-        Path filePath = directory.resolve(user.getId().toString().concat(".ser"));
-        fileStorage.save(filePath, user);
 
-        return user;
+        return fileUserRepository.saveUser(user);
     }
 
     @Override
-    public User findUserByIdOrThrow(UUID id) {
-        List<User> userList = fileStorage.load(directory);
-
-        Optional<User> optionalUser =  userList.stream()
-                .filter(user -> user.getId().equals(id))
-                .findAny();
-
-        return optionalUser.orElseThrow(() -> new RuntimeException(ErrorMessage.USER_NOT_FOUND.getMessage()));
+    public User findUserByIdOrThrow(UUID userId) {
+        return Optional.ofNullable(fileUserRepository.findUserById(userId))
+                .orElseThrow(() -> new RuntimeException(ErrorMessage.USER_NOT_FOUND.getMessage()));
     }
 
     @Override
     public List<User> findAllUsers() {
-        return fileStorage.load(directory);
+        return fileUserRepository.findAllUsers();
     }
 
     @Override
-    public User updateUser(UUID id, String name, String nickname, String email, String password, String profileImageUrl) {
-        User foundUser = findUserByIdOrThrow(id);
+    public User updateUser(UUID userId, String name, String nickname, String email, String password, String profileImageUrl) {
+        User foundUser = findUserByIdOrThrow(userId);
 
         foundUser.updateName(name);
         foundUser.updateNickname(nickname);
@@ -64,15 +49,15 @@ public class FileUserService implements UserService {
         foundUser.updateProfileImageUrl(profileImageUrl);
         foundUser.updateUpdatedAt(UtilMethod.getCurrentTime());
 
-        Path filePath = directory.resolve(foundUser.getId().toString().concat(".ser"));
-        fileStorage.save(filePath, foundUser);
-
-        return foundUser; // 임시 방편
+        return fileUserRepository.saveUser(foundUser);
     }
 
     @Override
-    public void deleteUser(UUID id) {
-        User user = findUserByIdOrThrow(id);
-        fileStorage.remove(directory, user);
+    public void deleteUser(UUID userId) {
+        if(!fileUserRepository.existsUser(userId)){
+            throw new RuntimeException(ErrorMessage.USER_NOT_FOUND.getMessage());
+        }
+
+        fileUserRepository.removeUser(userId);
     }
 }

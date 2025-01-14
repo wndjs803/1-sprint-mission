@@ -2,7 +2,9 @@ package com.sprint.mission.discodeit.service;
 
 import com.sprint.mission.discodeit.common.ErrorMessage;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.repository.file.FileUserRepository;
 import com.sprint.mission.discodeit.repository.jcf.JCFUserRepository;
+import com.sprint.mission.discodeit.service.file.FileUserService;
 import com.sprint.mission.discodeit.service.jcf.JCFUserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,12 +22,16 @@ import static org.mockito.Mockito.*;
 
 class UserServiceTest {
     private UserService userService;
-    private JCFUserRepository userRepository;
+//    private JCFUserRepository userRepository;
+    private FileUserRepository userRepository;
     @BeforeEach
     void setUp() {
-        userRepository = mock(JCFUserRepository.class);
-        this.userService = new JCFUserService(userRepository);
+//        userRepository = mock(JCFUserRepository.class);
+//        this.userService = new JCFUserService(userRepository);
+        userRepository = mock(FileUserRepository.class);
+        this.userService = new FileUserService(userRepository);
     }
+
 
     @Nested
     @DisplayName("유저 생성 테스트")

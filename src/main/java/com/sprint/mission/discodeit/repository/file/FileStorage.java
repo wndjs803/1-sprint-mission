@@ -1,4 +1,4 @@
-package com.sprint.mission.discodeit.service.file;
+package com.sprint.mission.discodeit.repository.file;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -9,7 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class FileStorage {
     public void init(Path directory) {
@@ -23,12 +22,13 @@ public class FileStorage {
         }
     }
 
-    public <T> void save(Path filePath, T data) {
+    public <T> T save(Path filePath, T data) {
         try(
                 FileOutputStream fos = new FileOutputStream(filePath.toFile());
                 ObjectOutputStream oos = new ObjectOutputStream(fos);
         ) {
             oos.writeObject(data);
+            return data;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
