@@ -19,19 +19,10 @@ public class JCFMessageService implements MessageService {
     private final JCFUserService jcfUserService;
     private final JCFChannelService jcfChannelService;
 
-    private JCFMessageService(JCFUserService jcfUserService, JCFChannelService jcfChannelService) {
+    public JCFMessageService(JCFUserService jcfUserService, JCFChannelService jcfChannelService) {
         messageData = new HashMap<>();
         this.jcfUserService = jcfUserService;
         this.jcfChannelService = jcfChannelService;
-    }
-
-    public static JCFMessageService getInstance(){
-        return LazyHolder.INSTANCE;
-    }
-
-    private static class LazyHolder {
-        private static final JCFMessageService INSTANCE =
-                new JCFMessageService(JCFUserService.getInstance(), JCFChannelService.getInstance());
     }
 
     @Override

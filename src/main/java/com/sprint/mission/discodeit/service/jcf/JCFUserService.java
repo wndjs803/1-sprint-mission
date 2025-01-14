@@ -13,16 +13,8 @@ import java.util.UUID;
 public class JCFUserService implements UserService {
     private final JCFUserRepository jcfUserRepository;
 
-    private JCFUserService(JCFUserRepository jcfUserRepository) {
+    public JCFUserService(JCFUserRepository jcfUserRepository) {
         this.jcfUserRepository = jcfUserRepository;
-    }
-
-    public static JCFUserService getInstance() {
-        return LazyHolder.INSTANCE;
-    }
-
-    private static class LazyHolder {
-        private static final JCFUserService INSTANCE = new JCFUserService(JCFUserRepository.getInstance());
     }
 
     @Override
