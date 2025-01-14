@@ -4,6 +4,7 @@ import com.sprint.mission.discodeit.common.ErrorMessage;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.repository.file.FileStorage;
 import com.sprint.mission.discodeit.service.MessageService;
 
 import java.nio.file.Path;
@@ -20,20 +21,11 @@ public class FileMessageService implements MessageService {
 
     private final Path directory = Paths.get(System.getProperty("user.dir"), "data", "message");
 
-    private FileMessageService(FileStorage fileStorage, FileUserService fileUserService, FileChannelService fileChannelService) {
+    public FileMessageService(FileStorage fileStorage, FileUserService fileUserService, FileChannelService fileChannelService) {
         this.fileStorage = fileStorage;
         this.fileUserService = fileUserService;
         this.fileChannelService = fileChannelService;
         fileStorage.init(directory);
-    }
-
-    public static FileMessageService getInstance() {
-        return LazyHolder.INSTANCE;
-    }
-
-    private static class LazyHolder {
-        private static final FileMessageService INSTANCE =
-                new FileMessageService(new FileStorage(), FileUserService.getInstance(), FileChannelService.getInstance());
     }
 
     @Override
