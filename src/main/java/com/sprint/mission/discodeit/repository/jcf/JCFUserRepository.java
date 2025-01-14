@@ -44,6 +44,7 @@ public class JCFUserRepository implements UserRepository {
         userData.remove(userId);
     }
 
+    @Override
     public boolean existsUser(UUID userId) {
        return userData.containsKey(userId);
     }
