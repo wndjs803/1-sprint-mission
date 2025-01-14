@@ -118,12 +118,6 @@ class UserServiceTest {
             User user1 = User.of("test1", "nickname1", "email1",
                     "password1", "profileImageUrl1", true);
             when(userRepository.findUserById(any())).thenReturn(user1);
-
-            user1.updateName("test2");
-            user1.updateNickname("nickname2");
-            user1.updateEmail("email2");
-            user1.updatePassword("password2");
-            user1.updateProfileImageUrl("profileImageUrl2");
             when(userRepository.saveUser(any())).thenReturn(user1);
 
             // when
