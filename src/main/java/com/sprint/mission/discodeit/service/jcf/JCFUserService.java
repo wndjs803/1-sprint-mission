@@ -23,9 +23,7 @@ public class JCFUserService implements UserService {
         // 추후 중복 검사
         User user = User.of(name, nickname, email, password, profileImageUrl, true);
         // 비밀 번호 암호화
-        jcfUserRepository.saveUser(user);
-
-        return user;
+        return jcfUserRepository.saveUser(user);
     }
 
     @Override
@@ -40,7 +38,7 @@ public class JCFUserService implements UserService {
     }
 
     @Override
-    public void updateUser(UUID id, String name, String nickname, String email, String password, String profileImageUrl) {
+    public User updateUser(UUID id, String name, String nickname, String email, String password, String profileImageUrl) {
         User foundUser = findUserByIdOrThrow(id);
 
         foundUser.updateName(name);
@@ -50,7 +48,7 @@ public class JCFUserService implements UserService {
         foundUser.updateProfileImageUrl(profileImageUrl);
         foundUser.updateUpdatedAt(UtilMethod.getCurrentTime());
 
-        jcfUserRepository.saveUser(foundUser);
+        return jcfUserRepository.saveUser(foundUser);
     }
 
     @Override

@@ -54,7 +54,7 @@ public class FileUserService implements UserService {
     }
 
     @Override
-    public void updateUser(UUID id, String name, String nickname, String email, String password, String profileImageUrl) {
+    public User updateUser(UUID id, String name, String nickname, String email, String password, String profileImageUrl) {
         User foundUser = findUserByIdOrThrow(id);
 
         foundUser.updateName(name);
@@ -66,6 +66,8 @@ public class FileUserService implements UserService {
 
         Path filePath = directory.resolve(foundUser.getId().toString().concat(".ser"));
         fileStorage.save(filePath, foundUser);
+
+        return foundUser;
     }
 
     @Override

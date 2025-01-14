@@ -10,6 +10,6 @@ public interface UserService {
     User createUser(String name, String nickname, String email, String password, String profileImageUrl);
     User findUserByIdOrThrow(UUID id);
     List<User> findAllUsers();
-    void updateUser(UUID id, String name, String nickname, String email, String password, String profileImageUrl);
+    User updateUser(UUID id, String name, String nickname, String email, String password, String profileImageUrl);
     void deleteUser(UUID id);
 }

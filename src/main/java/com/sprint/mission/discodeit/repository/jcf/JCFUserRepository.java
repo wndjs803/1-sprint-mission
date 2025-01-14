@@ -23,10 +23,10 @@ public class JCFUserRepository implements UserRepository {
         private static final JCFUserRepository INSTANCE = new JCFUserRepository();
     }
 
-
     @Override
-    public void saveUser(User user) {
+    public User saveUser(User user) {
         userData.put(user.getId(), user);
+        return userData.get(user.getId());
     }
 
     @Override
