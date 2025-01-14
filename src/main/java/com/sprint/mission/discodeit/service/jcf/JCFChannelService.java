@@ -4,21 +4,19 @@ import com.sprint.mission.discodeit.common.ErrorMessage;
 import com.sprint.mission.discodeit.common.UtilMethod;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.repository.jcf.JCFChannelRepository;
 import com.sprint.mission.discodeit.service.ChannelService;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
 public class JCFChannelService implements ChannelService {
-    private final Map<UUID, Channel> channelData;
+    private final JCFChannelRepository jcfChannelRepository;
     private final JCFUserService jcfUserService;
 
-    public JCFChannelService(JCFUserService jcfUserService) {
-        this.channelData = new HashMap<>();
+    public JCFChannelService(JCFChannelRepository jcfChannelRepository, JCFUserService jcfUserService) {
+        this.jcfChannelRepository = jcfChannelRepository;
         this.jcfUserService = jcfUserService;
     }
 
@@ -27,24 +25,23 @@ public class JCFChannelService implements ChannelService {
         User channelOwner = jcfUserService.findUserByIdOrThrow(channelOwnerId);
         // 추후 중복 검사
         Channel channel = Channel.of(name, channelOwner);
-        channelData.put(channel.getId(), channel);
 
-        return channel;
+        return jcfChannelRepository.saveChannel(channel);
     }
 
     @Override
     public Channel findChannelByIdOrThrow(UUID channelId) {
-        return Optional.ofNullable(channelData.get(channelId))
+        return Optional.ofNullable(jcfChannelRepository.findChannelById(channelId))
                 .orElseThrow(() -> new RuntimeException(ErrorMessage.CHANNEL_NOT_FOUND.getMessage()));
     }
 
     @Override
     public List<Channel> findAllChannels() {
-        return new ArrayList<>(channelData.values());
+        return jcfChannelRepository.findAllChannels();
     }
 
     @Override
-    public void updateChannelName(UUID channelOwnerId, UUID channelId, String name) {
+    public Channel updateChannelName(UUID channelOwnerId, UUID channelId, String name) {
         Channel foundChannel = findChannelByIdOrThrow(channelId);
         jcfUserService.findUserByIdOrThrow(channelOwnerId);
 
@@ -55,7 +52,7 @@ public class JCFChannelService implements ChannelService {
         foundChannel.updateName(name);
         foundChannel.updateUpdatedAt(UtilMethod.getCurrentTime());
 
-        channelData.put(channelId, foundChannel);
+        return jcfChannelRepository.saveChannel(foundChannel);
     }
 
     @Override
@@ -69,22 +66,26 @@ public class JCFChannelService implements ChannelService {
         }
 
         // 채널 삭제
-        channelData.remove(channelId);
+        jcfChannelRepository.removeChannel(channelId);
     }
 
     @Override
-    public void inviteUsers(UUID channelId, List<User> invitedUserList) {
+    public Channel inviteUsers(UUID channelId, List<User> invitedUserList) {
         Channel foundChannel = findChannelByIdOrThrow(channelId);
 
         // 유저의 진위 여부에 대한 검증이 필요한가?
 
         invitedUserList.forEach(user -> foundChannel.addChannelUser(user));
+
+        return jcfChannelRepository.saveChannel(foundChannel);
     }
 
     @Override
-    public void leaveUsers(UUID channelId, List<User> leaveUserList) {
+    public Channel leaveUsers(UUID channelId, List<User> leaveUserList) {
         Channel foundChannel = findChannelByIdOrThrow(channelId);
 
         leaveUserList.forEach(user -> foundChannel.deleteChannelUser(user));
+
+        return jcfChannelRepository.saveChannel(foundChannel);
     }
 }

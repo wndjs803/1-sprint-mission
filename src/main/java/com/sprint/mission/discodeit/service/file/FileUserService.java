@@ -67,7 +67,7 @@ public class FileUserService implements UserService {
         Path filePath = directory.resolve(foundUser.getId().toString().concat(".ser"));
         fileStorage.save(filePath, foundUser);
 
-        return foundUser;
+        return foundUser; // 임시 방편
     }
 
     @Override

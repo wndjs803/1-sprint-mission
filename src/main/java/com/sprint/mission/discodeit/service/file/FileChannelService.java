@@ -61,7 +61,7 @@ public class FileChannelService implements ChannelService {
     }
 
     @Override
-    public void updateChannelName(UUID channelOwnerId, UUID channelId, String name) {
+    public Channel updateChannelName(UUID channelOwnerId, UUID channelId, String name) {
         Channel foundChannel = findChannelByIdOrThrow(channelId);
         fileUserService.findUserByIdOrThrow(channelOwnerId);
 
@@ -74,6 +74,8 @@ public class FileChannelService implements ChannelService {
 
         Path filePath = directory.resolve(foundChannel.getId().toString().concat(".ser"));
         fileStorage.save(filePath, foundChannel);
+
+        return foundChannel;
     }
 
     @Override
@@ -91,7 +93,7 @@ public class FileChannelService implements ChannelService {
     }
 
     @Override
-    public void inviteUsers(UUID channelId, List<User> invitedUserList) {
+    public Channel inviteUsers(UUID channelId, List<User> invitedUserList) {
         Channel foundChannel = findChannelByIdOrThrow(channelId);
 
         // 유저의 진위 여부에 대한 검증이 필요한가?
@@ -100,15 +102,19 @@ public class FileChannelService implements ChannelService {
 
         Path filePath = directory.resolve(foundChannel.getId().toString().concat(".ser"));
         fileStorage.save(filePath, foundChannel);
+
+        return foundChannel; // 임심 방편
     }
 
     @Override
-    public void leaveUsers(UUID channelId, List<User> leaveUserList) {
+    public Channel leaveUsers(UUID channelId, List<User> leaveUserList) {
         Channel foundChannel = findChannelByIdOrThrow(channelId);
 
         leaveUserList.forEach(user -> foundChannel.deleteChannelUser(user));
 
         Path filePath = directory.resolve(foundChannel.getId().toString().concat(".ser"));
         fileStorage.save(filePath, foundChannel);
+
+        return foundChannel; // 임시 방편
     }
 }
