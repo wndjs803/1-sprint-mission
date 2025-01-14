@@ -4,23 +4,23 @@ import com.sprint.mission.discodeit.common.ErrorMessage;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.repository.jcf.JCFMessageRepository;
 import com.sprint.mission.discodeit.service.MessageService;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
 public class JCFMessageService implements MessageService {
-    private final Map<UUID, Message> messageData;
+    private final JCFMessageRepository jcfMessageRepository;
     private final JCFUserService jcfUserService;
     private final JCFChannelService jcfChannelService;
 
-    public JCFMessageService(JCFUserService jcfUserService, JCFChannelService jcfChannelService) {
-        messageData = new HashMap<>();
+    public JCFMessageService(JCFMessageRepository jcfMessageRepository, JCFUserService jcfUserService,
+                             JCFChannelService jcfChannelService) {
+        this.jcfMessageRepository = jcfMessageRepository;
         this.jcfUserService = jcfUserService;
         this.jcfChannelService = jcfChannelService;
     }
@@ -32,24 +32,22 @@ public class JCFMessageService implements MessageService {
 
         Message message = Message.of(sendUser, foundChannel, content);
 
-        messageData.put(message.getId(), message);
-
-        return message;
+        return jcfMessageRepository.saveMessage(message);
     }
 
     @Override
     public Message findMessageByIdOrThrow(UUID messageId) {
-        return Optional.ofNullable(messageData.get(messageId))
+        return Optional.ofNullable(jcfMessageRepository.findMessageById(messageId))
                 .orElseThrow(() -> new RuntimeException(ErrorMessage.MESSAGE_NOT_FOUND.getMessage()));
     }
 
     @Override
     public List<Message> findAllMessage() {
-        return new ArrayList<>(messageData.values());
+        return jcfMessageRepository.findAllMessages();
     }
 
     @Override
-    public void updateMessage(UUID sendUserId, UUID messageId, String content) {
+    public Message updateMessage(UUID sendUserId, UUID messageId, String content) {
         jcfUserService.findUserByIdOrThrow(sendUserId);
         Message foundMessage = findMessageByIdOrThrow(messageId);
 
@@ -60,7 +58,7 @@ public class JCFMessageService implements MessageService {
         foundMessage.updateContent(content);
         foundMessage.updateUpdatedAt(Instant.now().toEpochMilli());
 
-        messageData.put(foundMessage.getId(), foundMessage);
+        return jcfMessageRepository.saveMessage(foundMessage);
     }
 
     @Override
@@ -74,6 +72,6 @@ public class JCFMessageService implements MessageService {
         }
 
         // 메세지 삭제
-        messageData.remove(messageId);
+        jcfMessageRepository.removeMessage(messageId);
     }
 }

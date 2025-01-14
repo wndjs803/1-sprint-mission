@@ -66,7 +66,7 @@ public class FileMessageService implements MessageService {
     }
 
     @Override
-    public void updateMessage(UUID sendUserId, UUID messageId, String content) {
+    public Message updateMessage(UUID sendUserId, UUID messageId, String content) {
         fileUserService.findUserByIdOrThrow(sendUserId);
         Message foundMessage = findMessageByIdOrThrow(messageId);
 
@@ -79,6 +79,8 @@ public class FileMessageService implements MessageService {
 
         Path filePath = directory.resolve(foundMessage.getId().toString().concat(".ser"));
         fileStorage.save(filePath, foundMessage);
+
+        return foundMessage; // 임시 방편
     }
 
     @Override
