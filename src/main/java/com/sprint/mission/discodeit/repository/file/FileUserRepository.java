@@ -17,13 +17,14 @@ public class FileUserRepository implements UserRepository {
         fileStorage.init(directory);
     }
 
-    public static FileUserRepository getInstance(){
+    public static FileUserRepository getInstance() {
         return FileUserRepository.LazyHolder.INSTANCE;
     }
 
     private static class LazyHolder {
         private static final FileUserRepository INSTANCE = new FileUserRepository(new FileStorage());
     }
+
     @Override
     public User saveUser(User user) {
         Path filePath = directory.resolve(user.getId().toString().concat(".ser"));

@@ -4,11 +4,8 @@ import com.sprint.mission.discodeit.common.ErrorMessage;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.file.FileChannelRepository;
-import com.sprint.mission.discodeit.repository.jcf.JCFChannelRepository;
 import com.sprint.mission.discodeit.service.file.FileChannelService;
 import com.sprint.mission.discodeit.service.file.FileUserService;
-import com.sprint.mission.discodeit.service.jcf.JCFChannelService;
-import com.sprint.mission.discodeit.service.jcf.JCFUserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -20,7 +17,8 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -28,7 +26,7 @@ import static org.mockito.Mockito.when;
 
 class ChannelServiceTest {
     private ChannelService channelService;
-//    private JCFChannelRepository channelRepository;
+    //    private JCFChannelRepository channelRepository;
 //    private JCFUserService userService;
     private FileChannelRepository channelRepository;
     private FileUserService userService;
@@ -147,7 +145,8 @@ class ChannelServiceTest {
             String updatedName = "channel2";
 
             // when
-            Channel updatedChannel = channelService.updateChannelName(channelOwner.getId(), channel.getId(), updatedName);
+            Channel updatedChannel = channelService.updateChannelName(channelOwner.getId(), channel.getId(),
+                    updatedName);
 
             // then
             assertEquals(updatedName, updatedChannel.getName());
@@ -170,7 +169,8 @@ class ChannelServiceTest {
             String updatedName = "channel2";
 
             // when & then
-            assertThatThrownBy(() -> channelService.updateChannelName(channelOwner2.getId(), channel1.getId(), updatedName))
+            assertThatThrownBy(() -> channelService.updateChannelName(channelOwner2.getId(), channel1.getId(),
+                    updatedName))
                     .isInstanceOf(RuntimeException.class)
                     .hasMessage(ErrorMessage.NOT_CHANNEL_CREATOR.getMessage());
         }

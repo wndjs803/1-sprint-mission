@@ -9,13 +9,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class JCFChannelRepository  implements ChannelRepository {
+public class JCFChannelRepository implements ChannelRepository {
     private final Map<UUID, Channel> channelData = new HashMap<>();
 
     private JCFChannelRepository() {
     }
 
-    public static JCFChannelRepository getInstance(){
+    public static JCFChannelRepository getInstance() {
         return JCFChannelRepository.LazyHolder.INSTANCE;
     }
 

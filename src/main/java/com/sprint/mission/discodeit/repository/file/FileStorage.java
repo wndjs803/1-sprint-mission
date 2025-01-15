@@ -23,7 +23,7 @@ public class FileStorage {
     }
 
     public <T> T save(Path filePath, T data) {
-        try(
+        try (
                 FileOutputStream fos = new FileOutputStream(filePath.toFile());
                 ObjectOutputStream oos = new ObjectOutputStream(fos);
         ) {
@@ -40,8 +40,8 @@ public class FileStorage {
                 List<T> list = Files.list(directory)
                         .map(path -> {
                             try (
-                                FileInputStream fis = new FileInputStream(path.toFile());
-                                ObjectInputStream ois = new ObjectInputStream(fis)
+                                    FileInputStream fis = new FileInputStream(path.toFile());
+                                    ObjectInputStream ois = new ObjectInputStream(fis)
                             ) {
                                 Object data = ois.readObject();
                                 return (T) data;
@@ -69,7 +69,7 @@ public class FileStorage {
                                     ObjectInputStream ois = new ObjectInputStream(fis)
                             ) {
                                 Object data = ois.readObject();
-                                if(data.equals(object)){
+                                if (data.equals(object)) {
                                     Files.deleteIfExists(path);
                                 }
                             } catch (IOException | ClassNotFoundException e) {

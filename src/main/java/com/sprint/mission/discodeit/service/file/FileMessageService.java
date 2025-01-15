@@ -7,7 +7,6 @@ import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.file.FileMessageRepository;
 import com.sprint.mission.discodeit.service.MessageService;
 
-import java.nio.file.Path;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -52,7 +51,7 @@ public class FileMessageService implements MessageService {
         fileUserService.findUserByIdOrThrow(sendUserId);
         Message foundMessage = findMessageByIdOrThrow(messageId);
 
-        if(foundMessage.isNotOwner(sendUserId)){
+        if (foundMessage.isNotOwner(sendUserId)) {
             throw new RuntimeException(ErrorMessage.NOT_MESSAGE_CREATOR.getMessage());
         }
 
@@ -66,7 +65,7 @@ public class FileMessageService implements MessageService {
     public void deleteMessage(UUID sendUserId, UUID messageId) {
         Message foundMessage = findMessageByIdOrThrow(messageId);
 
-        if(foundMessage.isNotOwner(sendUserId)){
+        if (foundMessage.isNotOwner(sendUserId)) {
             throw new RuntimeException(ErrorMessage.NOT_MESSAGE_CREATOR.getMessage());
         }
 

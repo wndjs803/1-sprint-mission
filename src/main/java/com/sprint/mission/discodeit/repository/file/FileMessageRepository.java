@@ -1,13 +1,11 @@
 package com.sprint.mission.discodeit.repository.file;
 
 import com.sprint.mission.discodeit.entity.Message;
-import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.MessageRepository;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public class FileMessageRepository implements MessageRepository {
@@ -19,7 +17,7 @@ public class FileMessageRepository implements MessageRepository {
         fileStorage.init(directory);
     }
 
-    public static FileMessageRepository getInstance(){
+    public static FileMessageRepository getInstance() {
         return FileMessageRepository.LazyHolder.INSTANCE;
     }
 

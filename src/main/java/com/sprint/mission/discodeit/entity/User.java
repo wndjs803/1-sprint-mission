@@ -11,7 +11,7 @@ public class User extends BaseEntity implements Serializable {
     private boolean active;
 
     private User(String name, String nickname, String email, String password,
-                String profileImageUrl, boolean active) {
+                 String profileImageUrl, boolean active) {
         super();
         this.name = name;
         this.nickname = nickname;
@@ -72,7 +72,7 @@ public class User extends BaseEntity implements Serializable {
         this.profileImageUrl = profileImageUrl;
     }
 
-    public void updateActive(){
+    public void updateActive() {
         this.active = !this.active;
     }
 

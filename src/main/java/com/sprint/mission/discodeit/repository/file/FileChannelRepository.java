@@ -17,7 +17,7 @@ public class FileChannelRepository implements ChannelRepository {
         fileStorage.init(directory);
     }
 
-    public static FileChannelRepository getInstance(){
+    public static FileChannelRepository getInstance() {
         return FileChannelRepository.LazyHolder.INSTANCE;
     }
 

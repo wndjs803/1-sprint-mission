@@ -36,7 +36,8 @@ public class FileUserService implements UserService {
     }
 
     @Override
-    public User updateUser(UUID userId, String name, String nickname, String email, String password, String profileImageUrl) {
+    public User updateUser(UUID userId, String name, String nickname, String email, String password,
+                           String profileImageUrl) {
         User foundUser = findUserByIdOrThrow(userId);
 
         foundUser.updateName(name);
@@ -51,7 +52,7 @@ public class FileUserService implements UserService {
 
     @Override
     public void deleteUser(UUID userId) {
-        if(!fileUserRepository.existsUser(userId)){
+        if (!fileUserRepository.existsUser(userId)) {
             throw new RuntimeException(ErrorMessage.USER_NOT_FOUND.getMessage());
         }
 

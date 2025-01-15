@@ -8,7 +8,6 @@ import com.sprint.mission.discodeit.repository.jcf.JCFMessageRepository;
 import com.sprint.mission.discodeit.service.MessageService;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -51,7 +50,7 @@ public class JCFMessageService implements MessageService {
         jcfUserService.findUserByIdOrThrow(sendUserId);
         Message foundMessage = findMessageByIdOrThrow(messageId);
 
-        if(foundMessage.isNotOwner(sendUserId)){
+        if (foundMessage.isNotOwner(sendUserId)) {
             throw new RuntimeException(ErrorMessage.NOT_MESSAGE_CREATOR.getMessage());
         }
 
@@ -67,7 +66,7 @@ public class JCFMessageService implements MessageService {
         Message foundMessage = findMessageByIdOrThrow(messageId);
 
         // 메세지 생성자가 맞는지 확인
-        if(foundMessage.isNotOwner(sendUserId)){
+        if (foundMessage.isNotOwner(sendUserId)) {
             throw new RuntimeException(ErrorMessage.NOT_MESSAGE_CREATOR.getMessage());
         }
 

@@ -15,7 +15,7 @@ public class JCFUserRepository implements UserRepository {
     private JCFUserRepository() {
     }
 
-    public static JCFUserRepository getInstance(){
+    public static JCFUserRepository getInstance() {
         return LazyHolder.INSTANCE;
     }
 
@@ -46,6 +46,6 @@ public class JCFUserRepository implements UserRepository {
 
     @Override
     public boolean existsUser(UUID userId) {
-       return userData.containsKey(userId);
+        return userData.containsKey(userId);
     }
 }

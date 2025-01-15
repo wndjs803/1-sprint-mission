@@ -5,10 +5,8 @@ import com.sprint.mission.discodeit.common.UtilMethod;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.file.FileChannelRepository;
-import com.sprint.mission.discodeit.repository.file.FileStorage;
 import com.sprint.mission.discodeit.service.ChannelService;
 
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -47,7 +45,7 @@ public class FileChannelService implements ChannelService {
         Channel foundChannel = findChannelByIdOrThrow(channelId);
         fileUserService.findUserByIdOrThrow(channelOwnerId);
 
-        if(foundChannel.isNotOwner(channelOwnerId)) {
+        if (foundChannel.isNotOwner(channelOwnerId)) {
             throw new RuntimeException(ErrorMessage.NOT_CHANNEL_CREATOR.getMessage());
         }
 
@@ -63,7 +61,7 @@ public class FileChannelService implements ChannelService {
         fileUserService.findUserByIdOrThrow(channelOwnerId);
         Channel foundChannel = findChannelByIdOrThrow(channelId);
 
-        if(foundChannel.isNotOwner(channelOwnerId)){
+        if (foundChannel.isNotOwner(channelOwnerId)) {
             throw new RuntimeException(ErrorMessage.NOT_CHANNEL_CREATOR.getMessage());
         }
 

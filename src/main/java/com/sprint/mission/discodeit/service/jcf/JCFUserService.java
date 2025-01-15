@@ -38,7 +38,8 @@ public class JCFUserService implements UserService {
     }
 
     @Override
-    public User updateUser(UUID id, String name, String nickname, String email, String password, String profileImageUrl) {
+    public User updateUser(UUID id, String name, String nickname, String email, String password,
+                           String profileImageUrl) {
         User foundUser = findUserByIdOrThrow(id);
 
         foundUser.updateName(name);
@@ -53,7 +54,7 @@ public class JCFUserService implements UserService {
 
     @Override
     public void deleteUser(UUID id) {
-        if(!jcfUserRepository.existsUser(id)){
+        if (!jcfUserRepository.existsUser(id)) {
             throw new RuntimeException(ErrorMessage.USER_NOT_FOUND.getMessage());
         }
         jcfUserRepository.removeUser(id);

@@ -3,9 +3,7 @@ package com.sprint.mission.discodeit.service;
 import com.sprint.mission.discodeit.common.ErrorMessage;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.file.FileUserRepository;
-import com.sprint.mission.discodeit.repository.jcf.JCFUserRepository;
 import com.sprint.mission.discodeit.service.file.FileUserService;
-import com.sprint.mission.discodeit.service.jcf.JCFUserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -15,15 +13,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 class UserServiceTest {
     private UserService userService;
-//    private JCFUserRepository userRepository;
+    //    private JCFUserRepository userRepository;
     private FileUserRepository userRepository;
+
     @BeforeEach
     void setUp() {
 //        userRepository = mock(JCFUserRepository.class);
@@ -35,7 +38,7 @@ class UserServiceTest {
 
     @Nested
     @DisplayName("유저 생성 테스트")
-    class createUserTest{
+    class createUserTest {
         @Test
         @DisplayName("유저 생성 성공")
         void success() {
@@ -55,10 +58,10 @@ class UserServiceTest {
 
     @Nested
     @DisplayName("유저 단일 조회 테스트")
-    class findUserByIdOrThrowTest{
+    class findUserByIdOrThrowTest {
         @Test
         @DisplayName("유저 단일 조회 성공")
-        void success(){
+        void success() {
             // given
             User user = User.of("test1", "nickname1", "email1",
                     "password1", "profileImageUrl1", true);
@@ -73,7 +76,7 @@ class UserServiceTest {
 
         @Test
         @DisplayName("잘못된 유저 아이디 조회")
-        void invalidUserId(){
+        void invalidUserId() {
             when(userRepository.findUserById(any())).thenReturn(null);
 
             assertThatThrownBy(() -> userService.findUserByIdOrThrow(UUID.randomUUID()))

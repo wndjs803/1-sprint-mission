@@ -5,13 +5,9 @@ import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.file.FileMessageRepository;
-import com.sprint.mission.discodeit.repository.jcf.JCFMessageRepository;
 import com.sprint.mission.discodeit.service.file.FileChannelService;
 import com.sprint.mission.discodeit.service.file.FileMessageService;
 import com.sprint.mission.discodeit.service.file.FileUserService;
-import com.sprint.mission.discodeit.service.jcf.JCFChannelService;
-import com.sprint.mission.discodeit.service.jcf.JCFMessageService;
-import com.sprint.mission.discodeit.service.jcf.JCFUserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -22,8 +18,12 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class MessageServiceTest {
     private MessageService messageService;
@@ -191,7 +191,7 @@ class MessageServiceTest {
                     .hasMessage(ErrorMessage.NOT_MESSAGE_CREATOR.getMessage());
         }
     }
-    
+
     @Nested
     @DisplayName("메세지 삭제 테스트")
     class deleteMessageTest {
@@ -205,9 +205,9 @@ class MessageServiceTest {
             Channel channel = Channel.of(channelName, user);
             String content = "hello";
             Message message = Message.of(user, channel, content);
-            
+
             when(messageRepository.findMessageById(message.getId())).thenReturn(message);
-            
+
             // when
             messageService.deleteMessage(user.getId(), message.getId());
 
