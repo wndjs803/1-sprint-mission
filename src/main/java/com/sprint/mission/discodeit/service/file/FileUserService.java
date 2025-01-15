@@ -3,12 +3,9 @@ package com.sprint.mission.discodeit.service.file;
 import com.sprint.mission.discodeit.common.ErrorMessage;
 import com.sprint.mission.discodeit.common.UtilMethod;
 import com.sprint.mission.discodeit.entity.User;
-import com.sprint.mission.discodeit.repository.file.FileStorage;
 import com.sprint.mission.discodeit.repository.file.FileUserRepository;
 import com.sprint.mission.discodeit.service.UserService;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

@@ -3,7 +3,10 @@ package com.sprint.mission.discodeit.service;
 import com.sprint.mission.discodeit.common.ErrorMessage;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.repository.file.FileChannelRepository;
 import com.sprint.mission.discodeit.repository.jcf.JCFChannelRepository;
+import com.sprint.mission.discodeit.service.file.FileChannelService;
+import com.sprint.mission.discodeit.service.file.FileUserService;
 import com.sprint.mission.discodeit.service.jcf.JCFChannelService;
 import com.sprint.mission.discodeit.service.jcf.JCFUserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,14 +28,20 @@ import static org.mockito.Mockito.when;
 
 class ChannelServiceTest {
     private ChannelService channelService;
-    private JCFChannelRepository channelRepository;
-    private JCFUserService userService;
+//    private JCFChannelRepository channelRepository;
+//    private JCFUserService userService;
+    private FileChannelRepository channelRepository;
+    private FileUserService userService;
 
     @BeforeEach
     void setUp() {
-        channelRepository = mock(JCFChannelRepository.class);
-        userService = mock(JCFUserService.class);
-        this.channelService = new JCFChannelService(channelRepository, userService);
+//        channelRepository = mock(JCFChannelRepository.class);
+//        userService = mock(JCFUserService.class);
+//        this.channelService = new JCFChannelService(channelRepository, userService);
+
+        channelRepository = mock(FileChannelRepository.class);
+        userService = mock(FileUserService.class);
+        this.channelService = new FileChannelService(channelRepository, userService);
     }
 
     @Nested

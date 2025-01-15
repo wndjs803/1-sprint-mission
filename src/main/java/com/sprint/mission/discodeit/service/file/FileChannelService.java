@@ -4,24 +4,22 @@ import com.sprint.mission.discodeit.common.ErrorMessage;
 import com.sprint.mission.discodeit.common.UtilMethod;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.repository.file.FileChannelRepository;
 import com.sprint.mission.discodeit.repository.file.FileStorage;
 import com.sprint.mission.discodeit.service.ChannelService;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public class FileChannelService implements ChannelService {
-    private final FileStorage fileStorage;
+    private final FileChannelRepository fileChannelRepository;
     private final FileUserService fileUserService;
-    private final Path directory = Paths.get(System.getProperty("user.dir"), "data", "channel");
 
-    public FileChannelService(FileStorage fileStorage, FileUserService fileUserService) {
-        this.fileStorage = fileStorage;
+    public FileChannelService(FileChannelRepository fileChannelRepository, FileUserService fileUserService) {
+        this.fileChannelRepository = fileChannelRepository;
         this.fileUserService = fileUserService;
-        fileStorage.init(directory);
     }
 
     @Override
@@ -30,26 +28,18 @@ public class FileChannelService implements ChannelService {
 
         Channel channel = Channel.of(name, channelOwner);
 
-        Path filePath = directory.resolve(channel.getId().toString().concat(".ser"));
-        fileStorage.save(filePath, channel);
-
-        return channel;
+        return fileChannelRepository.saveChannel(channel);
     }
 
     @Override
     public Channel findChannelByIdOrThrow(UUID channelId) {
-        List<Channel> channelList = fileStorage.load(directory);
-
-        Optional<Channel> optionalChannel = channelList.stream()
-                .filter(channel -> channel.getId().equals(channelId))
-                .findFirst();
-
-        return optionalChannel.orElseThrow(() -> new RuntimeException(ErrorMessage.CHANNEL_NOT_FOUND.getMessage()));
+        return Optional.ofNullable(fileChannelRepository.findChannelById(channelId))
+                .orElseThrow(() -> new RuntimeException(ErrorMessage.CHANNEL_NOT_FOUND.getMessage()));
     }
 
     @Override
     public List<Channel> findAllChannels() {
-        return fileStorage.load(directory);
+        return fileChannelRepository.findAllChannels();
     }
 
     @Override
@@ -64,10 +54,7 @@ public class FileChannelService implements ChannelService {
         foundChannel.updateName(name);
         foundChannel.updateUpdatedAt(UtilMethod.getCurrentTime());
 
-        Path filePath = directory.resolve(foundChannel.getId().toString().concat(".ser"));
-        fileStorage.save(filePath, foundChannel);
-
-        return foundChannel;
+        return fileChannelRepository.saveChannel(foundChannel);
     }
 
     @Override
@@ -81,7 +68,7 @@ public class FileChannelService implements ChannelService {
         }
 
         // 채널 삭제
-        fileStorage.remove(directory, foundChannel);
+        fileChannelRepository.removeChannel(channelId);
     }
 
     @Override
@@ -92,10 +79,7 @@ public class FileChannelService implements ChannelService {
 
         invitedUserList.forEach(user -> foundChannel.addChannelUser(user));
 
-        Path filePath = directory.resolve(foundChannel.getId().toString().concat(".ser"));
-        fileStorage.save(filePath, foundChannel);
-
-        return foundChannel; // 임심 방편
+        return fileChannelRepository.saveChannel(foundChannel);
     }
 
     @Override
@@ -104,9 +88,6 @@ public class FileChannelService implements ChannelService {
 
         leaveUserList.forEach(user -> foundChannel.deleteChannelUser(user));
 
-        Path filePath = directory.resolve(foundChannel.getId().toString().concat(".ser"));
-        fileStorage.save(filePath, foundChannel);
-
-        return foundChannel; // 임시 방편
+        return fileChannelRepository.saveChannel(foundChannel);
     }
 }
