@@ -4,7 +4,11 @@ import com.sprint.mission.discodeit.common.ErrorMessage;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.repository.file.FileMessageRepository;
 import com.sprint.mission.discodeit.repository.jcf.JCFMessageRepository;
+import com.sprint.mission.discodeit.service.file.FileChannelService;
+import com.sprint.mission.discodeit.service.file.FileMessageService;
+import com.sprint.mission.discodeit.service.file.FileUserService;
 import com.sprint.mission.discodeit.service.jcf.JCFChannelService;
 import com.sprint.mission.discodeit.service.jcf.JCFMessageService;
 import com.sprint.mission.discodeit.service.jcf.JCFUserService;
@@ -23,16 +27,25 @@ import static org.mockito.Mockito.*;
 
 class MessageServiceTest {
     private MessageService messageService;
-    private JCFMessageRepository messageRepository;
-    private JCFUserService jcfUserService;
-    private JCFChannelService jcfChannelService;
+//    private JCFMessageRepository messageRepository;
+//    private JCFUserService userService;
+//    private JCFChannelService channelService;
+
+    private FileMessageRepository messageRepository;
+    private FileUserService userService;
+    private FileChannelService channelService;
 
     @BeforeEach
     void setUp() {
-        messageRepository = mock(JCFMessageRepository.class);
-        jcfUserService = mock(JCFUserService.class);
-        jcfChannelService = mock(JCFChannelService.class);
-        messageService = new JCFMessageService(messageRepository, jcfUserService, jcfChannelService);
+//        messageRepository = mock(JCFMessageRepository.class);
+//        userService = mock(JCFUserService.class);
+//        channelService = mock(JCFChannelService.class);
+//        messageService = new JCFMessageService(messageRepository, userService, channelService);
+
+        messageRepository = mock(FileMessageRepository.class);
+        userService = mock(FileUserService.class);
+        channelService = mock(FileChannelService.class);
+        messageService = new FileMessageService(messageRepository, userService, channelService);
     }
 
     @Nested
@@ -49,8 +62,8 @@ class MessageServiceTest {
             String content = "hello";
             Message message = Message.of(user, channel, content);
 
-            when(jcfUserService.findUserByIdOrThrow(any())).thenReturn(user);
-            when(jcfChannelService.findChannelByIdOrThrow(any())).thenReturn(channel);
+            when(userService.findUserByIdOrThrow(any())).thenReturn(user);
+            when(channelService.findChannelByIdOrThrow(any())).thenReturn(channel);
 
             when(messageRepository.saveMessage(any())).thenReturn(message);
 
@@ -143,7 +156,7 @@ class MessageServiceTest {
             String content = "hello";
             Message message = Message.of(user, channel, content);
 
-            when(jcfUserService.findUserByIdOrThrow(user.getId())).thenReturn(user);
+            when(userService.findUserByIdOrThrow(user.getId())).thenReturn(user);
             when(messageRepository.findMessageById(any())).thenReturn(message);
 
             when(messageRepository.saveMessage(any())).thenReturn(message);
@@ -167,7 +180,7 @@ class MessageServiceTest {
             String content = "hello";
             Message message = Message.of(user, channel, content);
 
-            when(jcfUserService.findUserByIdOrThrow(user.getId())).thenReturn(user);
+            when(userService.findUserByIdOrThrow(user.getId())).thenReturn(user);
             when(messageRepository.findMessageById(any())).thenReturn(message);
 
             String updatedContent = "hi";
