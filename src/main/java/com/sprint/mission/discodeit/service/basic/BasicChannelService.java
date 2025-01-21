@@ -33,7 +33,7 @@ public class BasicChannelService implements ChannelService {
     @Override
     public Channel findChannelByIdOrThrow(UUID channelId) {
         return Optional.ofNullable(channelRepository.findChannelById(channelId))
-                .orElseThrow(() -> new RuntimeException(ErrorMessage.CHANNEL_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new RuntimeException(ErrorMessage.CHANNEL_NOT_FOUND.format(channelId)));
     }
 
     @Override
@@ -47,7 +47,7 @@ public class BasicChannelService implements ChannelService {
         userService.findUserByIdOrThrow(channelOwnerId);
 
         if (foundChannel.isNotOwner(channelOwnerId)) {
-            throw new RuntimeException(ErrorMessage.NOT_CHANNEL_CREATOR.getMessage());
+            throw new RuntimeException(ErrorMessage.NOT_CHANNEL_CREATOR.format(channelOwnerId));
         }
 
         foundChannel.updateName(name);
@@ -62,7 +62,7 @@ public class BasicChannelService implements ChannelService {
         Channel foundChannel = findChannelByIdOrThrow(channelId);
 
         if (foundChannel.isNotOwner(channelOwnerId)) {
-            throw new RuntimeException(ErrorMessage.NOT_CHANNEL_CREATOR.getMessage());
+            throw new RuntimeException(ErrorMessage.NOT_CHANNEL_CREATOR.format(channelOwnerId));
         }
 
         channelRepository.removeChannel(channelId);

@@ -91,9 +91,10 @@ class ChannelServiceTest {
         void findChannelByIdOrThrow_ThrowsException_WhenChannelIdDoesNotExist() {
             when(channelRepository.findChannelById(any())).thenReturn(null);
 
-            assertThatThrownBy(() -> channelService.findChannelByIdOrThrow(UUID.randomUUID()))
+            UUID randomId = UUID.randomUUID();
+            assertThatThrownBy(() -> channelService.findChannelByIdOrThrow(randomId))
                     .isInstanceOf(RuntimeException.class)
-                    .hasMessage(ErrorMessage.CHANNEL_NOT_FOUND.getMessage());
+                    .hasMessage(ErrorMessage.CHANNEL_NOT_FOUND.format(randomId));
         }
     }
 
@@ -172,7 +173,7 @@ class ChannelServiceTest {
             assertThatThrownBy(() -> channelService.updateChannelName(channelOwner2.getId(), channel1.getId(),
                     updatedName))
                     .isInstanceOf(RuntimeException.class)
-                    .hasMessage(ErrorMessage.NOT_CHANNEL_CREATOR.getMessage());
+                    .hasMessage(ErrorMessage.NOT_CHANNEL_CREATOR.format(channelOwner2.getId()));
         }
     }
 
@@ -210,10 +211,12 @@ class ChannelServiceTest {
             when(userService.findUserByIdOrThrow(any())).thenReturn(channelOwner);
             when(channelRepository.findChannelById(any())).thenReturn(channel1);
 
+            UUID randomId = UUID.randomUUID();
+
             // when & then
-            assertThatThrownBy(() -> channelService.deleteChannel(UUID.randomUUID(), channel1.getId()))
+            assertThatThrownBy(() -> channelService.deleteChannel(randomId, channel1.getId()))
                     .isInstanceOf(RuntimeException.class)
-                    .hasMessage(ErrorMessage.NOT_CHANNEL_CREATOR.getMessage());
+                    .hasMessage(ErrorMessage.NOT_CHANNEL_CREATOR.format(randomId));
         }
     }
 
