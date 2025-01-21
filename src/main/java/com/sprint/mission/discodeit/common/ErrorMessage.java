@@ -13,9 +13,16 @@ public enum ErrorMessage {
 
     // Message
     MESSAGE_NOT_FOUND("메세지 찾을 수 없습니다."),
-    NOT_MESSAGE_CREATOR("메세지 생성자가 아닙니다.");
+    NOT_MESSAGE_CREATOR("메세지 생성자가 아닙니다."),
 
-    private String msg;
+    // File
+    DIRECTORY_INIT_FAIL("디렉토리 생성에 실패했습니다. : %s"),
+    FILE_WRITE_FAIL("파일 쓰기에 실패했습니다. : %s, %s"),
+    FILE_READ_FAIL("파일 읽기에 실패했습니다. : %s"),
+    FILE_REMOVE_FAIL("파일 제거에 실패했습니다. : %s"),
+    FILES_LOAD_FAIL("파일들을 로드하는데 실패했습니다. : %s");
+
+    private final String msg;
 
     ErrorMessage(String msg) {
         this.msg = msg;
@@ -23,5 +30,8 @@ public enum ErrorMessage {
 
     public String getMessage() {
         return this.msg;
+    }
+    public String format(Object... args) {
+        return String.format(msg, args);
     }
 }
