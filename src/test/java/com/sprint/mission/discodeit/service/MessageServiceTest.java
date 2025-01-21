@@ -102,10 +102,11 @@ class MessageServiceTest {
         @DisplayName("메세지 아이디 존재 여부 확인 후 에외 발생")
         void findMessageByIdOrThrow_ThrowsException_WhenMessageIdDoesNotExist() {
             when(messageRepository.findMessageById(any())).thenReturn(null);
+            UUID randomId = UUID.randomUUID();
 
-            assertThatThrownBy(() -> messageService.findMessageByIdOrThrow(UUID.randomUUID()))
+            assertThatThrownBy(() -> messageService.findMessageByIdOrThrow(randomId))
                     .isInstanceOf(RuntimeException.class)
-                    .hasMessage(ErrorMessage.MESSAGE_NOT_FOUND.getMessage());
+                    .hasMessage(ErrorMessage.MESSAGE_NOT_FOUND.format(randomId));
         }
     }
 
@@ -184,11 +185,12 @@ class MessageServiceTest {
             when(messageRepository.findMessageById(any())).thenReturn(message);
 
             String updatedContent = "hi";
+            UUID randomId = UUID.randomUUID();
 
             // when & then
-            assertThatThrownBy(() -> messageService.updateMessage(UUID.randomUUID(), message.getId(), updatedContent))
+            assertThatThrownBy(() -> messageService.updateMessage(randomId, message.getId(), updatedContent))
                     .isInstanceOf(RuntimeException.class)
-                    .hasMessage(ErrorMessage.NOT_MESSAGE_CREATOR.getMessage());
+                    .hasMessage(ErrorMessage.NOT_MESSAGE_CREATOR.format(randomId));
         }
     }
 
@@ -228,10 +230,11 @@ class MessageServiceTest {
 
             when(messageRepository.findMessageById(message.getId())).thenReturn(message);
 
+            UUID randomId = UUID.randomUUID();
             // when & then
-            assertThatThrownBy(() -> messageService.deleteMessage(UUID.randomUUID(), message.getId()))
+            assertThatThrownBy(() -> messageService.deleteMessage(randomId, message.getId()))
                     .isInstanceOf(RuntimeException.class)
-                    .hasMessage(ErrorMessage.NOT_MESSAGE_CREATOR.getMessage());
+                    .hasMessage(ErrorMessage.NOT_MESSAGE_CREATOR.format(randomId));
         }
     }
 

@@ -12,8 +12,8 @@ public enum ErrorMessage {
 
 
     // Message
-    MESSAGE_NOT_FOUND("메세지 찾을 수 없습니다."),
-    NOT_MESSAGE_CREATOR("메세지 생성자가 아닙니다."),
+    MESSAGE_NOT_FOUND("메세지 찾을 수 없습니다. id: %s"),
+    NOT_MESSAGE_CREATOR("메세지 생성자가 아닙니다. id: %s"),
 
     // File
     DIRECTORY_INIT_FAIL("디렉토리 생성에 실패했습니다. path: %s"),
