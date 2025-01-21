@@ -5,8 +5,8 @@ public enum ErrorMessage {
     USER_NOT_FOUND("유저를 찾을 수 없습니다. id: %s"),
 
     // Channel
-    CHANNEL_NOT_FOUND("채널을 찾을 수 없습니다."),
-    NOT_CHANNEL_CREATOR("채널 생성자가 아닙니다."),
+    CHANNEL_NOT_FOUND("채널을 찾을 수 없습니다. id: %s"),
+    NOT_CHANNEL_CREATOR("채널 생성자가 아닙니다. id: %s"),
     CHANNEL_OWNER_NOT_NULL("채널 소유자는 null일 수 없습니다."),
     USER_NOT_NULL("유저는 null일 수 없습니다."),
 
