@@ -3,7 +3,9 @@ package com.sprint.mission.discodeit.service;
 import com.sprint.mission.discodeit.common.ErrorMessage;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.file.FileUserRepository;
+import com.sprint.mission.discodeit.repository.jcf.JCFUserRepository;
 import com.sprint.mission.discodeit.service.file.FileUserService;
+import com.sprint.mission.discodeit.service.jcf.JCFUserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -24,15 +26,15 @@ import static org.mockito.Mockito.when;
 
 class UserServiceTest {
     private UserService userService;
-    //    private JCFUserRepository userRepository;
-    private FileUserRepository userRepository;
+        private JCFUserRepository userRepository;
+//    private FileUserRepository userRepository;
 
     @BeforeEach
     void setUp() {
-//        userRepository = mock(JCFUserRepository.class);
-//        this.userService = new JCFUserService(userRepository);
-        userRepository = mock(FileUserRepository.class);
-        this.userService = new FileUserService(userRepository);
+        userRepository = mock(JCFUserRepository.class);
+        this.userService = new JCFUserService(userRepository);
+//        userRepository = mock(FileUserRepository.class);
+//        this.userService = new FileUserService(userRepository);
     }
 
 
@@ -79,9 +81,10 @@ class UserServiceTest {
         void invalidUserId() {
             when(userRepository.findUserById(any())).thenReturn(null);
 
-            assertThatThrownBy(() -> userService.findUserByIdOrThrow(UUID.randomUUID()))
+            UUID randomId = UUID.randomUUID();
+            assertThatThrownBy(() -> userService.findUserByIdOrThrow(randomId))
                     .isInstanceOf(RuntimeException.class)
-                    .hasMessage(ErrorMessage.USER_NOT_FOUND.getMessage());
+                    .hasMessage(ErrorMessage.USER_NOT_FOUND.format(randomId));
         }
     }
 
@@ -163,9 +166,10 @@ class UserServiceTest {
         @Test
         @DisplayName("존재하지 않는 유저 삭제")
         void notExistUser() {
-            assertThatThrownBy(() -> userService.deleteUser(UUID.randomUUID()))
+            UUID randomId = UUID.randomUUID();
+            assertThatThrownBy(() -> userService.deleteUser(randomId))
                     .isInstanceOf(RuntimeException.class)
-                    .hasMessage(ErrorMessage.USER_NOT_FOUND.getMessage());
+                    .hasMessage(ErrorMessage.USER_NOT_FOUND.format(randomId));
         }
     }
 }

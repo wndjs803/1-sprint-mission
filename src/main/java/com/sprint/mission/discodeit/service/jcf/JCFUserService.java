@@ -27,9 +27,9 @@ public class JCFUserService implements UserService {
     }
 
     @Override
-    public User findUserByIdOrThrow(UUID id) {
-        return Optional.ofNullable(jcfUserRepository.findUserById(id))
-                .orElseThrow(() -> new RuntimeException(ErrorMessage.USER_NOT_FOUND.getMessage()));
+    public User findUserByIdOrThrow(UUID userId) {
+        return Optional.ofNullable(jcfUserRepository.findUserById(userId))
+                .orElseThrow(() -> new RuntimeException(ErrorMessage.USER_NOT_FOUND.format(userId)));
     }
 
     @Override
@@ -38,9 +38,9 @@ public class JCFUserService implements UserService {
     }
 
     @Override
-    public User updateUser(UUID id, String name, String nickname, String email, String password,
+    public User updateUser(UUID userId, String name, String nickname, String email, String password,
                            String profileImageUrl) {
-        User foundUser = findUserByIdOrThrow(id);
+        User foundUser = findUserByIdOrThrow(userId);
 
         foundUser.updateName(name);
         foundUser.updateNickname(nickname);
@@ -53,10 +53,10 @@ public class JCFUserService implements UserService {
     }
 
     @Override
-    public void deleteUser(UUID id) {
-        if (!jcfUserRepository.existsUser(id)) {
-            throw new RuntimeException(ErrorMessage.USER_NOT_FOUND.getMessage());
+    public void deleteUser(UUID userId) {
+        if (!jcfUserRepository.existsUser(userId)) {
+            throw new RuntimeException(ErrorMessage.USER_NOT_FOUND.format(userId));
         }
-        jcfUserRepository.removeUser(id);
+        jcfUserRepository.removeUser(userId);
     }
 }

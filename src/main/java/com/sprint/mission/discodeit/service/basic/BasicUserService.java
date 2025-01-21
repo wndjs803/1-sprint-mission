@@ -25,9 +25,9 @@ public class BasicUserService implements UserService {
     }
 
     @Override
-    public User findUserByIdOrThrow(UUID id) {
-        return Optional.ofNullable(userRepository.findUserById(id))
-                .orElseThrow(() -> new RuntimeException(ErrorMessage.USER_NOT_FOUND.getMessage()));
+    public User findUserByIdOrThrow(UUID userId) {
+        return Optional.ofNullable(userRepository.findUserById(userId))
+                .orElseThrow(() -> new RuntimeException(ErrorMessage.USER_NOT_FOUND.format(userId)));
     }
 
     @Override
@@ -36,8 +36,8 @@ public class BasicUserService implements UserService {
     }
 
     @Override
-    public User updateUser(UUID id, String name, String nickname, String email, String password, String profileImageUrl) {
-        User foundUser = findUserByIdOrThrow(id);
+    public User updateUser(UUID userId, String name, String nickname, String email, String password, String profileImageUrl) {
+        User foundUser = findUserByIdOrThrow(userId);
 
         foundUser.updateName(name);
         foundUser.updateNickname(nickname);
@@ -50,10 +50,10 @@ public class BasicUserService implements UserService {
     }
 
     @Override
-    public void deleteUser(UUID id) {
-        if (!userRepository.existsUser(id)) {
-            throw new RuntimeException(ErrorMessage.USER_NOT_FOUND.getMessage());
+    public void deleteUser(UUID userId) {
+        if (!userRepository.existsUser(userId)) {
+            throw new RuntimeException(ErrorMessage.USER_NOT_FOUND.format(userId));
         }
-        userRepository.removeUser(id);
+        userRepository.removeUser(userId);
     }
 }

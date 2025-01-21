@@ -27,7 +27,7 @@ public class FileUserService implements UserService {
     @Override
     public User findUserByIdOrThrow(UUID userId) {
         return Optional.ofNullable(fileUserRepository.findUserById(userId))
-                .orElseThrow(() -> new RuntimeException(ErrorMessage.USER_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new RuntimeException(ErrorMessage.USER_NOT_FOUND.format(userId)));
     }
 
     @Override
@@ -53,9 +53,8 @@ public class FileUserService implements UserService {
     @Override
     public void deleteUser(UUID userId) {
         if (!fileUserRepository.existsUser(userId)) {
-            throw new RuntimeException(ErrorMessage.USER_NOT_FOUND.getMessage());
+            throw new RuntimeException(ErrorMessage.USER_NOT_FOUND.format(userId));
         }
-
         fileUserRepository.removeUser(userId);
     }
 }
