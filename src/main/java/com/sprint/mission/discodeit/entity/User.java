@@ -26,7 +26,6 @@ public class User extends BaseEntity implements Serializable {
         return new User(name, nickname, email, password, profileImageUrl, active);
     }
 
-
     public String getName() {
         return name;
     }
@@ -50,7 +49,6 @@ public class User extends BaseEntity implements Serializable {
     public boolean isActive() {
         return active;
     }
-
 
     public void updateName(String name) {
         this.name = name;
@@ -76,4 +74,14 @@ public class User extends BaseEntity implements Serializable {
         this.active = !this.active;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "name='" + name + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", email='" + email + '\'' +
+                ", profileImageUrl='" + profileImageUrl + '\'' +
+                ", active=" + active +
+                '}';
+    }
 }

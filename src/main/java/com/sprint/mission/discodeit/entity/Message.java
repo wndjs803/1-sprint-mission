@@ -37,4 +37,13 @@ public class Message extends BaseEntity {
     public boolean isNotOwner(UUID sendUserId) {
         return !(this.sendUser.getId().equals(sendUserId));
     }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "sendUser=" + sendUser +
+                ", channel=" + channel +
+                ", content='" + content + '\'' +
+                '}';
+    }
 }

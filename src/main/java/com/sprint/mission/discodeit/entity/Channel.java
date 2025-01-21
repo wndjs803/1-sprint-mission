@@ -61,4 +61,13 @@ public class Channel extends BaseEntity {
     public boolean isNotOwner(UUID channelOwnerId) {
         return !(this.channelOwner.getId().equals(channelOwnerId));
     }
+
+    @Override
+    public String toString() {
+        return "Channel{" +
+                "name='" + name + '\'' +
+                ", channelOwner=" + channelOwner +
+                ", channelUserList=" + channelUserList +
+                '}';
+    }
 }
