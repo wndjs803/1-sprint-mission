@@ -12,9 +12,13 @@ public class UserStatus extends BaseEntity {
     private Instant loginAt;
     private boolean isOnline = false;
 
-    public UserStatus(User user) {
+    private UserStatus(User user) {
         super();
         this.user = user;
+    }
+
+    public static UserStatus of(User user) {
+        return new UserStatus(user);
     }
 
     public void updateLoginAt(Instant loginAt) {

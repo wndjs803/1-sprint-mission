@@ -52,4 +52,14 @@ public class FileUserRepository implements UserRepository {
         return userList.stream()
                 .anyMatch(user -> user.getId().equals(userId));
     }
+
+    @Override
+    public User findUserByName(String name) {
+        return null;
+    }
+
+    @Override
+    public User findUserByEmail(String email) {
+        return null;
+    }
 }
