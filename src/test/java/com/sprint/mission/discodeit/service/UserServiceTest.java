@@ -1,61 +1,77 @@
-//package com.sprint.mission.discodeit.service;
-//
-//import com.sprint.mission.discodeit.common.ErrorMessage;
-//import com.sprint.mission.discodeit.entity.User;
-//import com.sprint.mission.discodeit.repository.jcf.JCFUserRepository;
-//import com.sprint.mission.discodeit.service.jcf.JCFUserService;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.DisplayName;
-//import org.junit.jupiter.api.Nested;
-//import org.junit.jupiter.api.Test;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//import java.util.UUID;
-//
-//import static org.assertj.core.api.Assertions.assertThat;
-//import static org.assertj.core.api.Assertions.assertThatThrownBy;
-//import static org.junit.jupiter.api.Assertions.assertEquals;
-//import static org.mockito.Mockito.any;
-//import static org.mockito.Mockito.mock;
-//import static org.mockito.Mockito.verify;
-//import static org.mockito.Mockito.when;
-//
-//
-//class UserServiceTest {
-//    private UserService userService;
-//        private JCFUserRepository userRepository;
-////    private FileUserRepository userRepository;
-//
-//    @BeforeEach
-//    void setUp() {
-//        userRepository = mock(JCFUserRepository.class);
-//        this.userService = new JCFUserService(userRepository);
-////        userRepository = mock(FileUserRepository.class);
-////        this.userService = new FileUserService(userRepository);
-//    }
-//
-//
-//    @Nested
-//    @DisplayName("유저 생성 테스트")
-//    class createUserTest {
-//        @Test
-//        @DisplayName("유저 생성 성공")
-//        void success() {
-//            // given
-//            User user = User.of("test1", "nickname1", "email1",
-//                    "password1", "profileImageUrl1", true);
-//            when(userRepository.saveUser(any())).thenReturn(user);
-//
-//            // when
-//            User createdUser = userService.createUser("test1", "nickname1", "email1",
-//                    "password1", "profileImageUrl1");
-//
-//            // then
-//            assertEquals("test1", createdUser.getName());
-//        }
-//    }
-//
+package com.sprint.mission.discodeit.service;
+
+import com.sprint.mission.discodeit.common.ErrorMessage;
+import com.sprint.mission.discodeit.common.MultipartFileConverter;
+import com.sprint.mission.discodeit.dto.user.request.CreateUserRequest;
+import com.sprint.mission.discodeit.dto.user.response.CreateUserResponse;
+import com.sprint.mission.discodeit.mapper.user.UserMapper;
+import com.sprint.mission.discodeit.repository.jcf.JCFBinaryContentRepository;
+import com.sprint.mission.discodeit.repository.jcf.JCFUserRepository;
+import com.sprint.mission.discodeit.repository.jcf.JCFUserStatusRepository;
+import com.sprint.mission.discodeit.service.basic.BasicUserService;
+import com.sprint.mission.discodeit.validator.UserValidator;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+
+class UserServiceTest {
+    private JCFUserRepository userRepository;
+    private JCFUserStatusRepository userStatusRepository;
+    private JCFBinaryContentRepository binaryContentRepository;
+    private UserMapper userMapper;
+    private UserValidator userValidator;
+    private MultipartFileConverter multipartFileConverter;
+    private UserService userService;
+
+
+    @BeforeEach
+    void setUp() {
+        userRepository = new JCFUserRepository();
+        userStatusRepository = new JCFUserStatusRepository();
+        binaryContentRepository = new JCFBinaryContentRepository();
+        userMapper = new UserMapper();
+        userValidator = new UserValidator(userRepository);
+        multipartFileConverter = new MultipartFileConverter();
+        userService = new BasicUserService(userRepository, userStatusRepository, binaryContentRepository,
+                userMapper, userValidator, multipartFileConverter);
+    }
+
+
+    @Nested
+    @DisplayName("유저 생성 테스트")
+    class createUserTest {
+        @Test
+        @DisplayName("유저 생성 성공")
+        void success() {
+            // given
+            CreateUserRequest createUserRequest =
+                    new CreateUserRequest("test1", "nickname1", "email1", "password1");
+
+            // when
+            CreateUserResponse response = userService.createUser(createUserRequest, null);
+
+            // then
+            assertEquals("test1", response.name());
+            assertEquals("nickname1", response.nickname());
+            assertEquals("email1", response.email());
+            assertEquals("password1", response.password());
+        }
+    }
+
 //    @Nested
 //    @DisplayName("유저 단일 조회 테스트")
 //    class findUserByIdOrThrowTest {
@@ -170,4 +186,4 @@
 //                    .hasMessage(ErrorMessage.USER_NOT_FOUND.format(randomId));
 //        }
 //    }
-//}
+}

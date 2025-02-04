@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository("jcfUserRepository")
@@ -18,7 +19,8 @@ public class JCFUserRepository implements UserRepository {
 
     @Override
     public User saveUser(User user) {
-        return userData.put(user.getId(), user);
+        userData.put(user.getId(), user);
+        return user;
     }
 
     @Override
@@ -42,21 +44,21 @@ public class JCFUserRepository implements UserRepository {
     }
 
     @Override
-    public User findUserByName(String name) {
+    public Optional<User> findUserByName(String name) {
         return userData.values().stream().filter(user -> user.getName().equals(name))
-                .findFirst().get();
+                .findFirst();
     }
 
     @Override
-    public User findUserByEmail(String email) {
+    public Optional<User> findUserByEmail(String email) {
         return userData.values().stream().filter(user -> user.getEmail().equals(email))
-                .findFirst().get();
+                .findFirst();
     }
 
     @Override
-    public User findUserByNameAndPassword(String name, String password) {
+    public Optional<User> findUserByNameAndPassword(String name, String password) {
         return userData.values().stream()
                 .filter(user -> user.getName().equals(name) && user.getPassword().equals(password))
-                .findFirst().get();
+                .findFirst();
     }
 }
