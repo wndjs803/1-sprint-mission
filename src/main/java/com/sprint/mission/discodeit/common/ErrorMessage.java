@@ -3,6 +3,7 @@ package com.sprint.mission.discodeit.common;
 public enum ErrorMessage {
     // User
     USER_NOT_FOUND("유저를 찾을 수 없습니다. id: %s"),
+    USER_ALREADY_EXIST("이미 유저가 존재합니다. %s"),
 
     // Channel
     CHANNEL_NOT_FOUND("채널을 찾을 수 없습니다. id: %s"),
@@ -20,7 +21,8 @@ public enum ErrorMessage {
     FILE_WRITE_FAIL("파일 쓰기에 실패했습니다. path: %s, data: %s"),
     FILE_READ_FAIL("파일 읽기에 실패했습니다. path: %s"),
     FILE_REMOVE_FAIL("파일 제거에 실패했습니다. path: %s"),
-    FILES_LOAD_FAIL("파일들을 로드하는데 실패했습니다. path: %s");
+    FILES_LOAD_FAIL("파일들을 로드하는데 실패했습니다. path: %s"),
+    FILE_CONVERSION_FAIL("파일을 바이트 배열로 변환하는 데 실패했습니다. 이유: %s");
 
     private final String msg;
 

@@ -11,23 +11,20 @@ public class User extends BaseEntity implements Serializable {
     private String nickname;
     private String email;
     private String password;
-    private String profileImageUrl;
+    private BinaryContent profileImage;
     private boolean active;
 
-    private User(String name, String nickname, String email, String password,
-                 String profileImageUrl, boolean active) {
+    private User(String name, String nickname, String email, String password, boolean active) {
         super();
         this.name = name;
         this.nickname = nickname;
         this.email = email;
         this.password = password;
-        this.profileImageUrl = profileImageUrl;
         this.active = active;
     }
 
-    public static User of(String name, String nickname, String email, String password,
-                          String profileImageUrl, boolean active) {
-        return new User(name, nickname, email, password, profileImageUrl, active);
+    public static User of(String name, String nickname, String email, String password, boolean active) {
+        return new User(name, nickname, email, password, active);
     }
 
     public void updateName(String name) {
@@ -46,8 +43,8 @@ public class User extends BaseEntity implements Serializable {
         this.password = password;
     }
 
-    public void updateProfileImageUrl(String profileImageUrl) {
-        this.profileImageUrl = profileImageUrl;
+    public void updateProfileImage(BinaryContent profileImage) {
+        this.profileImage = profileImage;
     }
 
     public void updateActive() {
@@ -60,7 +57,8 @@ public class User extends BaseEntity implements Serializable {
                 "name='" + name + '\'' +
                 ", nickname='" + nickname + '\'' +
                 ", email='" + email + '\'' +
-                ", profileImageUrl='" + profileImageUrl + '\'' +
+                ", password='" + password + '\'' +
+                ", profileImage=" + profileImage +
                 ", active=" + active +
                 '}';
     }
