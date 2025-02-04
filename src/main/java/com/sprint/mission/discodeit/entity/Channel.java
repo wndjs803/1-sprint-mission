@@ -1,11 +1,13 @@
 package com.sprint.mission.discodeit.entity;
 
 import com.sprint.mission.discodeit.common.ErrorMessage;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Getter
 public class Channel extends BaseEntity {
     private String name;
     private User channelOwner;
@@ -21,10 +23,6 @@ public class Channel extends BaseEntity {
         return new Channel(name, channelOwner);
     }
 
-    public User getChannelOwner() {
-        return channelOwner;
-    }
-
     public void updateChannelOwner(User channelOwner) {
         if (channelOwner == null) {
             throw new IllegalArgumentException(ErrorMessage.CHANNEL_OWNER_NOT_NULL.getMessage());
@@ -32,16 +30,8 @@ public class Channel extends BaseEntity {
         this.channelOwner = channelOwner;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public void updateName(String name) {
         this.name = name;
-    }
-
-    public List<User> getChannelUserList() {
-        return channelUserList;
     }
 
     public void addChannelUser(User user) {
