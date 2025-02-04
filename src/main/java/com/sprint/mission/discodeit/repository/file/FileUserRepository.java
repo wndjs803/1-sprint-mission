@@ -2,27 +2,21 @@ package com.sprint.mission.discodeit.repository.file;
 
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.UserRepository;
+import org.springframework.stereotype.Repository;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 
+@Repository
 public class FileUserRepository implements UserRepository {
     private final FileStorage fileStorage;
     private final Path directory = Paths.get(System.getProperty("user.dir"), "data", "user");
 
-    private FileUserRepository(FileStorage fileStorage) {
+    public FileUserRepository(FileStorage fileStorage) {
         this.fileStorage = fileStorage;
         fileStorage.init(directory);
-    }
-
-    public static FileUserRepository getInstance() {
-        return LazyHolder.INSTANCE;
-    }
-
-    private static class LazyHolder {
-        private static final FileUserRepository INSTANCE = new FileUserRepository(new FileStorage());
     }
 
     @Override

@@ -23,6 +23,7 @@ import com.sprint.mission.discodeit.service.jcf.JCFMessageService;
 import com.sprint.mission.discodeit.service.jcf.JCFUserService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,22 +33,26 @@ import java.util.UUID;
 public class DiscodeitApplication {
 
     public static void main(String[] args) {
-        JCFUserService jcfUserService = new JCFUserService(JCFUserRepository.getInstance());
-        JCFChannelService jcfChannelService = new JCFChannelService(JCFChannelRepository.getInstance(), jcfUserService);
-        JCFMessageService jcfMessageService = new JCFMessageService(JCFMessageRepository.getInstance(),
-                jcfUserService, jcfChannelService);
+        ConfigurableApplicationContext context = SpringApplication.run(DiscodeitApplication.class, args);
 
-        FileUserService fileUserService = new FileUserService(FileUserRepository.getInstance());
-        FileChannelService fileChannelService = new FileChannelService(FileChannelRepository.getInstance(),
-                fileUserService);
-        FileMessageService fileMessageService = new FileMessageService(FileMessageRepository.getInstance(),
-                fileUserService, fileChannelService);
+//        JCFUserService jcfUserService = new JCFUserService(JCFUserRepository.getInstance());
+//        JCFChannelService jcfChannelService = new JCFChannelService(JCFChannelRepository.getInstance(), jcfUserService);
+//        JCFMessageService jcfMessageService = new JCFMessageService(JCFMessageRepository.getInstance(),
+//                jcfUserService, jcfChannelService);
+//
+//        FileUserService fileUserService = new FileUserService(FileUserRepository.getInstance());
+//        FileChannelService fileChannelService = new FileChannelService(FileChannelRepository.getInstance(),
+//                fileUserService);
+//        FileMessageService fileMessageService = new FileMessageService(FileMessageRepository.getInstance(),
+//                fileUserService, fileChannelService);
 
-        BasicUserService basicUserService = new BasicUserService(FileUserRepository.getInstance());
-        BasicChannelService basicChannelService = new BasicChannelService(FileChannelRepository.getInstance(),
-                basicUserService);
-        BasicMessageService basicMessageService = new BasicMessageService(FileMessageRepository.getInstance(),
-                basicUserService, basicChannelService);
+        FileUserRepository fileUserRepository = context.getBean(FileUserRepository.class);
+        FileChannelRepository fileChannelRepository = context.getBean(FileChannelRepository.class);
+        FileMessageRepository fileMessageRepository = context.getBean(FileMessageRepository.class);
+
+        BasicUserService basicUserService = context.getBean(BasicUserService.class);
+        BasicChannelService basicChannelService = context.getBean(BasicChannelService.class);
+        BasicMessageService basicMessageService = context.getBean(BasicMessageService.class);
 
         UserService userService = basicUserService;
         ChannelService channelService = basicChannelService;
@@ -245,8 +250,6 @@ public class DiscodeitApplication {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-
-        SpringApplication.run(DiscodeitApplication.class, args);
     }
 
 }
