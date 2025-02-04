@@ -4,8 +4,10 @@ import com.sprint.mission.discodeit.common.ErrorMessage;
 import com.sprint.mission.discodeit.common.MultipartFileConverter;
 import com.sprint.mission.discodeit.common.UtilMethod;
 import com.sprint.mission.discodeit.dto.user.request.CreateUserRequest;
+import com.sprint.mission.discodeit.dto.user.request.UpdateUserRequest;
 import com.sprint.mission.discodeit.dto.user.response.CreateUserResponse;
 import com.sprint.mission.discodeit.dto.user.response.FindUserResponse;
+import com.sprint.mission.discodeit.dto.user.response.UpdateUserResponse;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
@@ -47,9 +49,7 @@ public class BasicUserService implements UserService {
         User user = userMapper.toEntity(createUserRequest);
 
         // 이미지는 선택적으로 등록
-        if (profileImageFile != null) {
-            user.updateProfileImage(BinaryContent.of(multipartFileConverter.toByteArray(profileImageFile)));
-        }
+        updateProfileImage(user, profileImageFile);
 
         // UserStatus 생성(추후 service layer로 교체)
         userStatusRepository.saveUserStatus(UserStatus.of(user));
@@ -76,18 +76,19 @@ public class BasicUserService implements UserService {
     }
 
     @Override
-    public User updateUser(UUID userId, String name, String nickname, String email, String password, String profileImageUrl) {
-//        User foundUser = findUserByIdOrThrow(userId);
-//
-//        foundUser.updateName(name);
-//        foundUser.updateNickname(nickname);
-//        foundUser.updateEmail(email);
-//        foundUser.updatePassword(password);
-////        foundUser.updateProfileImageUrl(profileImageUrl);
-//        foundUser.updateUpdatedAt(UtilMethod.getCurrentTime());
-//
-//        return userRepository.saveUser(foundUser);
-        return null;
+    public UpdateUserResponse updateUser(UpdateUserRequest updateUserRequest, MultipartFile profileImageFile) {
+        User foundUser = userValidator.validateUserExistsByUserId(updateUserRequest.userId());
+
+        foundUser.updateName(updateUserRequest.name());
+        foundUser.updateNickname(updateUserRequest.nickname());
+        foundUser.updateEmail(updateUserRequest.email());
+        foundUser.updatePassword(updateUserRequest.password());
+
+        updateProfileImage(foundUser, profileImageFile);
+
+        foundUser.updateUpdatedAt(UtilMethod.getCurrentTime());
+
+        return userMapper.toUpdateUserResponse(foundUser);
     }
 
     @Override
@@ -96,5 +97,11 @@ public class BasicUserService implements UserService {
             throw new RuntimeException(ErrorMessage.USER_NOT_FOUND.format(userId));
         }
         userRepository.removeUser(userId);
+    }
+
+    private void updateProfileImage(User user, MultipartFile profileImageFile) {
+        if (profileImageFile != null) {
+            user.updateProfileImage(BinaryContent.of(multipartFileConverter.toByteArray(profileImageFile)));
+        }
     }
 }
