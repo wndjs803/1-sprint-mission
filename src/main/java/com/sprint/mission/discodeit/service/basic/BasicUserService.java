@@ -1,6 +1,5 @@
 package com.sprint.mission.discodeit.service.basic;
 
-import com.sprint.mission.discodeit.common.ErrorMessage;
 import com.sprint.mission.discodeit.common.MultipartFileConverter;
 import com.sprint.mission.discodeit.common.UtilMethod;
 import com.sprint.mission.discodeit.dto.user.request.CreateUserRequest;
@@ -12,11 +11,14 @@ import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.mapper.user.UserMapper;
+import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.repository.UserStatusRepository;
 import com.sprint.mission.discodeit.service.UserService;
 import com.sprint.mission.discodeit.validator.UserValidator;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,6 +35,7 @@ public class BasicUserService implements UserService {
     @Qualifier("jcfUserRepository")
     private final UserRepository userRepository;
     private final UserStatusRepository userStatusRepository;
+    private final BinaryContentRepository binaryContentRepository;
     private final UserMapper userMapper;
     private final MultipartFileConverter multipartFileConverter;
     private final UserValidator userValidator;
@@ -93,15 +96,28 @@ public class BasicUserService implements UserService {
 
     @Override
     public void deleteUser(UUID userId) {
-        if (!userRepository.existsUser(userId)) {
-            throw new RuntimeException(ErrorMessage.USER_NOT_FOUND.format(userId));
-        }
+        // 유저 존재 여부 확인
+        User foundUser = userValidator.validateUserExistsByUserId(userId);
+
+        // UserStatus 삭제
+        // UserStatus 존재 여부 확인 -> validator or Service
+        UserStatus userStatus = userStatusRepository.findUserStatusByUser(foundUser);
+        userStatusRepository.removeUserStatus(userStatus.getId());
+
+        // BinaryContent 삭제
+        // BinaryContent 존재 여부 확인 -> validator or Service
+        binaryContentRepository.removeBinaryContent(foundUser.getProfileImage().getId());
+
+        // 유저 삭제
         userRepository.removeUser(userId);
     }
 
     private void updateProfileImage(User user, MultipartFile profileImageFile) {
         if (profileImageFile != null) {
-            user.updateProfileImage(BinaryContent.of(multipartFileConverter.toByteArray(profileImageFile)));
+            BinaryContent binaryContent = binaryContentRepository.saveBinaryContent(
+                    BinaryContent.of(multipartFileConverter.toByteArray(profileImageFile)));
+
+            user.updateProfileImage(binaryContent);
         }
     }
 }
