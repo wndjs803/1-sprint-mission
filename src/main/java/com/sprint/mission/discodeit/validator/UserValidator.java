@@ -23,19 +23,20 @@ public class UserValidator {
     }
 
     public void validateDuplicateByName(String name) {
-        if (userRepository.findUserByName(name) != null) {
+        if (userRepository.findUserByName(name).isPresent()) {
             throw new RuntimeException(ErrorMessage.USER_ALREADY_EXIST.format("name: " + name));
         }
+
     }
 
     public void validateDuplicateUserByEmail(String email) {
-        if (userRepository.findUserByEmail(email) != null) {
+        if (userRepository.findUserByEmail(email).isPresent()) {
             throw new RuntimeException(ErrorMessage.USER_ALREADY_EXIST.format("email: " + email));
         }
     }
 
     public User validateUserExistsByNameAndPassword(String name, String password) {
-        return Optional.ofNullable(userRepository.findUserByNameAndPassword(name, password))
+        return userRepository.findUserByNameAndPassword(name, password)
                 .orElseThrow(() -> new RuntimeException(ErrorMessage.USER_NOT_FOUND.format(
                         "name: " + name + " password: " + password)));
     }

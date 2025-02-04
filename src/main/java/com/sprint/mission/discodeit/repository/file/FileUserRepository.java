@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -54,17 +55,17 @@ public class FileUserRepository implements UserRepository {
     }
 
     @Override
-    public User findUserByName(String name) {
+    public Optional<User> findUserByName(String name) {
         return null;
     }
 
     @Override
-    public User findUserByEmail(String email) {
+    public Optional<User>  findUserByEmail(String email) {
         return null;
     }
 
     @Override
-    public User findUserByNameAndPassword(String name, String password) {
+    public Optional<User>  findUserByNameAndPassword(String name, String password) {
         return null;
     }
 }
