@@ -2,6 +2,8 @@ package com.sprint.mission.discodeit.repository.jcf;
 
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
+import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,19 +11,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+@Repository("jcfChannelRepository")
+@NoArgsConstructor
 public class JCFChannelRepository implements ChannelRepository {
     private final Map<UUID, Channel> channelData = new HashMap<>();
-
-    private JCFChannelRepository() {
-    }
-
-    public static JCFChannelRepository getInstance() {
-        return LazyHolder.INSTANCE;
-    }
-
-    private static class LazyHolder {
-        private static final JCFChannelRepository INSTANCE = new JCFChannelRepository();
-    }
 
     @Override
     public Channel saveChannel(Channel channel) {
