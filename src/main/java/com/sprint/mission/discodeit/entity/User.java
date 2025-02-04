@@ -1,7 +1,10 @@
 package com.sprint.mission.discodeit.entity;
 
+import lombok.Getter;
+
 import java.io.Serializable;
 
+@Getter
 public class User extends BaseEntity implements Serializable {
     private String name;
     private String nickname;
@@ -24,30 +27,6 @@ public class User extends BaseEntity implements Serializable {
     public static User of(String name, String nickname, String email, String password,
                           String profileImageUrl, boolean active) {
         return new User(name, nickname, email, password, profileImageUrl, active);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getProfileImageUrl() {
-        return profileImageUrl;
-    }
-
-    public boolean isActive() {
-        return active;
     }
 
     public void updateName(String name) {
