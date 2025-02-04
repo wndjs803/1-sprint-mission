@@ -6,6 +6,7 @@ import java.util.UUID;
 
 @Getter
 public class Message extends BaseEntity {
+
     private final User sendUser;
     private final Channel channel;
     private String content;
