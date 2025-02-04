@@ -5,6 +5,8 @@ import com.sprint.mission.discodeit.common.UtilMethod;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,12 +14,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class BasicUserService implements UserService {
-    private final UserRepository userRepository;
 
-    public BasicUserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+//    @Qualifier("fileUserRepository")
+    @Qualifier("jcfUserRepository")
+    private final UserRepository userRepository;
 
     @Override
     public User createUser(String name, String nickname, String email, String password, String profileImageUrl) {

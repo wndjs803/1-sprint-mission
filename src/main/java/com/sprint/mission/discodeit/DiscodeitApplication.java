@@ -46,10 +46,6 @@ public class DiscodeitApplication {
 //        FileMessageService fileMessageService = new FileMessageService(FileMessageRepository.getInstance(),
 //                fileUserService, fileChannelService);
 
-        FileUserRepository fileUserRepository = context.getBean(FileUserRepository.class);
-        FileChannelRepository fileChannelRepository = context.getBean(FileChannelRepository.class);
-        FileMessageRepository fileMessageRepository = context.getBean(FileMessageRepository.class);
-
         BasicUserService basicUserService = context.getBean(BasicUserService.class);
         BasicChannelService basicChannelService = context.getBean(BasicChannelService.class);
         BasicMessageService basicMessageService = context.getBean(BasicMessageService.class);
