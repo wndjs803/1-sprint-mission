@@ -20,4 +20,6 @@ public interface UserRepository {
 
     User findUserByEmail(String email);
 
+    User findUserByNameAndPassword(String name, String password);
+
 }

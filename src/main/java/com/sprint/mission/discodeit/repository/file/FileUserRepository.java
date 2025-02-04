@@ -62,4 +62,9 @@ public class FileUserRepository implements UserRepository {
     public User findUserByEmail(String email) {
         return null;
     }
+
+    @Override
+    public User findUserByNameAndPassword(String name, String password) {
+        return null;
+    }
 }

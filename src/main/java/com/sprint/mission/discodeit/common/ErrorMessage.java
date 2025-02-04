@@ -2,7 +2,7 @@ package com.sprint.mission.discodeit.common;
 
 public enum ErrorMessage {
     // User
-    USER_NOT_FOUND("유저를 찾을 수 없습니다. id: %s"),
+    USER_NOT_FOUND("유저를 찾을 수 없습니다. %s"),
     USER_ALREADY_EXIST("이미 유저가 존재합니다. %s"),
 
     // Channel
