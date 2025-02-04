@@ -53,4 +53,11 @@ public class JCFUserRepository implements UserRepository {
         return userData.values().stream().filter(user -> user.getEmail().equals(email))
                 .findFirst().get();
     }
+
+    @Override
+    public User findUserByNameAndPassword(String name, String password) {
+        return userData.values().stream()
+                .filter(user -> user.getName().equals(name) && user.getPassword().equals(password))
+                .findFirst().get();
+    }
 }
