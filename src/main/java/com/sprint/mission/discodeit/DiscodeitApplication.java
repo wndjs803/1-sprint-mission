@@ -25,6 +25,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import java.time.Instant;
+import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -246,6 +249,11 @@ public class DiscodeitApplication {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+
+        Instant instant = Instant.now();
+        Instant instant1 = Instant.now();
+        long minutes = ChronoUnit.MINUTES.between(instant1, instant);
+        System.out.println(minutes);
     }
 
 }
