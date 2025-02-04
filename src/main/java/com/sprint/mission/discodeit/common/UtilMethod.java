@@ -1,7 +1,9 @@
 package com.sprint.mission.discodeit.common;
 
+import java.time.Instant;
+
 public class UtilMethod {
-    public static Long getCurrentTime() {
-        return System.currentTimeMillis();
+    public static Instant getCurrentTime() {
+        return Instant.now();
     }
 }

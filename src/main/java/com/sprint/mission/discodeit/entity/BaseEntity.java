@@ -4,6 +4,7 @@ import com.sprint.mission.discodeit.common.UtilMethod;
 import lombok.Getter;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -11,8 +12,8 @@ import java.util.UUID;
 public abstract class BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     private final UUID id;
-    private final Long createdAt;
-    private Long updatedAt;
+    private final Instant createdAt;
+    private Instant updatedAt;
 
     public BaseEntity() {
         this.id = UUID.randomUUID();
@@ -20,7 +21,7 @@ public abstract class BaseEntity implements Serializable {
         this.updatedAt = createdAt;
     }
 
-    public void updateUpdatedAt(Long updatedAt) {
+    public void updateUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
     }
 
