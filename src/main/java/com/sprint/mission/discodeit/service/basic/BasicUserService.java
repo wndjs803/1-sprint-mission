@@ -20,8 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,10 +39,10 @@ public class BasicUserService implements UserService {
     public CreateUserResponse createUser(CreateUserRequest createUserRequest, MultipartFile profileImageFile) {
 
         // name 중복 여부
-        userValidator.validateUserExistsByName(createUserRequest.name());
+        userValidator.validateDuplicateByName(createUserRequest.name());
 
         // email 중복 여부
-        userValidator.validateUserExistsByEmail(createUserRequest.email());
+        userValidator.validateDuplicateUserByEmail(createUserRequest.email());
 
         User user = userMapper.toEntity(createUserRequest);
 
@@ -69,8 +69,10 @@ public class BasicUserService implements UserService {
     }
 
     @Override
-    public List<User> findAllUsers() {
-        return userRepository.findAllUsers();
+    public List<FindUserResponse> findAllUsers() {
+        return userRepository.findAllUsers().stream()
+                .map(user -> findUserByIdOrThrow(user.getId()))
+                .collect(Collectors.toList());
     }
 
     @Override

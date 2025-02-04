@@ -19,13 +19,13 @@ public class UserValidator {
                 .orElseThrow(() -> new RuntimeException(ErrorMessage.USER_NOT_FOUND.format(userId)));
     }
 
-    public void validateUserExistsByName(String name) {
+    public void validateDuplicateByName(String name) {
         if (userRepository.findUserByName(name) != null) {
             throw new RuntimeException(ErrorMessage.USER_ALREADY_EXIST.format("name: " + name));
         }
     }
 
-    public void validateUserExistsByEmail(String email) {
+    public void validateDuplicateUserByEmail(String email) {
         if (userRepository.findUserByEmail(email) != null) {
             throw new RuntimeException(ErrorMessage.USER_ALREADY_EXIST.format("email: " + email));
         }
