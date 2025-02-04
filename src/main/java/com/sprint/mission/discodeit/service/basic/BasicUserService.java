@@ -34,11 +34,11 @@ public class BasicUserService implements UserService {
 //    @Qualifier("fileUserRepository")
     @Qualifier("jcfUserRepository")
     private final UserRepository userRepository;
-    private final UserStatusRepository userStatusRepository;
-    private final BinaryContentRepository binaryContentRepository;
+    private final UserStatusRepository userStatusRepository; // 구현 필요
+    private final BinaryContentRepository binaryContentRepository; // 구현 필요
     private final UserMapper userMapper;
-    private final MultipartFileConverter multipartFileConverter;
     private final UserValidator userValidator;
+    private final MultipartFileConverter multipartFileConverter;
 
     @Override
     public CreateUserResponse createUser(CreateUserRequest createUserRequest, MultipartFile profileImageFile) {
