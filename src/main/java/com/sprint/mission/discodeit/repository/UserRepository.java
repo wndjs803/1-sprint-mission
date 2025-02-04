@@ -3,6 +3,7 @@ package com.sprint.mission.discodeit.repository;
 import com.sprint.mission.discodeit.entity.User;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface UserRepository {
@@ -16,10 +17,10 @@ public interface UserRepository {
 
     boolean existsUser(UUID userId);
 
-    User findUserByName(String name);
+    Optional<User> findUserByName(String name);
 
-    User findUserByEmail(String email);
+    Optional<User>  findUserByEmail(String email);
 
-    User findUserByNameAndPassword(String name, String password);
+    Optional<User>  findUserByNameAndPassword(String name, String password);
 
 }
