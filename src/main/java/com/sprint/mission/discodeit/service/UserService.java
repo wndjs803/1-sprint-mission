@@ -14,7 +14,7 @@ public interface UserService {
 
     FindUserResponse findUserByIdOrThrow(UUID id);
 
-    List<User> findAllUsers();
+    List<FindUserResponse> findAllUsers();
 
     User updateUser(UUID id, String name, String nickname, String email, String password, String profileImageUrl);
 
