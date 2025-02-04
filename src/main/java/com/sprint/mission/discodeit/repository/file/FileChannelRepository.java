@@ -2,27 +2,21 @@ package com.sprint.mission.discodeit.repository.file;
 
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
+import org.springframework.stereotype.Repository;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 
+@Repository
 public class FileChannelRepository implements ChannelRepository {
     private final FileStorage fileStorage;
     private final Path directory = Paths.get(System.getProperty("user.dir"), "data", "channel");
 
-    private FileChannelRepository(FileStorage fileStorage) {
+    public FileChannelRepository(FileStorage fileStorage) {
         this.fileStorage = fileStorage;
         fileStorage.init(directory);
-    }
-
-    public static FileChannelRepository getInstance() {
-        return LazyHolder.INSTANCE;
-    }
-
-    private static class LazyHolder {
-        private static final FileChannelRepository INSTANCE = new FileChannelRepository(new FileStorage());
     }
 
     @Override

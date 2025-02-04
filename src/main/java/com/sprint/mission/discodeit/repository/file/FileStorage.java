@@ -2,6 +2,7 @@ package com.sprint.mission.discodeit.repository.file;
 
 
 import com.sprint.mission.discodeit.common.ErrorMessage;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -12,6 +13,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class FileStorage {
 
     public void init(Path directory) {
