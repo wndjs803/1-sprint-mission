@@ -7,6 +7,8 @@ import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.service.ChannelService;
 import com.sprint.mission.discodeit.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,14 +16,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class BasicChannelService implements ChannelService {
+
+//    @Qualifier("fileChannelRepository")
+    @Qualifier("jcfChannelRepository")
     private final ChannelRepository channelRepository;
     private final UserService userService;
-
-    public BasicChannelService(ChannelRepository channelRepository, UserService userService) {
-        this.channelRepository = channelRepository;
-        this.userService = userService;
-    }
 
     @Override
     public Channel createChannel(UUID channelOwnerId, String name) {
