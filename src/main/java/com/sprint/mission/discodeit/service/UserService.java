@@ -1,8 +1,10 @@
 package com.sprint.mission.discodeit.service;
 
 import com.sprint.mission.discodeit.dto.user.request.CreateUserRequest;
+import com.sprint.mission.discodeit.dto.user.request.UpdateUserRequest;
 import com.sprint.mission.discodeit.dto.user.response.CreateUserResponse;
 import com.sprint.mission.discodeit.dto.user.response.FindUserResponse;
+import com.sprint.mission.discodeit.dto.user.response.UpdateUserResponse;
 import com.sprint.mission.discodeit.entity.User;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,7 +18,7 @@ public interface UserService {
 
     List<FindUserResponse> findAllUsers();
 
-    User updateUser(UUID id, String name, String nickname, String email, String password, String profileImageUrl);
+    UpdateUserResponse updateUser(UpdateUserRequest updateUserRequest, MultipartFile profileImageFile);
 
     void deleteUser(UUID id);
 }
