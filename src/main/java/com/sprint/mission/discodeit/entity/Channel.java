@@ -9,6 +9,7 @@ import java.util.UUID;
 
 @Getter
 public class Channel extends BaseEntity {
+
     private String name;
     private User channelOwner;
     private final List<User> channelUserList = new ArrayList<>();
