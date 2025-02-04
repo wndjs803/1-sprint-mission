@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 @Getter
 public class User extends BaseEntity implements Serializable {
+
     private String name;
     private String nickname;
     private String email;

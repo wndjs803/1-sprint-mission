@@ -13,6 +13,7 @@ public class UserStatus extends BaseEntity {
     private boolean isOnline = false;
 
     public UserStatus(User user) {
+        super();
         this.user = user;
     }
 
