@@ -2,6 +2,7 @@ package com.sprint.mission.discodeit.service;
 
 import com.sprint.mission.discodeit.dto.user.request.CreateUserRequest;
 import com.sprint.mission.discodeit.dto.user.response.CreateUserResponse;
+import com.sprint.mission.discodeit.dto.user.response.FindUserResponse;
 import com.sprint.mission.discodeit.entity.User;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,7 +12,7 @@ import java.util.UUID;
 public interface UserService {
     CreateUserResponse createUser(CreateUserRequest createUserRequest, MultipartFile profileImageFile);
 
-    User findUserByIdOrThrow(UUID id);
+    FindUserResponse findUserByIdOrThrow(UUID id);
 
     List<User> findAllUsers();
 

@@ -21,6 +21,10 @@ public class UserStatus extends BaseEntity {
         return new UserStatus(user);
     }
 
+    public boolean getIsOnline() {
+        return this.isOnline;
+    }
+
     public void updateLoginAt(Instant loginAt) {
         this.loginAt = loginAt;
     }

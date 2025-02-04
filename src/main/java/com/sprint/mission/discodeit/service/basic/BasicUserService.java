@@ -5,6 +5,7 @@ import com.sprint.mission.discodeit.common.MultipartFileConverter;
 import com.sprint.mission.discodeit.common.UtilMethod;
 import com.sprint.mission.discodeit.dto.user.request.CreateUserRequest;
 import com.sprint.mission.discodeit.dto.user.response.CreateUserResponse;
+import com.sprint.mission.discodeit.dto.user.response.FindUserResponse;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
@@ -12,6 +13,7 @@ import com.sprint.mission.discodeit.mapper.user.UserMapper;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.repository.UserStatusRepository;
 import com.sprint.mission.discodeit.service.UserService;
+import com.sprint.mission.discodeit.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -31,19 +33,16 @@ public class BasicUserService implements UserService {
     private final UserStatusRepository userStatusRepository;
     private final UserMapper userMapper;
     private final MultipartFileConverter multipartFileConverter;
+    private final UserValidator userValidator;
 
     @Override
     public CreateUserResponse createUser(CreateUserRequest createUserRequest, MultipartFile profileImageFile) {
 
         // name 중복 여부
-        if (userRepository.findUserByName(createUserRequest.name()) != null) {
-            throw new RuntimeException(ErrorMessage.USER_ALREADY_EXIST.format("name: " + createUserRequest.name()));
-        }
+        userValidator.validateUserExistsByName(createUserRequest.name());
 
         // email 중복 여부
-        if (userRepository.findUserByEmail(createUserRequest.email()) != null) {
-            throw new RuntimeException(ErrorMessage.USER_ALREADY_EXIST.format("email: " + createUserRequest.email()));
-        }
+        userValidator.validateUserExistsByEmail(createUserRequest.email());
 
         User user = userMapper.toEntity(createUserRequest);
 
@@ -52,16 +51,21 @@ public class BasicUserService implements UserService {
             user.updateProfileImage(BinaryContent.of(multipartFileConverter.toByteArray(profileImageFile)));
         }
 
-        // UserStatus 생성
+        // UserStatus 생성(추후 service layer로 교체)
         userStatusRepository.saveUserStatus(UserStatus.of(user));
 
         return userMapper.toCreateUserResponse(userRepository.saveUser(user));
     }
 
     @Override
-    public User findUserByIdOrThrow(UUID userId) {
-        return Optional.ofNullable(userRepository.findUserById(userId))
-                .orElseThrow(() -> new RuntimeException(ErrorMessage.USER_NOT_FOUND.format(userId)));
+    public FindUserResponse findUserByIdOrThrow(UUID userId) {
+        User foundUser = userValidator.validateUserExistsByUserId(userId);
+
+        UserStatus userStatus = userStatusRepository.findUserStatusByUser(foundUser); // userStatus Service나 validator로
+
+        MultipartFile profileImage = multipartFileConverter.toMultipartFile(foundUser.getProfileImage().getContent());
+
+        return userMapper.toFindUserResponse(foundUser, profileImage, userStatus.getIsOnline());
     }
 
     @Override
@@ -71,16 +75,17 @@ public class BasicUserService implements UserService {
 
     @Override
     public User updateUser(UUID userId, String name, String nickname, String email, String password, String profileImageUrl) {
-        User foundUser = findUserByIdOrThrow(userId);
-
-        foundUser.updateName(name);
-        foundUser.updateNickname(nickname);
-        foundUser.updateEmail(email);
-        foundUser.updatePassword(password);
-//        foundUser.updateProfileImageUrl(profileImageUrl);
-        foundUser.updateUpdatedAt(UtilMethod.getCurrentTime());
-
-        return userRepository.saveUser(foundUser);
+//        User foundUser = findUserByIdOrThrow(userId);
+//
+//        foundUser.updateName(name);
+//        foundUser.updateNickname(nickname);
+//        foundUser.updateEmail(email);
+//        foundUser.updatePassword(password);
+////        foundUser.updateProfileImageUrl(profileImageUrl);
+//        foundUser.updateUpdatedAt(UtilMethod.getCurrentTime());
+//
+//        return userRepository.saveUser(foundUser);
+        return null;
     }
 
     @Override
