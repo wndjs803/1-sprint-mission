@@ -7,7 +7,9 @@ import com.sprint.mission.discodeit.dto.user.request.UpdateUserRequest;
 import com.sprint.mission.discodeit.dto.user.response.CreateUserResponse;
 import com.sprint.mission.discodeit.dto.user.response.FindUserResponse;
 import com.sprint.mission.discodeit.dto.user.response.UpdateUserResponse;
+import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.mapper.user.UserMapper;
 import com.sprint.mission.discodeit.repository.jcf.JCFBinaryContentRepository;
 import com.sprint.mission.discodeit.repository.jcf.JCFUserRepository;
@@ -153,32 +155,35 @@ class UserServiceTest {
             assertEquals("password2", updateUserResponse.password());
         }
     }
-//
-//    @Nested
-//    @DisplayName("유저 삭제 테스트")
-//    class deleteUserTest {
-//        @Test
-//        @DisplayName("유저 삭제 성공")
-//        void success() {
-//            // given
-//            User user = User.of("test1", "nickname1", "email1",
-//                    "password1", "profileImageUrl1", true);
-//            when(userRepository.existsUser(user.getId())).thenReturn(true);
-//
-//            // when
-//            userService.deleteUser(user.getId());
-//
-//            // then
-//            verify(userRepository).removeUser(any());
-//        }
-//
-//        @Test
-//        @DisplayName("존재하지 않는 유저 삭제")
-//        void notExistUser() {
-//            UUID randomId = UUID.randomUUID();
-//            assertThatThrownBy(() -> userService.deleteUser(randomId))
-//                    .isInstanceOf(RuntimeException.class)
-//                    .hasMessage(ErrorMessage.USER_NOT_FOUND.format(randomId));
-//        }
-//    }
+
+    @Nested
+    @DisplayName("유저 삭제 테스트")
+    class deleteUserTest {
+        @Test
+        @DisplayName("유저 삭제 성공")
+        void success() {
+            // given
+            CreateUserResponse createUserResponse = createUser(0);
+            User user = userValidator.validateUserExistsByUserId(createUserResponse.userId());
+            UserStatus userStatus = userStatusRepository.findUserStatusByUser(user);
+            BinaryContent profileImage = user.getProfileImage();
+
+            // when
+            userService.deleteUser(createUserResponse.userId());
+
+            // then
+            assertThat(userRepository.findUserById(user.getId())).isNull();
+            assertThat(userStatusRepository.findUserStatusById(userStatus.getId())).isNull();
+            assertThat(binaryContentRepository.findBinaryContentById(profileImage.getId())).isNull();
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 유저 삭제")
+        void notExistUser() {
+            UUID randomId = UUID.randomUUID();
+            assertThatThrownBy(() -> userService.deleteUser(randomId))
+                    .isInstanceOf(RuntimeException.class)
+                    .hasMessage(ErrorMessage.USER_NOT_FOUND.format("id: " + randomId));
+        }
+    }
 }
