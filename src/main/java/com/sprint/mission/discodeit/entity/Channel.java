@@ -70,7 +70,7 @@ public class Channel extends BaseEntity {
     }
 
     public boolean isUserInChannel(User user) {
-        return this.channelUserList.contains(user);
+        return (this.channelUserList.contains(user) || channelOwner.equals(user));
     }
 
     @Override
