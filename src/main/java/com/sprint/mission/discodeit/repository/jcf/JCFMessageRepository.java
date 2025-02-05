@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.repository.jcf;
 
+import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.repository.MessageRepository;
 import lombok.NoArgsConstructor;
@@ -30,6 +31,13 @@ public class JCFMessageRepository implements MessageRepository {
     @Override
     public List<Message> findAllMessages() {
         return new ArrayList<>(messageData.values());
+    }
+
+    @Override
+    public List<Message> findAllMessagesByChannel(Channel channel) {
+        return messageData.values().stream()
+                .filter(message -> message.getChannel() == channel)
+                .toList();
     }
 
     @Override

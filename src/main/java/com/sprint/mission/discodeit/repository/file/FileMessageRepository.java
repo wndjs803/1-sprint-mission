@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.repository.file;
 
+import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.repository.MessageRepository;
 import org.springframework.stereotype.Repository;
@@ -37,6 +38,11 @@ public class FileMessageRepository implements MessageRepository {
     @Override
     public List<Message> findAllMessages() {
         return fileStorage.load(directory);
+    }
+
+    @Override
+    public List<Message> findAllMessagesByChannel(Channel channel) {
+        return null;
     }
 
     @Override
