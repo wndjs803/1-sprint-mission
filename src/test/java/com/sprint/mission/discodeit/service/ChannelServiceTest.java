@@ -4,6 +4,7 @@ import com.sprint.mission.discodeit.common.ErrorMessage;
 import com.sprint.mission.discodeit.common.RandomStringGenerator;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePrivateChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePublicChannelRequest;
+import com.sprint.mission.discodeit.dto.channel.request.DeleteChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.UpdateChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.response.CreateChannelResponse;
 import com.sprint.mission.discodeit.dto.channel.response.FindChannelResponse;
@@ -43,6 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -301,49 +303,45 @@ class ChannelServiceTest {
                     .hasMessage(ErrorMessage.NOT_CHANNEL_CREATOR.format("id: " + anotherUser.getId()));
         }
     }
-//
-//    @Nested
-//    @DisplayName("채널 삭제 테스트")
-//    class deleteChannelTest {
-//        @Test
-//        @DisplayName("채널 삭제 성공")
-//        void success() {
-//            // given
-//            User channelOwner = User.of("test1", "nickname1", "email1",
-//                    "password1", "profileImageUrl1", true);
-//            String channelName1 = "channel1";
-//            Channel channel1 = Channel.of(channelName1, channelOwner);
-//
-//            when(userService.findUserByIdOrThrow(any())).thenReturn(channelOwner);
-//            when(channelRepository.findChannelById(any())).thenReturn(channel1);
-//
-//            // when
-//            channelService.deleteChannel(channelOwner.getId(), channel1.getId());
-//
-//            // then
-//            verify(channelRepository).removeChannel(channel1.getId());
-//        }
-//
-//        @Test
-//        @DisplayName("채널 생성자 일치 여부 확인 후 예외 발생")
-//        void deleteChannel_ThrowsException_WhenOwnerDoesNotMatch() {
-//            // given
-//            User channelOwner = User.of("test1", "nickname1", "email1",
-//                    "password1", "profileImageUrl1", true);
-//            String channelName1 = "channel1";
-//            Channel channel1 = Channel.of(channelName1, channelOwner);
-//
-//            when(userService.findUserByIdOrThrow(any())).thenReturn(channelOwner);
-//            when(channelRepository.findChannelById(any())).thenReturn(channel1);
-//
-//            UUID randomId = UUID.randomUUID();
-//
-//            // when & then
-//            assertThatThrownBy(() -> channelService.deleteChannel(randomId, channel1.getId()))
-//                    .isInstanceOf(RuntimeException.class)
-//                    .hasMessage(ErrorMessage.NOT_CHANNEL_CREATOR.format(randomId));
-//        }
-//    }
+
+    @Nested
+    @DisplayName("채널 삭제 테스트")
+    class deleteChannelTest {
+        @Test
+        @DisplayName("채널 삭제 성공")
+        void success() {
+            // given
+            User channelOwner = createUser(0);
+            CreateChannelResponse createChannelResponse = createPrivateChannel(channelOwner);
+
+            DeleteChannelRequest deleteChannelRequest =
+                    new DeleteChannelRequest(channelOwner.getId(), createChannelResponse.channelId());
+
+            // when
+            channelService.deleteChannel(deleteChannelRequest);
+
+            // then
+            assertNull(channelRepository.findChannelById(createChannelResponse.channelId()));
+        }
+
+        @Test
+        @DisplayName("채널 생성자 일치 여부 확인 후 예외 발생")
+        void deleteChannel_ThrowsException_WhenOwnerDoesNotMatch() {
+            // given
+            User channelOwner = createUser(0);
+            User anotherUser = createUser(1);
+            CreateChannelResponse createChannelResponse = createPrivateChannel(channelOwner);
+
+            DeleteChannelRequest deleteChannelRequest =
+                    new DeleteChannelRequest(anotherUser.getId(), createChannelResponse.channelId());
+
+
+            // when & then
+            assertThatThrownBy(() -> channelService.deleteChannel(deleteChannelRequest))
+                    .isInstanceOf(RuntimeException.class)
+                    .hasMessage(ErrorMessage.NOT_CHANNEL_CREATOR.format("id: " + anotherUser.getId()));
+        }
+    }
 //
 //    @Nested
 //    @DisplayName("채널 인원 초대 테스트")
