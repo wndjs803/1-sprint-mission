@@ -9,6 +9,7 @@ import com.sprint.mission.discodeit.dto.channel.request.UpdateChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.response.CreateChannelResponse;
 import com.sprint.mission.discodeit.dto.channel.response.FindChannelResponse;
 import com.sprint.mission.discodeit.dto.channel.response.UpdateChannelResponse;
+import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.ChannelType;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.mapper.ChannelMapper;
@@ -307,6 +308,7 @@ class ChannelServiceTest {
             // given
             User channelOwner = createUser(0);
             CreateChannelResponse createChannelResponse = createPrivateChannel(channelOwner);
+            Channel channel = channelRepository.findChannelById(createChannelResponse.channelId());
 
             DeleteChannelRequest deleteChannelRequest =
                     new DeleteChannelRequest(channelOwner.getId(), createChannelResponse.channelId());
@@ -315,7 +317,11 @@ class ChannelServiceTest {
             channelService.deleteChannel(deleteChannelRequest);
 
             // then
-            assertNull(channelRepository.findChannelById(createChannelResponse.channelId()));
+            assertNull(channelRepository.findChannelById(channel.getId()));
+            assertEquals(0, messageRepository.findAllMessagesByChannel(channel).size());
+            channel.getChannelUserList().forEach(
+                    user -> assertNull(readStatusRepository.findReadStatusByUserId(user.getId()).orElse(null))
+            );
         }
 
         @Test
