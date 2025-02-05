@@ -9,7 +9,6 @@ import com.sprint.mission.discodeit.dto.channel.request.UpdateChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.response.CreateChannelResponse;
 import com.sprint.mission.discodeit.dto.channel.response.FindChannelResponse;
 import com.sprint.mission.discodeit.dto.channel.response.UpdateChannelResponse;
-import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.ChannelType;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.mapper.ChannelMapper;
@@ -38,16 +37,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
