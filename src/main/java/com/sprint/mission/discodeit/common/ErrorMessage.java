@@ -22,7 +22,10 @@ public enum ErrorMessage {
     FILE_READ_FAIL("파일 읽기에 실패했습니다. path: %s"),
     FILE_REMOVE_FAIL("파일 제거에 실패했습니다. path: %s"),
     FILES_LOAD_FAIL("파일들을 로드하는데 실패했습니다. path: %s"),
-    FILE_CONVERSION_FAIL("파일을 바이트 배열로 변환하는 데 실패했습니다. 이유: %s");
+    FILE_CONVERSION_FAIL("파일을 바이트 배열로 변환하는 데 실패했습니다. 이유: %s"),
+
+    // ReadStatus
+    READSTATUS_NOT_FOUND("readStatus를 찾을 수 없습니다. %s");
 
     private final String msg;
 
