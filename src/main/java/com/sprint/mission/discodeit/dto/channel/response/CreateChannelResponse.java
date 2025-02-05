@@ -2,7 +2,7 @@ package com.sprint.mission.discodeit.dto.channel.response;
 
 import java.util.UUID;
 
-public record CreatePublicChannelResponse(
+public record CreateChannelResponse(
         UUID ChannelId,
         String name,
         String description
