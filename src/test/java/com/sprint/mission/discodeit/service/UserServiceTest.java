@@ -4,6 +4,8 @@ import com.sprint.mission.discodeit.common.ErrorMessage;
 import com.sprint.mission.discodeit.common.MultipartFileConverter;
 import com.sprint.mission.discodeit.dto.user.request.CreateUserRequest;
 import com.sprint.mission.discodeit.dto.user.response.CreateUserResponse;
+import com.sprint.mission.discodeit.dto.user.response.FindUserResponse;
+import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.mapper.user.UserMapper;
 import com.sprint.mission.discodeit.repository.jcf.JCFBinaryContentRepository;
 import com.sprint.mission.discodeit.repository.jcf.JCFUserRepository;
@@ -15,8 +17,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,7 +37,6 @@ class UserServiceTest {
     private MultipartFileConverter multipartFileConverter;
     private UserService userService;
 
-
     @BeforeEach
     void setUp() {
         userRepository = new JCFUserRepository();
@@ -50,6 +49,13 @@ class UserServiceTest {
                 userMapper, userValidator, multipartFileConverter);
     }
 
+    private CreateUserResponse createUser(int num) {
+        CreateUserRequest createUserRequest =
+                new CreateUserRequest("test" + num, "nickname" + num,
+                        "email" + num, "password" + num);
+
+        return userService.createUser(createUserRequest, null);
+    }
 
     @Nested
     @DisplayName("유저 생성 테스트")
@@ -72,35 +78,35 @@ class UserServiceTest {
         }
     }
 
-//    @Nested
-//    @DisplayName("유저 단일 조회 테스트")
-//    class findUserByIdOrThrowTest {
-//        @Test
-//        @DisplayName("유저 단일 조회 성공")
-//        void success() {
-//            // given
-//            User user = User.of("test1", "nickname1", "email1",
-//                    "password1", "profileImageUrl1", true);
-//            when(userRepository.findUserById(any())).thenReturn(user);
-//
-//            // when
-//            User foundUser = userService.findUserByIdOrThrow(user.getId());
-//
-//            // then
-//            assertEquals(user.getId(), foundUser.getId());
-//        }
-//
-//        @Test
-//        @DisplayName("잘못된 유저 아이디 조회")
-//        void invalidUserId() {
-//            when(userRepository.findUserById(any())).thenReturn(null);
-//
-//            UUID randomId = UUID.randomUUID();
-//            assertThatThrownBy(() -> userService.findUserByIdOrThrow(randomId))
-//                    .isInstanceOf(RuntimeException.class)
-//                    .hasMessage(ErrorMessage.USER_NOT_FOUND.format(randomId));
-//        }
-//    }
+    @Nested
+    @DisplayName("유저 단일 조회 테스트")
+    class findUserByIdOrThrowTest {
+        @Test
+        @DisplayName("유저 단일 조회 성공")
+        void success() {
+            // given
+            CreateUserResponse createUserResponse = createUser(0);
+
+            // when
+            FindUserResponse findUserResponse = userService.findUserByIdOrThrow(createUserResponse.userId());
+
+            // then
+            assertEquals(createUserResponse.name(), findUserResponse.name());
+        }
+
+        @Test
+        @DisplayName("잘못된 유저 아이디 조회")
+        void invalidUserId() {
+            // given
+            createUser(0);
+
+            // when & then
+            UUID randomId = UUID.randomUUID();
+            assertThatThrownBy(() -> userService.findUserByIdOrThrow(randomId))
+                    .isInstanceOf(RuntimeException.class)
+                    .hasMessage(ErrorMessage.USER_NOT_FOUND.format("id: " + randomId));
+        }
+    }
 //
 //    @Nested
 //    @DisplayName("유저 목록 조회 테스트")
