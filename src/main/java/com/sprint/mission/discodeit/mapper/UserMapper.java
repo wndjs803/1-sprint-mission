@@ -1,4 +1,4 @@
-package com.sprint.mission.discodeit.mapper.user;
+package com.sprint.mission.discodeit.mapper;
 
 import com.sprint.mission.discodeit.dto.user.request.CreateUserRequest;
 import com.sprint.mission.discodeit.dto.user.request.UpdateUserRequest;

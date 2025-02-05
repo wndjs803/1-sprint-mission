@@ -4,7 +4,7 @@ import com.sprint.mission.discodeit.dto.user.request.LoginRequest;
 import com.sprint.mission.discodeit.dto.user.response.LoginResponse;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
-import com.sprint.mission.discodeit.mapper.user.UserMapper;
+import com.sprint.mission.discodeit.mapper.UserMapper;
 import com.sprint.mission.discodeit.repository.UserStatusRepository;
 import com.sprint.mission.discodeit.service.AuthService;
 import com.sprint.mission.discodeit.validator.UserValidator;

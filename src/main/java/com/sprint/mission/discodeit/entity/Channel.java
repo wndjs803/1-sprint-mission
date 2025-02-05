@@ -11,17 +11,21 @@ import java.util.UUID;
 public class Channel extends BaseEntity {
 
     private String name;
+    private String description;
     private User channelOwner;
     private final List<User> channelUserList = new ArrayList<>();
+    private final ChannelType channelType;
 
-    private Channel(String name, User channelOwner) {
+    private Channel(String name, String description, User channelOwner, ChannelType channelType) {
         super();
         this.name = name;
+        this.description = description;
         this.channelOwner = channelOwner;
+        this.channelType = channelType;
     }
 
-    public static Channel of(String name, User channelOwner) {
-        return new Channel(name, channelOwner);
+    public static Channel of(String name, String description, User channelOwner, ChannelType channelType) {
+        return new Channel(name, description, channelOwner, channelType);
     }
 
     public void updateChannelOwner(User channelOwner) {
@@ -33,6 +37,10 @@ public class Channel extends BaseEntity {
 
     public void updateName(String name) {
         this.name = name;
+    }
+
+    public void updateDescription(String description) {
+        this.description = description;
     }
 
     public void addChannelUser(User user) {
