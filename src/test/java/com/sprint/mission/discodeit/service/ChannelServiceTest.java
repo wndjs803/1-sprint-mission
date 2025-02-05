@@ -1,6 +1,8 @@
 package com.sprint.mission.discodeit.service;
 
 import com.sprint.mission.discodeit.common.ErrorMessage;
+import com.sprint.mission.discodeit.common.RandomStringGenerator;
+import com.sprint.mission.discodeit.dto.channel.request.CreatePrivateChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePublicChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.response.CreateChannelResponse;
 import com.sprint.mission.discodeit.entity.Channel;
@@ -24,6 +26,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +43,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class ChannelServiceTest {
     private ChannelRepository channelRepository;
     private ReadStatusRepository readStatusRepository;
@@ -47,6 +53,8 @@ class ChannelServiceTest {
     private UserValidator userValidator;
     private ReadStatusValidator readStatusValidator;
     private ChannelMapper channelMapper;
+    @Mock
+    private RandomStringGenerator randomStringGenerator;
     private ChannelService channelService;
 
 
@@ -61,7 +69,12 @@ class ChannelServiceTest {
         readStatusValidator = new ReadStatusValidator(readStatusRepository);
         channelMapper = new ChannelMapper();
         channelService = new BasicChannelService(channelRepository, readStatusRepository, messageRepository,
-                channelValidator, userValidator, readStatusValidator, channelMapper);
+                channelValidator, userValidator, readStatusValidator, channelMapper, randomStringGenerator);
+    }
+
+    private User createUser(int num) {
+        User user = User.of("test" + num, "nickname" + num, "email" + num, "password" + num);
+        return userRepository.saveUser(user);
     }
 
     @Nested
@@ -69,10 +82,9 @@ class ChannelServiceTest {
     class createChannelTest {
         @Test
         @DisplayName("Public 채널 생성 성공")
-        void success() {
+        void successWithPublic() {
             // given
-            User channelOwner = User.of("test1", "nickname1", "email1", "password1");
-            userRepository.saveUser(channelOwner);
+            User channelOwner = createUser(0);
 
             String channelName = "channel1";
             String description = "description";
@@ -85,6 +97,33 @@ class ChannelServiceTest {
             // then
             assertEquals(channelName, createChannelResponse.name());
             assertEquals(description, createChannelResponse.description());
+        }
+
+        @Test
+        @DisplayName("Private 채널 생성 성공")
+        void successWithPrivate() {
+            // given
+            User channelOwner = createUser(0);
+
+            int size = 5;
+            List<UUID> channelUsersIdList = new ArrayList<>();
+            for (int i = 1; i < size; i++) {
+                User user = createUser(i);
+                channelUsersIdList.add(user.getId());
+            }
+
+            CreatePrivateChannelRequest createPrivateChannelRequest =
+                    new CreatePrivateChannelRequest(channelOwner.getId(), channelUsersIdList);
+
+            when(randomStringGenerator.generateRandomString()).thenReturn("test");
+
+            // when
+            CreateChannelResponse createChannelResponse
+                    = channelService.createPrivateChannel(createPrivateChannelRequest);
+
+            // then
+            assertEquals("test", createChannelResponse.name());
+            assertEquals("description", createChannelResponse.description());
         }
     }
 //
