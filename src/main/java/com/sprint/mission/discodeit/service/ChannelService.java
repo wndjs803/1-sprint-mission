@@ -17,7 +17,7 @@ public interface ChannelService {
 
     FindChannelResponse findChannelByIdOrThrow(UUID channelId);
 
-    List<Channel> findAllChannels();
+    List<FindChannelResponse> findAllChannelsByUserId(UUID userId);
 
     Channel updateChannelName(UUID channelOwnerId, UUID channelId, String name);
 

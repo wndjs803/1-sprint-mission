@@ -16,7 +16,6 @@ import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.repository.MessageRepository;
 import com.sprint.mission.discodeit.repository.ReadStatusRepository;
 import com.sprint.mission.discodeit.service.ChannelService;
-import com.sprint.mission.discodeit.service.UserService;
 import com.sprint.mission.discodeit.validator.ChannelValidator;
 import com.sprint.mission.discodeit.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
@@ -37,11 +36,14 @@ public class BasicChannelService implements ChannelService {
 //    @Qualifier("fileChannelRepository")
     @Qualifier("jcfChannelRepository")
     private final ChannelRepository channelRepository;
-    private final UserValidator userValidator;
-    private final ChannelMapper channelMapper;
     private final ReadStatusRepository readStatusRepository;
-    private final ChannelValidator channelValidator;
     private final MessageRepository messageRepository;
+
+    private final ChannelValidator channelValidator;
+    private final UserValidator userValidator;
+
+    private final ChannelMapper channelMapper;
+
 
     @Override
     public CreateChannelResponse createPublicChannel(CreatePublicChannelRequest createPublicChannelRequest) {
@@ -81,6 +83,8 @@ public class BasicChannelService implements ChannelService {
         Channel channel = channelValidator.validateChannelExistsByChannelId(channelId);
 
         // 가장 최근 메세지의 시간 정보(createdAt)
+        // 1. repository(DB)에서 가장 최근 메세지의 시간 정보(createdAt)를 필터링하여 가져오는것
+        // 2. 애플리케이션으로 데이터를 가져와서 필터링 -> 메서드 재사용성 증가
         Message foundMessage = messageRepository.findAllMessagesByChannel(channel).stream()
                 .max(Comparator.comparing(message -> message.getCreatedAt()))
                 .orElse(null);
@@ -103,8 +107,18 @@ public class BasicChannelService implements ChannelService {
     }
 
     @Override
-    public List<Channel> findAllChannels() {
-        return channelRepository.findAllChannels();
+    public List<FindChannelResponse> findAllChannelsByUserId(UUID userId) {
+        // PUBLIC + User가 참가한 PRIVATE 채널
+        User user = userValidator.validateUserExistsByUserId(userId);
+
+        List<Channel> channelList = channelRepository.findAllChannels().stream()
+                .filter(channel ->
+                        channel.isPublic() || (channel.isPrivate() && channel.isUserInChannel(user)))
+                .toList();
+
+        return channelList.stream()
+                .map(channel -> findChannelByIdOrThrow(channel.getId()))
+                .toList();
     }
 
     @Override
