@@ -2,6 +2,7 @@ package com.sprint.mission.discodeit.service;
 
 import com.sprint.mission.discodeit.dto.channel.request.CreatePrivateChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePublicChannelRequest;
+import com.sprint.mission.discodeit.dto.channel.request.DeleteChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.UpdateChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.response.CreateChannelResponse;
 import com.sprint.mission.discodeit.dto.channel.response.FindChannelResponse;
@@ -23,7 +24,7 @@ public interface ChannelService {
 
     UpdateChannelResponse updateChannel(UpdateChannelRequest updateChannelRequest);
 
-    void deleteChannel(UUID channelOwnerId, UUID channelId);
+    void deleteChannel(DeleteChannelRequest deleteChannelRequest);
 
     Channel inviteUsers(UUID channelId, List<User> invitedUserList);
 

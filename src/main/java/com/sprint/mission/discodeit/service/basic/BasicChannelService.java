@@ -4,6 +4,7 @@ import com.sprint.mission.discodeit.common.ErrorMessage;
 import com.sprint.mission.discodeit.common.UtilMethod;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePrivateChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePublicChannelRequest;
+import com.sprint.mission.discodeit.dto.channel.request.DeleteChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.UpdateChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.response.CreateChannelResponse;
 import com.sprint.mission.discodeit.dto.channel.response.FindChannelResponse;
@@ -91,7 +92,7 @@ public class BasicChannelService implements ChannelService {
                 .max(Comparator.comparing(message -> message.getCreatedAt()))
                 .orElse(null);
 
-        // 채널에 메세지가 하나도 없을 때 시간 정보를 null로 해서 보내도 될까? -> 일단 EPOCh 로 기본값 지정
+        // 채널에 메세지가 하나도 없을 때 시간 정보를 null로 해서 보내도 될까? -> 일단 EPOCH 로 기본값 지정
         Instant lastMessageTime = Instant.EPOCH;
         if (foundMessage != null) {
            lastMessageTime = foundMessage.getCreatedAt();
@@ -150,7 +151,10 @@ public class BasicChannelService implements ChannelService {
     }
 
     @Override
-    public void deleteChannel(UUID channelOwnerId, UUID channelId) {
+    public void deleteChannel(DeleteChannelRequest deleteChannelRequest) {
+        UUID channelOwnerId = deleteChannelRequest.channelOwnerId();
+        UUID channelId = deleteChannelRequest.channelId();
+
         userValidator.validateUserExistsByUserId(channelOwnerId);
         Channel foundChannel = channelValidator.validateChannelExistsByChannelId(channelId);
 
@@ -158,9 +162,20 @@ public class BasicChannelService implements ChannelService {
             throw new RuntimeException(ErrorMessage.NOT_CHANNEL_CREATOR.format("id: " + channelOwnerId));
         }
 
+        // Message, ReadStatus 함께 삭제
+        messageRepository.findAllMessagesByChannel(foundChannel)
+                .forEach(message -> messageRepository.removeMessage(message.getId()));
+
+        foundChannel.getChannelUserList()
+                .forEach(user -> {
+                    ReadStatus readStatus = readStatusRepository.findReadStatusByUserId(user.getId());
+                    readStatusRepository.removeReadStatus(readStatus.getId());
+                });
+
         channelRepository.removeChannel(channelId);
     }
 
+    // inviteUsers, leaveUsers 는 남는 시간에 수정
     @Override
     public Channel inviteUsers(UUID channelId, List<User> invitedUserList) {
         Channel foundChannel = channelValidator.validateChannelExistsByChannelId(channelId);
