@@ -1,6 +1,6 @@
 package com.sprint.mission.discodeit.mapper;
 
-import com.sprint.mission.discodeit.dto.channel.response.CreatePublicChannelResponse;
+import com.sprint.mission.discodeit.dto.channel.response.CreateChannelResponse;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.ChannelType;
 import com.sprint.mission.discodeit.entity.User;
@@ -12,7 +12,7 @@ public class ChannelMapper {
         return Channel.of(name, description, channelOwner, channelType);
     }
 
-    public CreatePublicChannelResponse toCreatePublicChannelResponse(Channel channel) {
-        return new CreatePublicChannelResponse(channel.getId(), channel.getName(), channel.getDescription());
+    public CreateChannelResponse toCreateChannelResponse(Channel channel) {
+        return new CreateChannelResponse(channel.getId(), channel.getName(), channel.getDescription());
     }
 }
