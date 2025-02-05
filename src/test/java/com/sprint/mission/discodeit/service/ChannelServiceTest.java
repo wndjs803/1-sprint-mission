@@ -5,14 +5,14 @@ import com.sprint.mission.discodeit.common.RandomStringGenerator;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePrivateChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePublicChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.response.CreateChannelResponse;
-import com.sprint.mission.discodeit.entity.Channel;
+import com.sprint.mission.discodeit.dto.channel.response.FindChannelResponse;
+import com.sprint.mission.discodeit.entity.ChannelType;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.mapper.ChannelMapper;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.repository.MessageRepository;
 import com.sprint.mission.discodeit.repository.ReadStatusRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
-import com.sprint.mission.discodeit.repository.file.FileChannelRepository;
 
 import com.sprint.mission.discodeit.repository.jcf.JCFChannelRepository;
 import com.sprint.mission.discodeit.repository.jcf.JCFMessageRepository;
@@ -38,6 +38,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -77,6 +79,33 @@ class ChannelServiceTest {
         return userRepository.saveUser(user);
     }
 
+    private CreateChannelResponse createPublicChannel(int num, String channelName, String description) {
+        User channelOwner = createUser(num);
+
+        CreatePublicChannelRequest createPublicChannelRequest =
+                new CreatePublicChannelRequest(channelOwner.getId(), channelName, description);
+
+        return channelService.createPublicChannel(createPublicChannelRequest);
+    }
+
+    private CreateChannelResponse createPrivateChannel(int num) {
+        User channelOwner = createUser(num);
+
+        int size = 5;
+        List<UUID> channelUsersIdList = new ArrayList<>();
+        for (int i = 1; i < size; i++) {
+            User user = createUser(i);
+            channelUsersIdList.add(user.getId());
+        }
+
+        CreatePrivateChannelRequest createPrivateChannelRequest =
+                new CreatePrivateChannelRequest(channelOwner.getId(), channelUsersIdList);
+
+        when(randomStringGenerator.generateRandomString()).thenReturn("test");
+
+        return channelService.createPrivateChannel(createPrivateChannelRequest);
+    }
+
     @Nested
     @DisplayName("채널 생성 테스트")
     class createChannelTest {
@@ -97,6 +126,8 @@ class ChannelServiceTest {
             // then
             assertEquals(channelName, createChannelResponse.name());
             assertEquals(description, createChannelResponse.description());
+
+            assertNotNull(channelRepository.findChannelById(createChannelResponse.channelId()));
         }
 
         @Test
@@ -106,9 +137,11 @@ class ChannelServiceTest {
             User channelOwner = createUser(0);
 
             int size = 5;
+            List<User> channelUserList = new ArrayList<>();
             List<UUID> channelUsersIdList = new ArrayList<>();
             for (int i = 1; i < size; i++) {
                 User user = createUser(i);
+                channelUserList.add(user);
                 channelUsersIdList.add(user.getId());
             }
 
@@ -124,41 +157,60 @@ class ChannelServiceTest {
             // then
             assertEquals("test", createChannelResponse.name());
             assertEquals("description", createChannelResponse.description());
+
+            channelUserList.forEach(user ->
+                    assertNotNull(readStatusRepository.findReadStatusByUserId(user.getId())));
+
+            assertNotNull(channelRepository.findChannelById(createChannelResponse.channelId()));
         }
     }
-//
-//    @Nested
-//    @DisplayName("채널 단일 조회 테스트")
-//    class findChannelByIdOrThrowTest {
-//        @Test
-//        @DisplayName("채널 단일 조회 성공")
-//        void success() {
-//            // given
-//            User channelOwner = User.of("test1", "nickname1", "email1",
-//                    "password1", "profileImageUrl1", true);
-//            String channelName = "channel1";
-//            Channel channel = Channel.of(channelName, channelOwner);
-//
-//            when(channelRepository.findChannelById(channel.getId())).thenReturn(channel);
-//
-//            // when
-//            Channel foundChannel = channelService.findChannelByIdOrThrow(channel.getId());
-//
-//            // then
-//            assertEquals(channel.getName(), foundChannel.getName());
-//        }
-//
-//        @Test
-//        @DisplayName("존재하지 않는 채널 아이디 조회 후 예외 발생")
-//        void findChannelByIdOrThrow_ThrowsException_WhenChannelIdDoesNotExist() {
-//            when(channelRepository.findChannelById(any())).thenReturn(null);
-//
-//            UUID randomId = UUID.randomUUID();
-//            assertThatThrownBy(() -> channelService.findChannelByIdOrThrow(randomId))
-//                    .isInstanceOf(RuntimeException.class)
-//                    .hasMessage(ErrorMessage.CHANNEL_NOT_FOUND.format(randomId));
-//        }
-//    }
+
+    @Nested
+    @DisplayName("채널 단일 조회 테스트")
+    class findChannelByIdOrThrowTest {
+        @Test
+        @DisplayName("Public 채널 단일 조회 성공")
+        void successWithPublic() {
+            // given
+            CreateChannelResponse createChannelResponse =
+                    createPublicChannel(0, "channel1", "description");
+
+            // when
+            FindChannelResponse findChannelResponse =
+                    channelService.findChannelByIdOrThrow(createChannelResponse.channelId());
+            // then
+            assertEquals("channel1", findChannelResponse.name());
+            assertEquals("description", findChannelResponse.description());
+            assertEquals(ChannelType.PUBLIC, findChannelResponse.channelType());
+            assertEquals(0, findChannelResponse.channelUserIdList().size());
+        }
+
+        @Test
+        @DisplayName("Private 채널 단일 조회 성공")
+        void successWithPrivate() {
+            // given
+            CreateChannelResponse createChannelResponse = createPrivateChannel(0);
+
+            // when
+            FindChannelResponse findChannelResponse =
+                    channelService.findChannelByIdOrThrow(createChannelResponse.channelId());
+
+            // then
+            assertEquals("test", findChannelResponse.name());
+            assertEquals("description", findChannelResponse.description());
+            assertEquals(ChannelType.PRIVATE, findChannelResponse.channelType());
+            assertNotEquals(0, findChannelResponse.channelUserIdList().size());
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 채널 아이디 조회 후 예외 발생")
+        void findChannelByIdOrThrow_ThrowsException_WhenChannelIdDoesNotExist() {
+            UUID randomId = UUID.randomUUID();
+            assertThatThrownBy(() -> channelService.findChannelByIdOrThrow(randomId))
+                    .isInstanceOf(RuntimeException.class)
+                    .hasMessage(ErrorMessage.CHANNEL_NOT_FOUND.format("id: " + randomId));
+        }
+    }
 //
 //    @Nested
 //    @DisplayName("채널 목록 조회 테스트")
