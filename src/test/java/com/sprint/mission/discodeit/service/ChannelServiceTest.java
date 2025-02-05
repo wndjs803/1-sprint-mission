@@ -4,8 +4,11 @@ import com.sprint.mission.discodeit.common.ErrorMessage;
 import com.sprint.mission.discodeit.common.RandomStringGenerator;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePrivateChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePublicChannelRequest;
+import com.sprint.mission.discodeit.dto.channel.request.UpdateChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.response.CreateChannelResponse;
 import com.sprint.mission.discodeit.dto.channel.response.FindChannelResponse;
+import com.sprint.mission.discodeit.dto.channel.response.UpdateChannelResponse;
+import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.ChannelType;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.mapper.ChannelMapper;
@@ -79,18 +82,14 @@ class ChannelServiceTest {
         return userRepository.saveUser(user);
     }
 
-    private CreateChannelResponse createPublicChannel(int num, String channelName, String description) {
-        User channelOwner = createUser(num);
-
+    private CreateChannelResponse createPublicChannel(User channelOwner, String channelName, String description) {
         CreatePublicChannelRequest createPublicChannelRequest =
                 new CreatePublicChannelRequest(channelOwner.getId(), channelName, description);
 
         return channelService.createPublicChannel(createPublicChannelRequest);
     }
 
-    private CreateChannelResponse createPrivateChannel(int num) {
-        User channelOwner = createUser(num);
-
+    private CreateChannelResponse createPrivateChannel(User channelOwner) {
         int size = 5;
         List<UUID> channelUsersIdList = new ArrayList<>();
         for (int i = 1; i < size; i++) {
@@ -172,8 +171,9 @@ class ChannelServiceTest {
         @DisplayName("Public 채널 단일 조회 성공")
         void successWithPublic() {
             // given
+            User channelOwner = createUser(0);
             CreateChannelResponse createChannelResponse =
-                    createPublicChannel(0, "channel1", "description");
+                    createPublicChannel(channelOwner, "channel1", "description");
 
             // when
             FindChannelResponse findChannelResponse =
@@ -189,7 +189,8 @@ class ChannelServiceTest {
         @DisplayName("Private 채널 단일 조회 성공")
         void successWithPrivate() {
             // given
-            CreateChannelResponse createChannelResponse = createPrivateChannel(0);
+            User channelOwner = createUser(0);
+            CreateChannelResponse createChannelResponse = createPrivateChannel(channelOwner);
 
             // when
             FindChannelResponse findChannelResponse =
@@ -211,85 +212,95 @@ class ChannelServiceTest {
                     .hasMessage(ErrorMessage.CHANNEL_NOT_FOUND.format("id: " + randomId));
         }
     }
-//
-//    @Nested
-//    @DisplayName("채널 목록 조회 테스트")
-//    class findAllChannelsTest {
-//        @Test
-//        @DisplayName("채널 목록 조회 성공")
-//        void success() {
-//            // given
-//            User channelOwner = User.of("test1", "nickname1", "email1",
-//                    "password1", "profileImageUrl1", true);
-//            String channelName1 = "channel1";
-//            String channelName2 = "channel2";
-//            Channel channel1 = Channel.of(channelName1, channelOwner);
-//            Channel channel2 = Channel.of(channelName2, channelOwner);
-//
-//            List<Channel> channelList = new ArrayList<>();
-//            channelList.add(channel1);
-//            channelList.add(channel2);
-//
-//            when(channelRepository.findAllChannels()).thenReturn(channelList);
-//
-//            // when
-//            List<Channel> foundChannelList = channelService.findAllChannels();
-//
-//            // then
-//            assertThat(channelList).hasSameElementsAs(foundChannelList);
-//        }
-//    }
-//
-//    @Nested
-//    @DisplayName("채널명 수정 테스트")
-//    class updateChannelNameTest {
-//        @Test
-//        @DisplayName("채널명 변경 성공")
-//        void success() {
-//            // given
-//            User channelOwner = User.of("test1", "nickname1", "email1",
-//                    "password1", "profileImageUrl1", true);
-//            String channelName1 = "channel1";
-//            Channel channel = Channel.of(channelName1, channelOwner);
-//
-//            when(channelRepository.findChannelById(any())).thenReturn(channel);
-//            when(userService.findUserByIdOrThrow(any())).thenReturn(channelOwner);
-//
-//            when(channelRepository.saveChannel(any())).thenReturn(channel);
-//
-//            String updatedName = "channel2";
-//
-//            // when
-//            Channel updatedChannel = channelService.updateChannelName(channelOwner.getId(), channel.getId(),
-//                    updatedName);
-//
-//            // then
-//            assertEquals(updatedName, updatedChannel.getName());
-//        }
-//
-//        @Test
-//        @DisplayName("채널 생성자 일치 여부 확인 후 예외 발생")
-//        void updateChannelName_ThrowsException_WhenOwnerDoesNotMatch() {
-//            // given
-//            User channelOwner1 = User.of("test1", "nickname1", "email1",
-//                    "password1", "profileImageUrl1", true);
-//            User channelOwner2 = User.of("test2", "nickname2", "email2",
-//                    "password2", "profileImageUrl2", true);
-//            String channelName1 = "channel1";
-//            Channel channel1 = Channel.of(channelName1, channelOwner1);
-//
-//            when(channelRepository.findChannelById(any())).thenReturn(channel1);
-//            when(userService.findUserByIdOrThrow(any())).thenReturn(channelOwner1);
-//
-//            String updatedName = "channel2";
-//
-//            // when & then
-//            assertThatThrownBy(() -> channelService.updateChannelName(channelOwner2.getId(), channel1.getId(),
-//                    updatedName))
-//                    .isInstanceOf(RuntimeException.class)
-//                    .hasMessage(ErrorMessage.NOT_CHANNEL_CREATOR.format(channelOwner2.getId()));
-//        }
-//    }
+
+    @Nested
+    @DisplayName("채널 목록 조회 테스트")
+    class findAllChannelsTest {
+        @Test
+        @DisplayName("채널 목록 조회 성공")
+        void success() {
+            // given
+            User channelOwner = createUser(0);
+            User channelOwner1 = createUser(1);
+            createPublicChannel(channelOwner, "channel1", "description");
+            createPrivateChannel(channelOwner1);
+
+            // when
+            List<FindChannelResponse> findChannelResponseList =
+                    channelService.findAllChannelsByUserId(channelOwner.getId());
+
+            // then
+            // channelOwner는 Private channel에 참가하지 않았기에 2개 중 1개만 포함된다.
+            assertEquals(1, findChannelResponseList.size());
+        }
+
+        @Test
+        @DisplayName("채널 목록 조회 성공(Private 조건 포함)")
+        void successWithPrivate() {
+            // given
+            User channelOwner = createUser(0);
+            User channelOwner1 = createUser(1);
+            createPublicChannel(channelOwner, "channel1", "description");
+            createPrivateChannel(channelOwner1);
+
+            // when
+            List<FindChannelResponse> findChannelResponseList =
+                    channelService.findAllChannelsByUserId(channelOwner1.getId());
+
+            // then
+            // channelOwner1는 Private channel에 참가하였기에 2개 모두 포함한다.
+            assertEquals(2, findChannelResponseList.size());
+        }
+    }
+
+    @Nested
+    @DisplayName("채널 수정 테스트")
+    class updateChannelNameTest {
+        @Test
+        @DisplayName("채널 수정 성공")
+        void success() {
+            // given
+            User channelOwner = createUser(0);
+            CreateChannelResponse createChannelResponse =
+                    createPublicChannel(channelOwner, "channel1", "description1");
+
+            String updatedName = "channel2";
+            String updateDescription = "description2";
+
+            UpdateChannelRequest updateChannelRequest =
+                    new UpdateChannelRequest(channelOwner.getId(), createChannelResponse.channelId(),
+                            updatedName, updateDescription);
+
+            // when
+            UpdateChannelResponse updateChannelResponse = channelService.updateChannel(updateChannelRequest);
+
+            // then
+            assertEquals(updatedName, updateChannelResponse.name());
+            assertEquals(updateDescription, updateChannelResponse.description());
+        }
+
+        @Test
+        @DisplayName("채널 생성자 일치 여부 확인 후 예외 발생")
+        void updateChannelName_ThrowsException_WhenOwnerDoesNotMatch() {
+            // given
+            User channelOwner = createUser(0);
+            User anotherUser = createUser(1);
+            CreateChannelResponse createChannelResponse =
+                    createPublicChannel(channelOwner, "channel1", "description1");
+
+            String updatedName = "channel2";
+            String updateDescription = "description2";
+
+            UpdateChannelRequest updateChannelRequest =
+                    new UpdateChannelRequest(anotherUser.getId(), createChannelResponse.channelId(),
+                            updatedName, updateDescription);
+
+            // when & then
+            assertThatThrownBy(() -> channelService.updateChannel(updateChannelRequest))
+                    .isInstanceOf(RuntimeException.class)
+                    .hasMessage(ErrorMessage.NOT_CHANNEL_CREATOR.format("id: " + anotherUser.getId()));
+        }
+    }
 //
 //    @Nested
 //    @DisplayName("채널 삭제 테스트")
