@@ -66,12 +66,7 @@ public class BasicUserService implements UserService {
 
         UserStatus userStatus = userStatusRepository.findUserStatusByUser(foundUser); // userStatus Service나 validator로
 
-        MultipartFile profileImage = null;
-
-        if (foundUser.getProfileImage() != null) {
-            byte[] content = foundUser.getProfileImage().getContent();
-            profileImage = multipartFileConverter.toMultipartFile(content);
-        }
+        MultipartFile profileImage = multipartFileConverter.toMultipartFile(foundUser.getProfileImage().getContent());
 
         return userMapper.toFindUserResponse(foundUser, profileImage, userStatus.getIsOnline());
     }
