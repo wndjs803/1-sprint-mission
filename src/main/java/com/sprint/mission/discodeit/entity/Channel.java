@@ -61,6 +61,10 @@ public class Channel extends BaseEntity {
         return !(this.channelOwner.getId().equals(channelOwnerId));
     }
 
+    public boolean isPrivate() {
+        return this.channelType == ChannelType.PRIVATE;
+    }
+
     @Override
     public String toString() {
         return "Channel{" +
