@@ -5,22 +5,28 @@ import com.sprint.mission.discodeit.common.UtilMethod;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePrivateChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePublicChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.response.CreateChannelResponse;
+import com.sprint.mission.discodeit.dto.channel.response.FindChannelResponse;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.ChannelType;
+import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.ReadStatus;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.mapper.ChannelMapper;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
+import com.sprint.mission.discodeit.repository.MessageRepository;
 import com.sprint.mission.discodeit.repository.ReadStatusRepository;
 import com.sprint.mission.discodeit.service.ChannelService;
 import com.sprint.mission.discodeit.service.UserService;
+import com.sprint.mission.discodeit.validator.ChannelValidator;
 import com.sprint.mission.discodeit.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 
@@ -31,10 +37,11 @@ public class BasicChannelService implements ChannelService {
 //    @Qualifier("fileChannelRepository")
     @Qualifier("jcfChannelRepository")
     private final ChannelRepository channelRepository;
-    private final UserService userService;
     private final UserValidator userValidator;
     private final ChannelMapper channelMapper;
     private final ReadStatusRepository readStatusRepository;
+    private final ChannelValidator channelValidator;
+    private final MessageRepository messageRepository;
 
     @Override
     public CreateChannelResponse createPublicChannel(CreatePublicChannelRequest createPublicChannelRequest) {
@@ -70,9 +77,29 @@ public class BasicChannelService implements ChannelService {
     }
 
     @Override
-    public Channel findChannelByIdOrThrow(UUID channelId) {
-        return Optional.ofNullable(channelRepository.findChannelById(channelId))
-                .orElseThrow(() -> new RuntimeException(ErrorMessage.CHANNEL_NOT_FOUND.format(channelId)));
+    public FindChannelResponse findChannelByIdOrThrow(UUID channelId) {
+        Channel channel = channelValidator.validateChannelExistsByChannelId(channelId);
+
+        // 가장 최근 메세지의 시간 정보(createdAt)
+        Message foundMessage = messageRepository.findAllMessagesByChannel(channel).stream()
+                .max(Comparator.comparing(message -> message.getCreatedAt()))
+                .orElse(null);
+
+        // 채널에 메세지가 하나도 없을 때 시간 정보를 null로 해서 보내도 될까? -> 일단 EPOCh 로 기본값 지정
+        Instant lastMessageTime = Instant.EPOCH;
+        if (foundMessage != null) {
+           lastMessageTime = foundMessage.getCreatedAt();
+        }
+
+        List<UUID> channelUsersIdList = new ArrayList<>();
+
+        if (channel.isPrivate()) {
+            channelUsersIdList = channel.getChannelUserList().stream()
+                    .map(user -> user.getId())
+                    .toList();
+        }
+
+        return channelMapper.toFindChannelResponse(channel, lastMessageTime, channelUsersIdList);
     }
 
     @Override
@@ -82,8 +109,8 @@ public class BasicChannelService implements ChannelService {
 
     @Override
     public Channel updateChannelName(UUID channelOwnerId, UUID channelId, String name) {
-        Channel foundChannel = findChannelByIdOrThrow(channelId);
-        userService.findUserByIdOrThrow(channelOwnerId);
+        Channel foundChannel = channelValidator.validateChannelExistsByChannelId(channelId);
+        userValidator.validateUserExistsByUserId(channelOwnerId);
 
         if (foundChannel.isNotOwner(channelOwnerId)) {
             throw new RuntimeException(ErrorMessage.NOT_CHANNEL_CREATOR.format(channelOwnerId));
@@ -97,8 +124,8 @@ public class BasicChannelService implements ChannelService {
 
     @Override
     public void deleteChannel(UUID channelOwnerId, UUID channelId) {
-        userService.findUserByIdOrThrow(channelOwnerId);
-        Channel foundChannel = findChannelByIdOrThrow(channelId);
+        userValidator.validateUserExistsByUserId(channelOwnerId);
+        Channel foundChannel = channelValidator.validateChannelExistsByChannelId(channelId);
 
         if (foundChannel.isNotOwner(channelOwnerId)) {
             throw new RuntimeException(ErrorMessage.NOT_CHANNEL_CREATOR.format(channelOwnerId));
@@ -109,7 +136,7 @@ public class BasicChannelService implements ChannelService {
 
     @Override
     public Channel inviteUsers(UUID channelId, List<User> invitedUserList) {
-        Channel foundChannel = findChannelByIdOrThrow(channelId);
+        Channel foundChannel = channelValidator.validateChannelExistsByChannelId(channelId);
 
         invitedUserList.forEach(user -> foundChannel.addChannelUser(user));
 
@@ -118,7 +145,7 @@ public class BasicChannelService implements ChannelService {
 
     @Override
     public Channel leaveUsers(UUID channelId, List<User> leaveUserList) {
-        Channel foundChannel = findChannelByIdOrThrow(channelId);
+        Channel foundChannel = channelValidator.validateChannelExistsByChannelId(channelId);
 
         leaveUserList.forEach(user -> foundChannel.deleteChannelUser(user));
 

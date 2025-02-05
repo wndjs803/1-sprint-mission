@@ -6,7 +6,7 @@ public enum ErrorMessage {
     USER_ALREADY_EXIST("이미 유저가 존재합니다. %s"),
 
     // Channel
-    CHANNEL_NOT_FOUND("채널을 찾을 수 없습니다. id: %s"),
+    CHANNEL_NOT_FOUND("채널을 찾을 수 없습니다. %s"),
     NOT_CHANNEL_CREATOR("채널 생성자가 아닙니다. id: %s"),
     CHANNEL_OWNER_NOT_NULL("채널 소유자는 null일 수 없습니다."),
     USER_NOT_NULL("유저는 null일 수 없습니다."),
