@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.service.basic;
 
 import com.sprint.mission.discodeit.common.ErrorMessage;
+import com.sprint.mission.discodeit.common.RandomStringGenerator;
 import com.sprint.mission.discodeit.common.UtilMethod;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePrivateChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePublicChannelRequest;
@@ -30,7 +31,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 @Service
@@ -48,7 +48,7 @@ public class BasicChannelService implements ChannelService {
     private final ReadStatusValidator readStatusValidator;
 
     private final ChannelMapper channelMapper;
-
+    private final RandomStringGenerator randomStringGenerator;
 
     @Override
     public CreateChannelResponse createPublicChannel(CreatePublicChannelRequest createPublicChannelRequest) {
@@ -66,7 +66,7 @@ public class BasicChannelService implements ChannelService {
         User channelOwner = userValidator.validateUserExistsByUserId(createPrivateChannelRequest.channelOwnerId());
 
         // 요구 사항에 name, description 속성 생략 -> 임의 랜던값 지정
-        String name = generateRandomString();
+        String name = randomStringGenerator.generateRandomString();
         String description = "description";
 
         Channel channel = channelMapper.toEntity(name, description, channelOwner, ChannelType.PRIVATE);
@@ -196,16 +196,5 @@ public class BasicChannelService implements ChannelService {
         return channelRepository.saveChannel(foundChannel);
     }
 
-    private String generateRandomString() {
-        int leftLimit = 48; // numeral '0'
-        int rightLimit = 122; // letter 'z'
-        int targetStringLength = 10;
-        Random random = new Random();
 
-        return random.ints(leftLimit,rightLimit + 1)
-                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
-                .limit(targetStringLength)
-                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-                .toString();
-    }
 }
