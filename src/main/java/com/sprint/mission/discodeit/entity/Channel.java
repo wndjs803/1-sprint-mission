@@ -65,6 +65,14 @@ public class Channel extends BaseEntity {
         return this.channelType == ChannelType.PRIVATE;
     }
 
+    public boolean isPublic() {
+        return this.channelType == ChannelType.PUBLIC;
+    }
+
+    public boolean isUserInChannel(User user) {
+        return this.channelUserList.contains(user);
+    }
+
     @Override
     public String toString() {
         return "Channel{" +
