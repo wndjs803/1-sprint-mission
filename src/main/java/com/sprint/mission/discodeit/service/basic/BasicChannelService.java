@@ -20,6 +20,7 @@ import com.sprint.mission.discodeit.repository.MessageRepository;
 import com.sprint.mission.discodeit.repository.ReadStatusRepository;
 import com.sprint.mission.discodeit.service.ChannelService;
 import com.sprint.mission.discodeit.validator.ChannelValidator;
+import com.sprint.mission.discodeit.validator.ReadStatusValidator;
 import com.sprint.mission.discodeit.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -44,6 +45,7 @@ public class BasicChannelService implements ChannelService {
 
     private final ChannelValidator channelValidator;
     private final UserValidator userValidator;
+    private final ReadStatusValidator readStatusValidator;
 
     private final ChannelMapper channelMapper;
 
@@ -168,7 +170,7 @@ public class BasicChannelService implements ChannelService {
 
         foundChannel.getChannelUserList()
                 .forEach(user -> {
-                    ReadStatus readStatus = readStatusRepository.findReadStatusByUserId(user.getId());
+                    ReadStatus readStatus = readStatusValidator.validateReadStatusExistsByUserId(user.getId());
                     readStatusRepository.removeReadStatus(readStatus.getId());
                 });
 
