@@ -3,10 +3,21 @@ package com.sprint.mission;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.repository.file.FileChannelRepository;
+import com.sprint.mission.discodeit.repository.file.FileMessageRepository;
+import com.sprint.mission.discodeit.repository.file.FileUserRepository;
+import com.sprint.mission.discodeit.repository.jcf.JCFChannelRepository;
+import com.sprint.mission.discodeit.repository.jcf.JCFMessageRepository;
+import com.sprint.mission.discodeit.repository.jcf.JCFUserRepository;
 import com.sprint.mission.discodeit.service.ChannelService;
 import com.sprint.mission.discodeit.service.MessageService;
 import com.sprint.mission.discodeit.service.UserService;
-import com.sprint.mission.discodeit.service.factory.JCFServiceFactory;
+import com.sprint.mission.discodeit.service.file.FileChannelService;
+import com.sprint.mission.discodeit.service.file.FileMessageService;
+import com.sprint.mission.discodeit.service.file.FileUserService;
+import com.sprint.mission.discodeit.service.jcf.JCFChannelService;
+import com.sprint.mission.discodeit.service.jcf.JCFMessageService;
+import com.sprint.mission.discodeit.service.jcf.JCFUserService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,10 +25,20 @@ import java.util.UUID;
 
 public class JavaApplication {
     public static void main(String[] args) {
-        UserService userService = JCFServiceFactory.getInstance().getUserService();
-        ChannelService channelService = JCFServiceFactory.getInstance().getChannelService();
-        MessageService messageService = JCFServiceFactory.getInstance().getMessageService();
+        JCFUserService jcfUserService = new JCFUserService(JCFUserRepository.getInstance());
+        JCFChannelService jcfChannelService = new JCFChannelService(JCFChannelRepository.getInstance(), jcfUserService);
+        JCFMessageService jcfMessageService = new JCFMessageService(JCFMessageRepository.getInstance(),
+                jcfUserService, jcfChannelService);
 
+        FileUserService fileUserService = new FileUserService(FileUserRepository.getInstance());
+        FileChannelService fileChannelService = new FileChannelService(FileChannelRepository.getInstance(),
+                fileUserService);
+        FileMessageService fileMessageService = new FileMessageService(FileMessageRepository.getInstance(),
+                fileUserService, fileChannelService);
+
+        UserService userService = fileUserService;
+        ChannelService channelService = fileChannelService;
+        MessageService messageService = fileMessageService;
 
         // User test
         // user 생성
@@ -34,12 +55,13 @@ public class JavaApplication {
                 "password4", "profileImageUrl4");
 
         System.out.println(user1.getName());
+        System.out.println(user1.getCreatedAt());
         System.out.println();
 
         // user 조회
         System.out.println("유저 조회");
 
-        User findUser1 = userService.findUserById(user1.getId());
+        User findUser1 = userService.findUserByIdOrThrow(user1.getId());
         UUID findUser1Id = findUser1.getId();
 
         System.out.println(findUser1.getName());
@@ -58,9 +80,9 @@ public class JavaApplication {
         System.out.println("변경 전");
         System.out.println(findUser1.getName());
 
-        userService.updateUser(findUser1Id,"updateTest1", "nickname1", "email1",
+        userService.updateUser(findUser1Id, "updateTest1", "nickname1", "email1",
                 "password1", "profileImageUrl1");
-        User updateUser1 = userService.findUserById(findUser1Id);
+        User updateUser1 = userService.findUserByIdOrThrow(findUser1Id);
 
         System.out.println("변경 후");
         System.out.println(updateUser1.getName());
@@ -71,8 +93,8 @@ public class JavaApplication {
 
         userService.deleteUser(findUser1Id);
         try {
-            userService.findUserById(findUser1Id);
-        } catch (Exception e){
+            userService.findUserByIdOrThrow(findUser1Id);
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
 
@@ -94,7 +116,7 @@ public class JavaApplication {
         // channel 조회
         System.out.println("채널 조회");
 
-        Channel findChannel1 = channelService.findChannelById(channel1.getId());
+        Channel findChannel1 = channelService.findChannelByIdOrThrow(channel1.getId());
         UUID findChannel1Id = findChannel1.getId();
 
         System.out.println(findChannel1.getName());
@@ -116,9 +138,11 @@ public class JavaApplication {
         channelUsers.add(user4);
         channelService.inviteUsers(findChannel1Id, channelUsers);
 
-        findChannel1.getChannelUserList().forEach(user -> System.out.println(user.getName()));
+        Channel invitedChannel = channelService.findChannelByIdOrThrow(findChannel1Id);
+
+        invitedChannel.getChannelUserList().forEach(user -> System.out.println(user.getName()));
         System.out.println("채널 인원 수");
-        System.out.println(findChannel1.getChannelUserList().size());
+        System.out.println(invitedChannel.getChannelUserList().size());
         System.out.println();
 
         // 채널 나가기
@@ -126,26 +150,32 @@ public class JavaApplication {
 
         channelService.leaveUsers(findChannel1Id, channelUsers);
 
-        findChannel1.getChannelUserList().forEach(user -> System.out.println(user.getName()));
+        Channel leavedChannel = channelService.findChannelByIdOrThrow(findChannel1Id);
+
+        leavedChannel.getChannelUserList().forEach(user -> System.out.println(user.getName()));
         System.out.println("채널 인원 수");
-        System.out.println(findChannel1.getChannelUserList().size());
+        System.out.println(leavedChannel.getChannelUserList().size());
         System.out.println();
 
         // 채널명 변경
         System.out.println("채널명 변경");
         System.out.println("변경 전");
         System.out.println(findChannel1.getName());
+        System.out.println();
 
         channelService.updateChannelName(channelOwnerId, findChannel1Id, "updateChannel1");
+        Channel updatedChannel = channelService.findChannelByIdOrThrow(findChannel1Id);
 
         System.out.println("변경 후");
-        System.out.println(findChannel1.getName());
+        System.out.println(updatedChannel.getName());
+        System.out.println();
 
         // 채널 삭제
+        System.out.println("채널 삭제");
         channelService.deleteChannel(channelOwnerId, findChannel1Id);
         try {
-            channelService.findChannelById(findChannel1Id);
-        }catch (Exception e){
+            channelService.findChannelByIdOrThrow(findChannel1Id);
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
         System.out.println();
@@ -167,7 +197,7 @@ public class JavaApplication {
         // 메세지 조회
         System.out.println("메세지 조회");
 
-        Message findMessage1 = messageService.findMessageById(message1.getId());
+        Message findMessage1 = messageService.findMessageByIdOrThrow(message1.getId());
 
         System.out.println(findMessage1.getContent());
         System.out.println();
@@ -187,9 +217,10 @@ public class JavaApplication {
 
         UUID findMessage1Id = findMessage1.getId();
         messageService.updateMessage(sendUserId, findMessage1Id, "hi");
+        Message updatedMessage = messageService.findMessageByIdOrThrow(findMessage1Id);
 
         System.out.println("변경 후");
-        System.out.println(findMessage1.getContent());
+        System.out.println(updatedMessage.getContent());
         System.out.println();
 
         // 메세지 삭제
@@ -197,8 +228,8 @@ public class JavaApplication {
 
         messageService.deleteMessage(sendUserId, findMessage1Id);
         try {
-            messageService.findMessageById(findMessage1Id);
-        } catch (Exception e){
+            messageService.findMessageByIdOrThrow(findMessage1Id);
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }

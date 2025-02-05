@@ -1,54 +1,55 @@
-package com.sprint.mission.discodeit.service.jcf;
+package com.sprint.mission.discodeit.service.basic;
 
 import com.sprint.mission.discodeit.common.ErrorMessage;
 import com.sprint.mission.discodeit.common.UtilMethod;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
-import com.sprint.mission.discodeit.repository.jcf.JCFMessageRepository;
+import com.sprint.mission.discodeit.repository.MessageRepository;
+import com.sprint.mission.discodeit.service.ChannelService;
 import com.sprint.mission.discodeit.service.MessageService;
+import com.sprint.mission.discodeit.service.UserService;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class JCFMessageService implements MessageService {
-    private final JCFMessageRepository jcfMessageRepository;
-    private final JCFUserService jcfUserService;
-    private final JCFChannelService jcfChannelService;
+public class BasicMessageService implements MessageService {
+    private final MessageRepository messageRepository;
+    private final UserService userService;
+    private final ChannelService channelService;
 
-    public JCFMessageService(JCFMessageRepository jcfMessageRepository, JCFUserService jcfUserService,
-                             JCFChannelService jcfChannelService) {
-        this.jcfMessageRepository = jcfMessageRepository;
-        this.jcfUserService = jcfUserService;
-        this.jcfChannelService = jcfChannelService;
+    public BasicMessageService(MessageRepository messageRepository, UserService userService, ChannelService channelService) {
+        this.messageRepository = messageRepository;
+        this.userService = userService;
+        this.channelService = channelService;
     }
 
     @Override
     public Message createMessage(UUID sendUserId, UUID channelId, String content) {
-        User sendUser = jcfUserService.findUserByIdOrThrow(sendUserId);
-        Channel foundChannel = jcfChannelService.findChannelByIdOrThrow(channelId);
+        User sendUser = userService.findUserByIdOrThrow(sendUserId);
+        Channel foundChannel = channelService.findChannelByIdOrThrow(channelId);
 
         Message message = Message.of(sendUser, foundChannel, content);
 
-        return jcfMessageRepository.saveMessage(message);
+        return messageRepository.saveMessage(message);
     }
 
     @Override
     public Message findMessageByIdOrThrow(UUID messageId) {
-        return Optional.ofNullable(jcfMessageRepository.findMessageById(messageId))
+        return Optional.ofNullable(messageRepository.findMessageById(messageId))
                 .orElseThrow(() -> new RuntimeException(ErrorMessage.MESSAGE_NOT_FOUND.format(messageId)));
     }
 
     @Override
     public List<Message> findAllMessage() {
-        return jcfMessageRepository.findAllMessages();
+        return messageRepository.findAllMessages();
     }
 
     @Override
     public Message updateMessage(UUID sendUserId, UUID messageId, String content) {
-        jcfUserService.findUserByIdOrThrow(sendUserId);
+        userService.findUserByIdOrThrow(sendUserId);
         Message foundMessage = findMessageByIdOrThrow(messageId);
 
         if (foundMessage.isNotOwner(sendUserId)) {
@@ -58,20 +59,17 @@ public class JCFMessageService implements MessageService {
         foundMessage.updateContent(content);
         foundMessage.updateUpdatedAt(UtilMethod.getCurrentTime());
 
-        return jcfMessageRepository.saveMessage(foundMessage);
+        return messageRepository.saveMessage(foundMessage);
     }
 
     @Override
     public void deleteMessage(UUID sendUserId, UUID messageId) {
-        // 메세지 조회
         Message foundMessage = findMessageByIdOrThrow(messageId);
 
-        // 메세지 생성자가 맞는지 확인
         if (foundMessage.isNotOwner(sendUserId)) {
             throw new RuntimeException(ErrorMessage.NOT_MESSAGE_CREATOR.format(sendUserId));
         }
 
-        // 메세지 삭제
-        jcfMessageRepository.removeMessage(messageId);
+        messageRepository.removeMessage(messageId);
     }
 }
