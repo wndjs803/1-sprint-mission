@@ -11,7 +11,7 @@ public class User extends BaseEntity implements Serializable {
     private String nickname;
     private String email;
     private String password;
-    private BinaryContent profileImage;
+    private BinaryContent profileImage = BinaryContent.EMPTY;
 
     private User(String name, String nickname, String email, String password) {
         super();

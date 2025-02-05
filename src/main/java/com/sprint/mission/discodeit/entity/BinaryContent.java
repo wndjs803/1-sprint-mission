@@ -16,6 +16,8 @@ public class BinaryContent implements Serializable {
     private final byte[] content;
     private final Instant createdAt;
 
+    public static final BinaryContent EMPTY = new BinaryContent(new byte[0]);
+
     private BinaryContent(byte[] content) {
         this.id = UUID.randomUUID();
         this.content = content;
