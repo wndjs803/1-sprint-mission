@@ -1,69 +1,92 @@
-//package com.sprint.mission.discodeit.service;
-//
-//import com.sprint.mission.discodeit.common.ErrorMessage;
-//import com.sprint.mission.discodeit.entity.Channel;
-//import com.sprint.mission.discodeit.entity.User;
-//import com.sprint.mission.discodeit.repository.file.FileChannelRepository;
-//import com.sprint.mission.discodeit.service.file.FileChannelService;
-//import com.sprint.mission.discodeit.service.file.FileUserService;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.DisplayName;
-//import org.junit.jupiter.api.Nested;
-//import org.junit.jupiter.api.Test;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//import java.util.UUID;
-//
-//import static org.assertj.core.api.Assertions.assertThat;
-//import static org.assertj.core.api.Assertions.assertThatThrownBy;
-//import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-//import static org.junit.jupiter.api.Assertions.assertEquals;
-//import static org.mockito.ArgumentMatchers.any;
-//import static org.mockito.Mockito.mock;
-//import static org.mockito.Mockito.verify;
-//import static org.mockito.Mockito.when;
-//
-//class ChannelServiceTest {
-//    private ChannelService channelService;
-//    //    private JCFChannelRepository channelRepository;
-////    private JCFUserService userService;
-//    private FileChannelRepository channelRepository;
-//    private FileUserService userService;
-//
-//    @BeforeEach
-//    void setUp() {
-////        channelRepository = mock(JCFChannelRepository.class);
-////        userService = mock(JCFUserService.class);
-////        this.channelService = new JCFChannelService(channelRepository, userService);
-//
-//        channelRepository = mock(FileChannelRepository.class);
-//        userService = mock(FileUserService.class);
-//        this.channelService = new FileChannelService(channelRepository, userService);
-//    }
-//
-//    @Nested
-//    @DisplayName("채널 생성 테스트")
-//    class createChannelTest {
-//        @Test
-//        @DisplayName("채널 생성 성공")
-//        void success() {
-//            // given
-//            User channelOwner = User.of("test1", "nickname1", "email1",
-//                    "password1", "profileImageUrl1", true);
-//            String channelName = "channel1";
-//            Channel channel = Channel.of(channelName, channelOwner);
-//
-//            when(userService.findUserByIdOrThrow(any())).thenReturn(channelOwner);
-//            when(channelRepository.saveChannel(any())).thenReturn(channel);
-//
-//            // when
-//            Channel createdChannel = channelService.createChannel(channelOwner.getId(), channelName);
-//
-//            // then
-//            assertEquals(channelName, createdChannel.getName());
-//        }
-//    }
+package com.sprint.mission.discodeit.service;
+
+import com.sprint.mission.discodeit.common.ErrorMessage;
+import com.sprint.mission.discodeit.dto.channel.request.CreatePublicChannelRequest;
+import com.sprint.mission.discodeit.dto.channel.response.CreateChannelResponse;
+import com.sprint.mission.discodeit.entity.Channel;
+import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.mapper.ChannelMapper;
+import com.sprint.mission.discodeit.repository.ChannelRepository;
+import com.sprint.mission.discodeit.repository.MessageRepository;
+import com.sprint.mission.discodeit.repository.ReadStatusRepository;
+import com.sprint.mission.discodeit.repository.UserRepository;
+import com.sprint.mission.discodeit.repository.file.FileChannelRepository;
+
+import com.sprint.mission.discodeit.repository.jcf.JCFChannelRepository;
+import com.sprint.mission.discodeit.repository.jcf.JCFMessageRepository;
+import com.sprint.mission.discodeit.repository.jcf.JCFReadStatusRepository;
+import com.sprint.mission.discodeit.repository.jcf.JCFUserRepository;
+import com.sprint.mission.discodeit.service.basic.BasicChannelService;
+import com.sprint.mission.discodeit.validator.ChannelValidator;
+import com.sprint.mission.discodeit.validator.ReadStatusValidator;
+import com.sprint.mission.discodeit.validator.UserValidator;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+class ChannelServiceTest {
+    private ChannelRepository channelRepository;
+    private ReadStatusRepository readStatusRepository;
+    private MessageRepository messageRepository;
+    private UserRepository userRepository;
+    private ChannelValidator channelValidator;
+    private UserValidator userValidator;
+    private ReadStatusValidator readStatusValidator;
+    private ChannelMapper channelMapper;
+    private ChannelService channelService;
+
+
+    @BeforeEach
+    void setUp() {
+        channelRepository = new JCFChannelRepository();
+        readStatusRepository = new JCFReadStatusRepository();
+        messageRepository = new JCFMessageRepository();
+        userRepository = new JCFUserRepository();
+        channelValidator = new ChannelValidator(channelRepository);
+        userValidator = new UserValidator(userRepository);
+        readStatusValidator = new ReadStatusValidator(readStatusRepository);
+        channelMapper = new ChannelMapper();
+        channelService = new BasicChannelService(channelRepository, readStatusRepository, messageRepository,
+                channelValidator, userValidator, readStatusValidator, channelMapper);
+    }
+
+    @Nested
+    @DisplayName("채널 생성 테스트")
+    class createChannelTest {
+        @Test
+        @DisplayName("Public 채널 생성 성공")
+        void success() {
+            // given
+            User channelOwner = User.of("test1", "nickname1", "email1", "password1");
+            userRepository.saveUser(channelOwner);
+
+            String channelName = "channel1";
+            String description = "description";
+            CreatePublicChannelRequest createPublicChannelRequest =
+                    new CreatePublicChannelRequest(channelOwner.getId(), channelName, description);
+
+            // when
+            CreateChannelResponse createChannelResponse = channelService.createPublicChannel(createPublicChannelRequest);
+
+            // then
+            assertEquals(channelName, createChannelResponse.name());
+            assertEquals(description, createChannelResponse.description());
+        }
+    }
 //
 //    @Nested
 //    @DisplayName("채널 단일 조회 테스트")
@@ -290,5 +313,5 @@
 //            assertEquals(0, leavedChannel.getChannelUserList().size());
 //        }
 //    }
-//
-//}
+
+}
