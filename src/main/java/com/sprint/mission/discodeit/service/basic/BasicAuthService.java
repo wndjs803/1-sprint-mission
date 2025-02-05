@@ -30,6 +30,7 @@ public class BasicAuthService implements AuthService {
         userStatus.updateLoginAt(Instant.now());
         userStatus.updateOnline();
         userStatus.updateUpdatedAt(Instant.now());
+        userStatusRepository.saveUserStatus(userStatus);
 
         return userMapper.toLoginResponse(user);
     }
