@@ -17,6 +17,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -107,38 +109,26 @@ class UserServiceTest {
                     .hasMessage(ErrorMessage.USER_NOT_FOUND.format("id: " + randomId));
         }
     }
-//
-//    @Nested
-//    @DisplayName("유저 목록 조회 테스트")
-//    class findAllUsersTest {
-//        @Test
-//        @DisplayName("유저 목록 조회 성공")
-//        void success() {
-//            // given
-//            User user1 = User.of("test1", "nickname1", "email1",
-//                    "password1", "profileImageUrl1", true);
-//            User user2 = User.of("test2", "nickname2", "email2",
-//                    "password2", "profileImageUrl2", true);
-//            User user3 = User.of("test3", "nickname3", "email3",
-//                    "password3", "profileImageUrl3", true);
-//            User user4 = User.of("test4", "nickname4", "email4",
-//                    "password4", "profileImageUrl4", true);
-//
-//            List<User> userList = new ArrayList<>();
-//            userList.add(user1);
-//            userList.add(user2);
-//            userList.add(user3);
-//            userList.add(user4);
-//
-//            when(userRepository.findAllUsers()).thenReturn(userList);
-//
-//            // when
-//            List<User> foundUserList = userService.findAllUsers();
-//
-//            // then
-//            assertThat(userList).hasSameElementsAs(foundUserList);
-//        }
-//    }
+
+    @Nested
+    @DisplayName("유저 목록 조회 테스트")
+    class findAllUsersTest {
+        @Test
+        @DisplayName("유저 목록 조회 성공")
+        void success() {
+            // given
+            int size = 4;
+            for (int i = 0; i < size; i++) {
+                createUser(i);
+            }
+
+            // when
+            List<FindUserResponse> findUserResponseList = userService.findAllUsers();
+
+            // then
+            assertEquals(4, findUserResponseList.size());
+        }
+    }
 //
 //    @Nested
 //    @DisplayName("유저 수정 테스트")
