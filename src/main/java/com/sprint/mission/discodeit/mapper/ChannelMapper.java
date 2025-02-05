@@ -1,0 +1,18 @@
+package com.sprint.mission.discodeit.mapper;
+
+import com.sprint.mission.discodeit.dto.channel.response.CreatePublicChannelResponse;
+import com.sprint.mission.discodeit.entity.Channel;
+import com.sprint.mission.discodeit.entity.ChannelType;
+import com.sprint.mission.discodeit.entity.User;
+import org.springframework.stereotype.Component;
+
+@Component
+public class ChannelMapper {
+    public Channel toEntity(String name, String description, User channelOwner, ChannelType channelType) {
+        return Channel.of(name, description, channelOwner, channelType);
+    }
+
+    public CreatePublicChannelResponse toCreatePublicChannelResponse(Channel channel) {
+        return new CreatePublicChannelResponse(channel.getId(), channel.getName(), channel.getDescription());
+    }
+}
