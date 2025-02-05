@@ -2,6 +2,7 @@ package com.sprint.mission.discodeit.mapper;
 
 import com.sprint.mission.discodeit.dto.channel.response.CreateChannelResponse;
 import com.sprint.mission.discodeit.dto.channel.response.FindChannelResponse;
+import com.sprint.mission.discodeit.dto.channel.response.UpdateChannelResponse;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.ChannelType;
 import com.sprint.mission.discodeit.entity.User;
@@ -24,5 +25,9 @@ public class ChannelMapper {
     public FindChannelResponse toFindChannelResponse(Channel channel, Instant lastMessageTime, List<UUID> channelUsersIdList) {
         return new FindChannelResponse(channel.getName(), channel.getDescription(), lastMessageTime,
                 channel.getChannelType(), channelUsersIdList);
+    }
+
+    public UpdateChannelResponse toUpdateChannelResponse(Channel channel) {
+        return new UpdateChannelResponse(channel.getName(), channel.getDescription());
     }
 }

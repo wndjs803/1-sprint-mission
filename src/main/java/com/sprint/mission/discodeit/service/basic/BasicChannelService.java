@@ -4,8 +4,10 @@ import com.sprint.mission.discodeit.common.ErrorMessage;
 import com.sprint.mission.discodeit.common.UtilMethod;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePrivateChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePublicChannelRequest;
+import com.sprint.mission.discodeit.dto.channel.request.UpdateChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.response.CreateChannelResponse;
 import com.sprint.mission.discodeit.dto.channel.response.FindChannelResponse;
+import com.sprint.mission.discodeit.dto.channel.response.UpdateChannelResponse;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.ChannelType;
 import com.sprint.mission.discodeit.entity.Message;
@@ -83,7 +85,7 @@ public class BasicChannelService implements ChannelService {
         Channel channel = channelValidator.validateChannelExistsByChannelId(channelId);
 
         // 가장 최근 메세지의 시간 정보(createdAt)
-        // 1. repository(DB)에서 가장 최근 메세지의 시간 정보(createdAt)를 필터링하여 가져오는것
+        // 1. repository(DB)에서 가장 최근 메세지의 시간 정보(createdAt)를 필터링하여 가져오는것 -> 가져오는 데이터 양이 적어진다.
         // 2. 애플리케이션으로 데이터를 가져와서 필터링 -> 메서드 재사용성 증가
         Message foundMessage = messageRepository.findAllMessagesByChannel(channel).stream()
                 .max(Comparator.comparing(message -> message.getCreatedAt()))
@@ -122,18 +124,29 @@ public class BasicChannelService implements ChannelService {
     }
 
     @Override
-    public Channel updateChannelName(UUID channelOwnerId, UUID channelId, String name) {
-        Channel foundChannel = channelValidator.validateChannelExistsByChannelId(channelId);
+    public UpdateChannelResponse updateChannel(UpdateChannelRequest updateChannelRequest) {
+        Channel foundChannel = channelValidator.validateChannelExistsByChannelId(updateChannelRequest.channelId());
+
+        if (foundChannel.isPrivate()) {
+            throw new RuntimeException(ErrorMessage.CANNOT_UPDATE_PRIVATE_CHANNEL
+                    .format("id: " + foundChannel.getId()));
+        }
+
+        UUID channelOwnerId = updateChannelRequest.channelOwnerId();
+
         userValidator.validateUserExistsByUserId(channelOwnerId);
 
         if (foundChannel.isNotOwner(channelOwnerId)) {
-            throw new RuntimeException(ErrorMessage.NOT_CHANNEL_CREATOR.format(channelOwnerId));
+            throw new RuntimeException(ErrorMessage.NOT_CHANNEL_CREATOR.format("id: " + channelOwnerId));
         }
 
-        foundChannel.updateName(name);
+        foundChannel.updateName(updateChannelRequest.name());
+        foundChannel.updateDescription(updateChannelRequest.description());
         foundChannel.updateUpdatedAt(UtilMethod.getCurrentTime());
 
-        return channelRepository.saveChannel(foundChannel);
+        Channel updatedChannel = channelRepository.saveChannel(foundChannel);
+
+        return channelMapper.toUpdateChannelResponse(updatedChannel);
     }
 
     @Override
@@ -142,7 +155,7 @@ public class BasicChannelService implements ChannelService {
         Channel foundChannel = channelValidator.validateChannelExistsByChannelId(channelId);
 
         if (foundChannel.isNotOwner(channelOwnerId)) {
-            throw new RuntimeException(ErrorMessage.NOT_CHANNEL_CREATOR.format(channelOwnerId));
+            throw new RuntimeException(ErrorMessage.NOT_CHANNEL_CREATOR.format("id: " + channelOwnerId));
         }
 
         channelRepository.removeChannel(channelId);
