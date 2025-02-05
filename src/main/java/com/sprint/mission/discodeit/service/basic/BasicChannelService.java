@@ -80,6 +80,8 @@ public class BasicChannelService implements ChannelService {
             channel.addChannelUser(user);
         }
 
+        channelRepository.saveChannel(channel);
+
         return channelMapper.toCreateChannelResponse(channel);
     }
 
