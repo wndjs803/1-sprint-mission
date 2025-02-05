@@ -3,8 +3,10 @@ package com.sprint.mission.discodeit.service;
 import com.sprint.mission.discodeit.common.ErrorMessage;
 import com.sprint.mission.discodeit.common.MultipartFileConverter;
 import com.sprint.mission.discodeit.dto.user.request.CreateUserRequest;
+import com.sprint.mission.discodeit.dto.user.request.UpdateUserRequest;
 import com.sprint.mission.discodeit.dto.user.response.CreateUserResponse;
 import com.sprint.mission.discodeit.dto.user.response.FindUserResponse;
+import com.sprint.mission.discodeit.dto.user.response.UpdateUserResponse;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.mapper.user.UserMapper;
 import com.sprint.mission.discodeit.repository.jcf.JCFBinaryContentRepository;
@@ -129,31 +131,28 @@ class UserServiceTest {
             assertEquals(4, findUserResponseList.size());
         }
     }
-//
-//    @Nested
-//    @DisplayName("유저 수정 테스트")
-//    class updateUserTest {
-//        @Test
-//        @DisplayName("유저 수정 성공")
-//        void success() {
-//            // given
-//            User user1 = User.of("test1", "nickname1", "email1",
-//                    "password1", "profileImageUrl1", true);
-//            when(userRepository.findUserById(any())).thenReturn(user1);
-//            when(userRepository.saveUser(any())).thenReturn(user1);
-//
-//            // when
-//            User updatedUser = userService.updateUser(user1.getId(), "test2",
-//                    "nickname2", "email2", "password2", "profileImageUrl2");
-//
-//            // then
-//            assertEquals("test2", updatedUser.getName());
-//            assertEquals("nickname2", updatedUser.getNickname());
-//            assertEquals("email2", updatedUser.getEmail());
-//            assertEquals("password2", updatedUser.getPassword());
-//            assertEquals("profileImageUrl2", updatedUser.getProfileImageUrl());
-//        }
-//    }
+
+    @Nested
+    @DisplayName("유저 수정 테스트")
+    class updateUserTest {
+        @Test
+        @DisplayName("유저 수정 성공")
+        void success() {
+            // given
+            CreateUserResponse createUserResponse = createUser(0);
+            UpdateUserRequest updateUserRequest = new UpdateUserRequest(createUserResponse.userId(), "test2",
+                    "nickname2", "email2", "password2");
+
+            // when
+            UpdateUserResponse updateUserResponse = userService.updateUser(updateUserRequest, null);
+
+            // then
+            assertEquals("test2", updateUserResponse.name());
+            assertEquals("nickname2", updateUserResponse.nickname());
+            assertEquals("email2", updateUserResponse.email());
+            assertEquals("password2", updateUserResponse.password());
+        }
+    }
 //
 //    @Nested
 //    @DisplayName("유저 삭제 테스트")
