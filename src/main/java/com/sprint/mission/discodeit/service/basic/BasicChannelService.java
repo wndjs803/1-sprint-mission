@@ -7,9 +7,7 @@ import com.sprint.mission.discodeit.dto.channel.request.CreatePrivateChannelRequ
 import com.sprint.mission.discodeit.dto.channel.request.CreatePublicChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.DeleteChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.UpdateChannelRequest;
-import com.sprint.mission.discodeit.dto.channel.response.CreateChannelResponse;
 import com.sprint.mission.discodeit.dto.channel.response.FindChannelResponse;
-import com.sprint.mission.discodeit.dto.channel.response.UpdateChannelResponse;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.ChannelType;
 import com.sprint.mission.discodeit.entity.Message;
@@ -51,18 +49,18 @@ public class BasicChannelService implements ChannelService {
     private final RandomStringGenerator randomStringGenerator;
 
     @Override
-    public CreateChannelResponse createPublicChannel(CreatePublicChannelRequest createPublicChannelRequest) {
+    public Channel createPublicChannel(CreatePublicChannelRequest createPublicChannelRequest) {
         User channelOwner = userValidator.validateUserExistsByUserId(createPublicChannelRequest.channelOwnerId());
 
         Channel channel = channelMapper.toEntity(createPublicChannelRequest.name(),
                 createPublicChannelRequest.description(), channelOwner, ChannelType.PUBLIC);
 
         channelRepository.saveChannel(channel);
-        return channelMapper.toCreateChannelResponse(channel);
+        return channel;
     }
 
     @Override
-    public CreateChannelResponse createPrivateChannel(CreatePrivateChannelRequest createPrivateChannelRequest) {
+    public Channel createPrivateChannel(CreatePrivateChannelRequest createPrivateChannelRequest) {
         User channelOwner = userValidator.validateUserExistsByUserId(createPrivateChannelRequest.channelOwnerId());
 
         // 요구 사항에 name, description 속성 생략 -> 임의 랜던값 지정
@@ -82,7 +80,7 @@ public class BasicChannelService implements ChannelService {
 
         channelRepository.saveChannel(channel);
 
-        return channelMapper.toCreateChannelResponse(channel);
+        return channel;
     }
 
     @Override
@@ -129,7 +127,7 @@ public class BasicChannelService implements ChannelService {
     }
 
     @Override
-    public UpdateChannelResponse updateChannel(UpdateChannelRequest updateChannelRequest) {
+    public Channel updateChannel(UpdateChannelRequest updateChannelRequest) {
         Channel foundChannel = channelValidator.validateChannelExistsByChannelId(updateChannelRequest.channelId());
 
         if (foundChannel.isPrivate()) {
@@ -151,7 +149,7 @@ public class BasicChannelService implements ChannelService {
 
         Channel updatedChannel = channelRepository.saveChannel(foundChannel);
 
-        return channelMapper.toUpdateChannelResponse(updatedChannel);
+        return updatedChannel;
     }
 
     @Override

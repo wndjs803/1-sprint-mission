@@ -49,7 +49,7 @@ class UserServiceTest {
                 userMapper, userValidator, multipartFileConverter);
     }
 
-    private CreateUserResponse createUser(int num) {
+    private User createUser(int num) {
         CreateUserRequest createUserRequest =
                 new CreateUserRequest("test" + num, "nickname" + num,
                         "email" + num, "password" + num);
@@ -68,13 +68,13 @@ class UserServiceTest {
                     new CreateUserRequest("test1", "nickname1", "email1", "password1");
 
             // when
-            CreateUserResponse response = userService.createUser(createUserRequest, null);
+            User user = userService.createUser(createUserRequest, null);
 
             // then
-            assertEquals("test1", response.name());
-            assertEquals("nickname1", response.nickname());
-            assertEquals("email1", response.email());
-            assertEquals("password1", response.password());
+            assertEquals("test1", user.getName());
+            assertEquals("nickname1", user.getNickname());
+            assertEquals("email1", user.getEmail());
+            assertEquals("password1", user.getPassword());
         }
     }
 
@@ -85,13 +85,13 @@ class UserServiceTest {
         @DisplayName("유저 단일 조회 성공")
         void success() {
             // given
-            CreateUserResponse createUserResponse = createUser(0);
+            User user = createUser(0);
 
             // when
-            FindUserResponse findUserResponse = userService.findUserByIdOrThrow(createUserResponse.userId());
+            FindUserResponse findUserResponse = userService.findUserByIdOrThrow(user.getId());
 
             // then
-            assertEquals(createUserResponse.name(), findUserResponse.name());
+            assertEquals(user.getName(), findUserResponse.name());
         }
 
         @Test
@@ -135,18 +135,18 @@ class UserServiceTest {
         @DisplayName("유저 수정 성공")
         void success() {
             // given
-            CreateUserResponse createUserResponse = createUser(0);
-            UpdateUserRequest updateUserRequest = new UpdateUserRequest(createUserResponse.userId(), "test2",
+            User user = createUser(0);
+            UpdateUserRequest updateUserRequest = new UpdateUserRequest(user.getId(), "test2",
                     "nickname2", "email2", "password2");
 
             // when
-            UpdateUserResponse updateUserResponse = userService.updateUser(updateUserRequest, null);
+            User updatedUser = userService.updateUser(updateUserRequest, null);
 
             // then
-            assertEquals("test2", updateUserResponse.name());
-            assertEquals("nickname2", updateUserResponse.nickname());
-            assertEquals("email2", updateUserResponse.email());
-            assertEquals("password2", updateUserResponse.password());
+            assertEquals("test2", updatedUser.getName());
+            assertEquals("nickname2", updatedUser.getNickname());
+            assertEquals("email2", updatedUser.getEmail());
+            assertEquals("password2", updatedUser.getPassword());
         }
     }
 
@@ -157,13 +157,12 @@ class UserServiceTest {
         @DisplayName("유저 삭제 성공")
         void success() {
             // given
-            CreateUserResponse createUserResponse = createUser(0);
-            User user = userValidator.validateUserExistsByUserId(createUserResponse.userId());
+            User user = createUser(0);
             UserStatus userStatus = userStatusRepository.findUserStatusByUser(user);
             BinaryContent profileImage = user.getProfileImage();
 
             // when
-            userService.deleteUser(createUserResponse.userId());
+            userService.deleteUser(user.getId());
 
             // then
             assertThat(userRepository.findUserById(user.getId())).isNull();

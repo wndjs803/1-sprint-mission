@@ -5,7 +5,6 @@ import com.sprint.mission.discodeit.common.MultipartFileConverter;
 import com.sprint.mission.discodeit.dto.message.request.CreateMessageRequest;
 import com.sprint.mission.discodeit.dto.message.request.DeleteMessageRequest;
 import com.sprint.mission.discodeit.dto.message.request.UpdateMessageRequest;
-import com.sprint.mission.discodeit.dto.message.response.CreateMessageResponse;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
@@ -39,8 +38,8 @@ public class BasicMessageService implements MessageService {
     private final BinaryContentRepository binaryContentRepository;
 
     @Override
-    public CreateMessageResponse createMessage(CreateMessageRequest createMessageRequest,
-                                               List<MultipartFile> multipartFileList) {
+    public Message createMessage(CreateMessageRequest createMessageRequest,
+                                 List<MultipartFile> multipartFileList) {
 
         User sendUser = userValidator.validateUserExistsByUserId(createMessageRequest.sendUserId());
         Channel foundChannel = channelValidator.validateChannelExistsByChannelId(createMessageRequest.channelId());
@@ -54,7 +53,7 @@ public class BasicMessageService implements MessageService {
                 }
         );
 
-        return messageMapper.toCreateMessageResponse(messageRepository.saveMessage(message));
+        return messageRepository.saveMessage(message);
     }
 
     // 요구 사항에 없기에 시간 남으면 수정
