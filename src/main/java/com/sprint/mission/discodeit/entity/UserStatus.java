@@ -17,6 +17,7 @@ public class UserStatus extends BaseEntity {
     private UserStatus(User user) {
         super();
         this.user = user;
+        this.loginAt = this.getCreatedAt();
     }
 
     public static UserStatus of(User user) {
@@ -30,8 +31,8 @@ public class UserStatus extends BaseEntity {
         return this.isOnline;
     }
 
-    public void updateLoginAt(Instant loginAt) {
-        this.loginAt = loginAt;
+    public void updateLoginAt() {
+        this.loginAt = TimeUtil.getCurrentTime();
         this.updateUpdatedAt(TimeUtil.getCurrentTime());
     }
 
