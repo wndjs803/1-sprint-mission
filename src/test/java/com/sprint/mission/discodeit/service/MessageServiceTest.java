@@ -1,80 +1,111 @@
-//package com.sprint.mission.discodeit.service;
-//
-//import com.sprint.mission.discodeit.common.ErrorMessage;
-//import com.sprint.mission.discodeit.entity.Channel;
-//import com.sprint.mission.discodeit.entity.Message;
-//import com.sprint.mission.discodeit.entity.User;
-//import com.sprint.mission.discodeit.repository.file.FileMessageRepository;
-//import com.sprint.mission.discodeit.service.basic.BasicUserService;
-//import com.sprint.mission.discodeit.service.file.FileChannelService;
-//import com.sprint.mission.discodeit.service.file.FileMessageService;
-//import com.sprint.mission.discodeit.service.file.FileUserService;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.DisplayName;
-//import org.junit.jupiter.api.Nested;
-//import org.junit.jupiter.api.Test;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//import java.util.UUID;
-//
-//import static org.assertj.core.api.Assertions.assertThatThrownBy;
-//import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-//import static org.junit.jupiter.api.Assertions.assertEquals;
-//import static org.mockito.Mockito.any;
-//import static org.mockito.Mockito.mock;
-//import static org.mockito.Mockito.verify;
-//import static org.mockito.Mockito.when;
-//
-//class MessageServiceTest {
-//    private MessageService messageService;
-////    private JCFMessageRepository messageRepository;
-////    private JCFUserService userService;
-////    private JCFChannelService channelService;
-//
-//    private FileMessageRepository messageRepository;
-//    private BasicUserService userService;
-//    private FileChannelService channelService;
-//
-//    @BeforeEach
-//    void setUp() {
-////        messageRepository = mock(JCFMessageRepository.class);
-////        userService = mock(JCFUserService.class);
-////        channelService = mock(JCFChannelService.class);
-////        messageService = new JCFMessageService(messageRepository, userService, channelService);
-//
-//        messageRepository = mock(FileMessageRepository.class);
-//        userService = mock(FileUserService.class);
-//        channelService = mock(FileChannelService.class);
-//        messageService = new FileMessageService(messageRepository, userService, channelService);
-//    }
-//
-//    @Nested
-//    @DisplayName("메세지 생성 테스트")
-//    class createMessageTest {
-//        @Test
-//        @DisplayName("메세지 생성 성공")
-//        void success() {
-//            // given
-//            User user = User.of("test1", "nickname1", "email1",
-//                    "password1", "profileImageUrl1", true);
-//            String channelName = "channel1";
-//            Channel channel = Channel.of(channelName, user);
-//            String content = "hello";
-//            Message message = Message.of(user, channel, content);
-//
-//            when(userService.findUserByIdOrThrow(any())).thenReturn(user);
-//            when(channelService.findChannelByIdOrThrow(any())).thenReturn(channel);
-//
-//            when(messageRepository.saveMessage(any())).thenReturn(message);
-//
-//            // when
-//            Message createdMessage = messageService.createMessage(user.getId(), channel.getId(), content);
-//
-//            // then
-//            assertEquals(content, createdMessage.getContent());
-//        }
-//    }
+package com.sprint.mission.discodeit.service;
+
+import com.sprint.mission.discodeit.common.ErrorMessage;
+import com.sprint.mission.discodeit.common.MultipartFileConverter;
+import com.sprint.mission.discodeit.dto.message.request.CreateMessageRequest;
+import com.sprint.mission.discodeit.entity.Channel;
+import com.sprint.mission.discodeit.entity.ChannelType;
+import com.sprint.mission.discodeit.entity.Message;
+import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.mapper.MessageMapper;
+import com.sprint.mission.discodeit.repository.BinaryContentRepository;
+import com.sprint.mission.discodeit.repository.ChannelRepository;
+import com.sprint.mission.discodeit.repository.MessageRepository;
+import com.sprint.mission.discodeit.repository.UserRepository;
+import com.sprint.mission.discodeit.repository.jcf.JCFBinaryContentRepository;
+import com.sprint.mission.discodeit.repository.jcf.JCFChannelRepository;
+import com.sprint.mission.discodeit.repository.jcf.JCFMessageRepository;
+import com.sprint.mission.discodeit.repository.jcf.JCFUserRepository;
+import com.sprint.mission.discodeit.service.basic.BasicMessageService;
+import com.sprint.mission.discodeit.validator.ChannelValidator;
+import com.sprint.mission.discodeit.validator.UserValidator;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+class MessageServiceTest {
+    private MessageRepository messageRepository;
+    private BinaryContentRepository binaryContentRepository;
+    private UserRepository userRepository;
+    private ChannelRepository channelRepository;
+
+    private UserValidator userValidator;
+    private ChannelValidator channelValidator;
+
+    private MultipartFileConverter multipartFileConverter;
+
+    private MessageMapper messageMapper;
+    private MessageService messageService;
+
+
+    @BeforeEach
+    void setUp() {
+        messageRepository = new JCFMessageRepository();
+        binaryContentRepository = new JCFBinaryContentRepository();
+        userRepository = new JCFUserRepository();
+        channelRepository = new JCFChannelRepository();
+        userValidator = new UserValidator(userRepository);
+        channelValidator = new ChannelValidator(channelRepository);
+        multipartFileConverter = new MultipartFileConverter();
+        messageMapper = new MessageMapper();
+        messageService = new BasicMessageService(messageRepository, binaryContentRepository, userValidator,
+                channelValidator, multipartFileConverter, messageMapper);
+    }
+
+    private User createUser(int num) {
+        User user = User.of("test" + num, "nickname" + num, "email" + num, "password" + num);
+        return userRepository.saveUser(user);
+    }
+
+    private Channel createPublicChannel(User channelOwner, String channelName, String description) {
+        Channel channel = Channel.of(channelName, description, channelOwner, ChannelType.PUBLIC);
+        return channelRepository.saveChannel(channel);
+    }
+
+    private Message createMessage(User user, Channel channel, String content) {
+        return Message.of(user, channel, content);
+    }
+
+    @Nested
+    @DisplayName("메세지 생성 테스트")
+    class createMessageTest {
+        @Test
+        @DisplayName("메세지 생성 성공")
+        void success() {
+            // given
+            User user = createUser(0);
+
+            String channelName = "channel1";
+            String channelDescription = "description";
+            Channel channel = createPublicChannel(user, channelName, channelDescription);
+
+            String content = "hello";
+            createMessage(user, channel, content);
+
+            CreateMessageRequest createMessageRequest =
+                    new CreateMessageRequest(user.getId(), channel.getId(), content);
+
+            // when
+            Message createdMessage = messageService.createMessage(createMessageRequest, new ArrayList<>());
+
+            // then
+            assertEquals(content, createdMessage.getContent());
+        }
+    }
 //
 //    @Nested
 //    @DisplayName("메세지 단일 조회 테스트")
@@ -239,4 +270,4 @@
 //        }
 //    }
 //
-//}
+}
