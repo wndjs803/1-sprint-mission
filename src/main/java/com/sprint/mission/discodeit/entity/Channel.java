@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.entity;
 
 import com.sprint.mission.discodeit.common.ErrorMessage;
+import com.sprint.mission.discodeit.common.TimeUtil;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -25,6 +26,9 @@ public class Channel extends BaseEntity {
     }
 
     public static Channel of(String name, String description, User channelOwner, ChannelType channelType) {
+        if (channelOwner == null) {
+            throw new IllegalArgumentException(ErrorMessage.CHANNEL_OWNER_NOT_NULL.getMessage());
+        }
         return new Channel(name, description, channelOwner, channelType);
     }
 
@@ -33,14 +37,17 @@ public class Channel extends BaseEntity {
             throw new IllegalArgumentException(ErrorMessage.CHANNEL_OWNER_NOT_NULL.getMessage());
         }
         this.channelOwner = channelOwner;
+        this.updateUpdatedAt(TimeUtil.getCurrentTime());
     }
 
     public void updateName(String name) {
         this.name = name;
+        this.updateUpdatedAt(TimeUtil.getCurrentTime());
     }
 
     public void updateDescription(String description) {
         this.description = description;
+        this.updateUpdatedAt(TimeUtil.getCurrentTime());
     }
 
     public void addChannelUser(User user) {

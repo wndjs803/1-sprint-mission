@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.entity;
 
+import com.sprint.mission.discodeit.common.TimeUtil;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -22,11 +23,13 @@ public class Message extends BaseEntity {
     }
 
     public static Message of(User sendUser, Channel channel, String content) {
+        // null check
         return new Message(sendUser, channel, content);
     }
 
     public void updateContent(String content) {
         this.content = content;
+        this.updateUpdatedAt(TimeUtil.getCurrentTime());
     }
 
     public boolean isNotOwner(UUID sendUserId) {
