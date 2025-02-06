@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.service;
 
 import com.sprint.mission.discodeit.dto.message.request.CreateMessageRequest;
+import com.sprint.mission.discodeit.dto.message.request.DeleteMessageRequest;
 import com.sprint.mission.discodeit.dto.message.request.UpdateMessageRequest;
 import com.sprint.mission.discodeit.dto.message.response.CreateMessageResponse;
 import com.sprint.mission.discodeit.entity.Message;
@@ -19,5 +20,5 @@ public interface MessageService {
 
     Message updateMessage(UpdateMessageRequest updateMessageRequest, List<MultipartFile> multipartFileList);
 
-    void deleteMessage(UUID sendUserId, UUID messageId);
+    void deleteMessage(DeleteMessageRequest deleteMessageRequest);
 }
