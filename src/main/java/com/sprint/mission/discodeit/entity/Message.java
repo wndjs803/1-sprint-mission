@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.entity;
 
+import com.sprint.mission.discodeit.common.ErrorMessage;
 import com.sprint.mission.discodeit.common.TimeUtil;
 import lombok.Getter;
 
@@ -23,7 +24,12 @@ public class Message extends BaseEntity {
     }
 
     public static Message of(User sendUser, Channel channel, String content) {
-        // null check
+        if (sendUser == null) {
+            throw new IllegalArgumentException(ErrorMessage.USER_NOT_NULL.getMessage());
+        }
+        if (channel == null) {
+            throw new IllegalArgumentException(ErrorMessage.CHANNEL_NOT_NULL.getMessage());
+        }
         return new Message(sendUser, channel, content);
     }
 
@@ -37,6 +43,9 @@ public class Message extends BaseEntity {
     }
 
     public void addBinaryContent(BinaryContent binaryContent) {
+        if (binaryContent == null) {
+            throw new IllegalArgumentException(ErrorMessage.BINARYCONTENT_NOT_NULL.getMessage());
+        }
         this.binaryContentList.add(binaryContent);
     }
 
