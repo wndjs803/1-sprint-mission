@@ -26,7 +26,7 @@ public interface ChannelService {
 
     void deleteChannel(DeleteChannelRequest deleteChannelRequest);
 
-    Channel inviteUsers(UUID channelId, List<User> invitedUserList);
+    Channel inviteUsers(UUID channelId, List<User> invitedUsers);
 
-    Channel leaveUsers(UUID channelId, List<User> leaveUserList);
+    Channel leaveUsers(UUID channelId, List<User> leaveUsers);
 }
