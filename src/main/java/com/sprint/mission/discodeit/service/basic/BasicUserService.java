@@ -3,9 +3,7 @@ package com.sprint.mission.discodeit.service.basic;
 import com.sprint.mission.discodeit.common.MultipartFileConverter;
 import com.sprint.mission.discodeit.dto.user.request.CreateUserRequest;
 import com.sprint.mission.discodeit.dto.user.request.UpdateUserRequest;
-import com.sprint.mission.discodeit.dto.user.response.CreateUserResponse;
 import com.sprint.mission.discodeit.dto.user.response.FindUserResponse;
-import com.sprint.mission.discodeit.dto.user.response.UpdateUserResponse;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
@@ -40,7 +38,7 @@ public class BasicUserService implements UserService {
     private final MultipartFileConverter multipartFileConverter;
 
     @Override
-    public CreateUserResponse createUser(CreateUserRequest createUserRequest, MultipartFile profileImageFile) {
+    public User createUser(CreateUserRequest createUserRequest, MultipartFile profileImageFile) {
 
         // name 중복 여부
         userValidator.validateDuplicateByName(createUserRequest.name());
@@ -56,7 +54,7 @@ public class BasicUserService implements UserService {
         // UserStatus 생성(추후 service layer로 교체)
         userStatusRepository.saveUserStatus(UserStatus.of(user));
 
-        return userMapper.toCreateUserResponse(userRepository.saveUser(user));
+        return userRepository.saveUser(user);
     }
 
     @Override
@@ -78,7 +76,7 @@ public class BasicUserService implements UserService {
     }
 
     @Override
-    public UpdateUserResponse updateUser(UpdateUserRequest updateUserRequest, MultipartFile profileImageFile) {
+    public User updateUser(UpdateUserRequest updateUserRequest, MultipartFile profileImageFile) {
         User foundUser = userValidator.validateUserExistsByUserId(updateUserRequest.userId());
 
         foundUser.updateUserInfo(updateUserRequest.name(), updateUserRequest.nickname(),
@@ -86,7 +84,7 @@ public class BasicUserService implements UserService {
 
         updateProfileImage(foundUser, profileImageFile);
 
-        return userMapper.toUpdateUserResponse(foundUser);
+        return foundUser;
     }
 
     @Override
