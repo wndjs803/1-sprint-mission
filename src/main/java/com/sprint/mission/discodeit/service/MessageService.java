@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.service;
 
 import com.sprint.mission.discodeit.dto.message.request.CreateMessageRequest;
+import com.sprint.mission.discodeit.dto.message.request.UpdateMessageRequest;
 import com.sprint.mission.discodeit.dto.message.response.CreateMessageResponse;
 import com.sprint.mission.discodeit.entity.Message;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,7 +17,7 @@ public interface MessageService {
 
     List<Message> findAllMessagesByChannelId(UUID channelId);
 
-    Message updateMessage(UUID sendUserId, UUID messageId, String content);
+    Message updateMessage(UpdateMessageRequest updateMessageRequest, List<MultipartFile> multipartFileList);
 
     void deleteMessage(UUID sendUserId, UUID messageId);
 }
