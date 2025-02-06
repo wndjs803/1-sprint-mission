@@ -2,7 +2,7 @@ package com.sprint.mission.discodeit.service.basic;
 
 import com.sprint.mission.discodeit.common.ErrorMessage;
 import com.sprint.mission.discodeit.common.MultipartFileConverter;
-import com.sprint.mission.discodeit.common.UtilMethod;
+import com.sprint.mission.discodeit.common.TimeUtil;
 import com.sprint.mission.discodeit.dto.message.request.CreateMessageRequest;
 import com.sprint.mission.discodeit.dto.message.response.CreateMessageResponse;
 import com.sprint.mission.discodeit.entity.BinaryContent;
@@ -75,7 +75,7 @@ public class BasicMessageService implements MessageService {
         }
 
         foundMessage.updateContent(content);
-        foundMessage.updateUpdatedAt(UtilMethod.getCurrentTime());
+        foundMessage.updateUpdatedAt(TimeUtil.getCurrentTime());
 
         return messageRepository.saveMessage(foundMessage);
     }

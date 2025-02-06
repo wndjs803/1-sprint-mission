@@ -1,6 +1,6 @@
 package com.sprint.mission.discodeit.entity;
 
-import com.sprint.mission.discodeit.common.UtilMethod;
+import com.sprint.mission.discodeit.common.TimeUtil;
 import lombok.Getter;
 
 import java.io.Serializable;
@@ -21,7 +21,7 @@ public class BinaryContent implements Serializable {
     private BinaryContent(byte[] content) {
         this.id = UUID.randomUUID();
         this.content = content;
-        this.createdAt = UtilMethod.getCurrentTime();
+        this.createdAt = TimeUtil.getCurrentTime();
     }
 
     public static BinaryContent of(byte[] content) {

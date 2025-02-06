@@ -2,7 +2,7 @@ package com.sprint.mission.discodeit.service.basic;
 
 import com.sprint.mission.discodeit.common.ErrorMessage;
 import com.sprint.mission.discodeit.common.RandomStringGenerator;
-import com.sprint.mission.discodeit.common.UtilMethod;
+import com.sprint.mission.discodeit.common.TimeUtil;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePrivateChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePublicChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.DeleteChannelRequest;
@@ -147,7 +147,7 @@ public class BasicChannelService implements ChannelService {
 
         foundChannel.updateName(updateChannelRequest.name());
         foundChannel.updateDescription(updateChannelRequest.description());
-        foundChannel.updateUpdatedAt(UtilMethod.getCurrentTime());
+        foundChannel.updateUpdatedAt(TimeUtil.getCurrentTime());
 
         Channel updatedChannel = channelRepository.saveChannel(foundChannel);
 
