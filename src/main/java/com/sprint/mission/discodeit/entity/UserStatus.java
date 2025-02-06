@@ -43,6 +43,6 @@ public class UserStatus extends BaseEntity {
 
     public void updateUserStatusInfo() {
         this.updateLoginAt();
-        this.updateLoginAt();
+        this.updateOnline();
     }
 }
