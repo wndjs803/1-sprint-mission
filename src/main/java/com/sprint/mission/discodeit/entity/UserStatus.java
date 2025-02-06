@@ -40,4 +40,9 @@ public class UserStatus extends BaseEntity {
         this.isOnline = ChronoUnit.MINUTES.between(Instant.now(), this.loginAt) < 5;
         this.updateUpdatedAt(TimeUtil.getCurrentTime());
     }
+
+    public void updateUserStatusInfo() {
+        this.updateLoginAt();
+        this.updateLoginAt();
+    }
 }

@@ -12,6 +12,7 @@ import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.repository.UserStatusRepository;
 import com.sprint.mission.discodeit.service.UserService;
+import com.sprint.mission.discodeit.validator.UserStatusValidator;
 import com.sprint.mission.discodeit.validator.UserValidator;
 
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,7 @@ public class BasicUserService implements UserService {
     private final BinaryContentRepository binaryContentRepository;
     private final UserMapper userMapper;
     private final UserValidator userValidator;
+    private final UserStatusValidator userStatusValidator;
     private final MultipartFileConverter multipartFileConverter;
 
     @Override
@@ -61,7 +63,7 @@ public class BasicUserService implements UserService {
     public FindUserResponse findUserByIdOrThrow(UUID userId) {
         User foundUser = userValidator.validateUserExistsByUserId(userId);
 
-        UserStatus userStatus = userStatusRepository.findUserStatusByUser(foundUser); // userStatus Service나 validator로
+        UserStatus userStatus = userStatusValidator.validateUserStatusExistsByUser(foundUser);
 
         MultipartFile profileImage = multipartFileConverter.toMultipartFile(foundUser.getProfileImage().getContent());
 
@@ -94,7 +96,7 @@ public class BasicUserService implements UserService {
 
         // UserStatus 삭제
         // UserStatus 존재 여부 확인 -> validator or Service
-        UserStatus userStatus = userStatusRepository.findUserStatusByUser(foundUser);
+        UserStatus userStatus = userStatusValidator.validateUserStatusExistsByUser(foundUser);
         userStatusRepository.removeUserStatus(userStatus.getId());
 
         // BinaryContent 삭제
