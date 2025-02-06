@@ -3,6 +3,7 @@ package com.sprint.mission.discodeit.service;
 import com.sprint.mission.discodeit.common.ErrorMessage;
 import com.sprint.mission.discodeit.common.MultipartFileConverter;
 import com.sprint.mission.discodeit.dto.message.request.CreateMessageRequest;
+import com.sprint.mission.discodeit.dto.message.request.DeleteMessageRequest;
 import com.sprint.mission.discodeit.dto.message.request.UpdateMessageRequest;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.ChannelType;
@@ -33,6 +34,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
@@ -226,49 +228,54 @@ class MessageServiceTest {
                     .hasMessage(ErrorMessage.NOT_MESSAGE_CREATOR.format("id: " + anotherUser.getId()));
         }
     }
-//
-//    @Nested
-//    @DisplayName("메세지 삭제 테스트")
-//    class deleteMessageTest {
-//        @Test
-//        @DisplayName("메세지 삭제 성공")
-//        void success() {
-//            // given
-//            User user = User.of("test1", "nickname1", "email1",
-//                    "password1", "profileImageUrl1", true);
-//            String channelName = "channel1";
-//            Channel channel = Channel.of(channelName, user);
-//            String content = "hello";
-//            Message message = Message.of(user, channel, content);
-//
-//            when(messageRepository.findMessageById(message.getId())).thenReturn(message);
-//
-//            // when
-//            messageService.deleteMessage(user.getId(), message.getId());
-//
-//            // then
-//            verify(messageRepository).removeMessage(message.getId());
-//        }
-//
-//        @Test
-//        @DisplayName("메세지 생성자 일치 여부 확인 후 예외 발생")
-//        void deleteMessage_ThrowsException_WhenOwnerDoesNotMatch() {
-//            // given
-//            User user = User.of("test1", "nickname1", "email1",
-//                    "password1", "profileImageUrl1", true);
-//            String channelName = "channel1";
-//            Channel channel = Channel.of(channelName, user);
-//            String content = "hello";
-//            Message message = Message.of(user, channel, content);
-//
-//            when(messageRepository.findMessageById(message.getId())).thenReturn(message);
-//
-//            UUID randomId = UUID.randomUUID();
-//            // when & then
-//            assertThatThrownBy(() -> messageService.deleteMessage(randomId, message.getId()))
-//                    .isInstanceOf(RuntimeException.class)
-//                    .hasMessage(ErrorMessage.NOT_MESSAGE_CREATOR.format(randomId));
-//        }
-//    }
-//
+
+    @Nested
+    @DisplayName("메세지 삭제 테스트")
+    class deleteMessageTest {
+        @Test
+        @DisplayName("메세지 삭제 성공")
+        void success() {
+            // given
+            User user = createUser(0);
+
+            String channelName = "channel1";
+            String channelDescription = "description";
+            Channel channel = createPublicChannel(user, channelName, channelDescription);
+
+            String content = "hello";
+            Message message = createMessage(user, channel, content);
+
+            DeleteMessageRequest deleteMessageRequest = new DeleteMessageRequest(user.getId(), message.getId());
+
+            // when
+            messageService.deleteMessage(deleteMessageRequest);
+
+            // then
+            assertNull(messageRepository.findMessageById(message.getId()));
+
+        }
+
+        @Test
+        @DisplayName("메세지 생성자 일치 여부 확인 후 예외 발생")
+        void deleteMessage_ThrowsException_WhenOwnerDoesNotMatch() {
+            // given
+            User user = createUser(0);
+            User anotherUser = createUser(1);
+
+            String channelName = "channel1";
+            String channelDescription = "description";
+            Channel channel = createPublicChannel(user, channelName, channelDescription);
+
+            String content = "hello";
+            Message message = createMessage(user, channel, content);
+
+            DeleteMessageRequest deleteMessageRequest = new DeleteMessageRequest(anotherUser.getId(), message.getId());
+
+            // when & then
+            assertThatThrownBy(() -> messageService.deleteMessage(deleteMessageRequest))
+                    .isInstanceOf(RuntimeException.class)
+                    .hasMessage(ErrorMessage.NOT_MESSAGE_CREATOR.format("id: " + anotherUser.getId()));
+        }
+    }
+
 }
