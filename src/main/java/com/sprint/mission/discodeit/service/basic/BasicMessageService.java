@@ -3,6 +3,7 @@ package com.sprint.mission.discodeit.service.basic;
 import com.sprint.mission.discodeit.common.ErrorMessage;
 import com.sprint.mission.discodeit.common.MultipartFileConverter;
 import com.sprint.mission.discodeit.dto.message.request.CreateMessageRequest;
+import com.sprint.mission.discodeit.dto.message.request.DeleteMessageRequest;
 import com.sprint.mission.discodeit.dto.message.request.UpdateMessageRequest;
 import com.sprint.mission.discodeit.dto.message.response.CreateMessageResponse;
 import com.sprint.mission.discodeit.entity.BinaryContent;
@@ -87,12 +88,18 @@ public class BasicMessageService implements MessageService {
     }
 
     @Override
-    public void deleteMessage(UUID sendUserId, UUID messageId) {
+    public void deleteMessage(DeleteMessageRequest deleteMessageRequest) {
+        UUID messageId = deleteMessageRequest.messageId();
+        UUID sendUserId = deleteMessageRequest.sendUserId();
+
         Message foundMessage = findMessageByIdOrThrow(messageId);
 
         if (foundMessage.isNotOwner(sendUserId)) {
             throw new RuntimeException(ErrorMessage.NOT_MESSAGE_CREATOR.format(sendUserId));
         }
+
+        foundMessage.getBinaryContentList()
+                        .forEach(binaryContent -> binaryContentRepository.removeBinaryContent(binaryContent.getId()));
 
         messageRepository.removeMessage(messageId);
     }
