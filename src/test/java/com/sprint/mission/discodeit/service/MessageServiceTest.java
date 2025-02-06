@@ -32,6 +32,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -142,38 +143,36 @@ class MessageServiceTest {
         }
     }
 //
-//    @Nested
-//    @DisplayName("메세지 목록 조회 테스트")
-//    class findAllMessageTest {
-//        @Test
-//        @DisplayName("메세지 목록 조회 성공")
-//        void success() {
-//            // given
-//            User user = User.of("test1", "nickname1", "email1",
-//                    "password1", "profileImageUrl1", true);
-//            String channelName = "channel1";
-//            Channel channel = Channel.of(channelName, user);
-//            String content1 = "hello";
-//            String content2 = "world";
-//            String content3 = "!!";
-//            Message message1 = Message.of(user, channel, content1);
-//            Message message2 = Message.of(user, channel, content2);
-//            Message message3 = Message.of(user, channel, content3);
-//
-//            List<Message> messageList = new ArrayList<>();
-//            messageList.add(message1);
-//            messageList.add(message2);
-//            messageList.add(message3);
-//
-//            when(messageRepository.findAllMessages()).thenReturn(messageList);
-//
-//            // when
-//            List<Message> foundMessageList = messageService.findAllMessage();
-//
-//            // then
-//            assertArrayEquals(messageList.toArray(), foundMessageList.toArray());
-//        }
-//    }
+    @Nested
+    @DisplayName("메세지 목록 조회 테스트")
+    class findAllMessageTest {
+        @Test
+        @DisplayName("메세지 목록 조회 성공")
+        void success() {
+            // given
+            User user = createUser(0);
+
+            String channelName = "channel1";
+            String channelDescription = "description";
+            Channel channel = createPublicChannel(user, channelName, channelDescription);
+
+            String content1 = "hello";
+            String content2 = "world";
+            String content3 = "!!";
+            Message message1 = createMessage(user, channel, content1);
+            Message message2 = createMessage(user, channel, content2);
+            Message message3 = createMessage(user, channel, content3);
+
+            // when
+            List<Message> foundMessageList = messageService.findAllMessagesByChannelId(channel.getId());
+
+            // then
+            assertEquals(3, foundMessageList.size());
+            assertTrue(foundMessageList.contains(message1));
+            assertTrue(foundMessageList.contains(message2));
+            assertTrue(foundMessageList.contains(message3));
+        }
+    }
 //
 //    @Nested
 //    @DisplayName("메세지 수정 테스트")
