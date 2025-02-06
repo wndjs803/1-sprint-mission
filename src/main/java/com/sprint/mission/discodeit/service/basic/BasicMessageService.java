@@ -31,11 +31,14 @@ public class BasicMessageService implements MessageService {
 //    @Qualifier("fileMessageRepository")
     @Qualifier("jcfMessageRepository")
     private final MessageRepository messageRepository;
+    private final BinaryContentRepository binaryContentRepository;
+
     private final UserValidator userValidator;
     private final ChannelValidator channelValidator;
+
     private final MultipartFileConverter multipartFileConverter;
+
     private final MessageMapper messageMapper;
-    private final BinaryContentRepository binaryContentRepository;
 
     @Override
     public Message createMessage(CreateMessageRequest createMessageRequest,
