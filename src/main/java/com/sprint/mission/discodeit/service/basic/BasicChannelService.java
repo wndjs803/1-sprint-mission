@@ -181,19 +181,19 @@ public class BasicChannelService implements ChannelService {
 
     // inviteUsers, leaveUsers 는 남는 시간에 수정
     @Override
-    public Channel inviteUsers(UUID channelId, List<User> invitedUserList) {
+    public Channel inviteUsers(UUID channelId, List<User> invitedUsers) {
         Channel foundChannel = channelValidator.validateChannelExistsByChannelId(channelId);
 
-        invitedUserList.forEach(user -> foundChannel.addChannelUser(user));
+        invitedUsers.forEach(user -> foundChannel.addChannelUser(user));
 
         return channelRepository.saveChannel(foundChannel);
     }
 
     @Override
-    public Channel leaveUsers(UUID channelId, List<User> leaveUserList) {
+    public Channel leaveUsers(UUID channelId, List<User> leaveUsers) {
         Channel foundChannel = channelValidator.validateChannelExistsByChannelId(channelId);
 
-        leaveUserList.forEach(user -> foundChannel.deleteChannelUser(user));
+        leaveUsers.forEach(user -> foundChannel.deleteChannelUser(user));
 
         return channelRepository.saveChannel(foundChannel);
     }
