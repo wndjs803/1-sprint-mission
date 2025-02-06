@@ -2,6 +2,7 @@ package com.sprint.mission.discodeit.service.basic;
 
 import com.sprint.mission.discodeit.dto.user.request.LoginRequest;
 import com.sprint.mission.discodeit.dto.user.response.LoginResponse;
+import com.sprint.mission.discodeit.dto.userStatus.request.UpdateUserStatusByUserIdRequest;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.mapper.UserMapper;
 import com.sprint.mission.discodeit.service.AuthService;
@@ -23,7 +24,9 @@ public class BasicAuthService implements AuthService {
         User user = userValidator.validateUserExistsByNameAndPassword(loginRequest.name(), loginRequest.password());
 
         // UserStatus 로그인 여부 변경
-        userStatusService.updateUserStatusByUserId(user.getId());
+        UpdateUserStatusByUserIdRequest updateUserStatusByUserIdRequest =
+                new UpdateUserStatusByUserIdRequest(user.getId(), true);
+        userStatusService.updateUserStatusByUserId(updateUserStatusByUserIdRequest);
 
         return userMapper.toLoginResponse(user);
     }
