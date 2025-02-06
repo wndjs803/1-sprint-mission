@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.entity;
 
+import com.sprint.mission.discodeit.common.TimeUtil;
 import lombok.Getter;
 
 import java.time.Instant;
@@ -27,9 +28,11 @@ public class UserStatus extends BaseEntity {
 
     public void updateLoginAt(Instant loginAt) {
         this.loginAt = loginAt;
+        this.updateUpdatedAt(TimeUtil.getCurrentTime());
     }
 
     public void updateOnline() {
         this.isOnline = ChronoUnit.MINUTES.between(Instant.now(), this.loginAt) < 5;
+        this.updateUpdatedAt(TimeUtil.getCurrentTime());
     }
 }
