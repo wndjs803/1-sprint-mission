@@ -193,7 +193,7 @@ public class BasicChannelService implements ChannelService {
     public Channel leaveUsers(UUID channelId, List<User> leaveUsers) {
         Channel foundChannel = channelValidator.validateChannelExistsByChannelId(channelId);
 
-        leaveUsers.forEach(user -> foundChannel.deleteChannelUser(user));
+        leaveUsers.forEach(user -> foundChannel.removeUserFromChannel(user));
 
         return channelRepository.saveChannel(foundChannel);
     }
