@@ -57,7 +57,7 @@ public class Channel extends BaseEntity {
         this.channelUserList.add(user);
     }
 
-    public void deleteChannelUser(User user) {
+    public void removeUserFromChannel(User user) {
         if (user == null) {
             throw new IllegalArgumentException(ErrorMessage.USER_NOT_NULL.getMessage());
         }
