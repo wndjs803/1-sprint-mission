@@ -61,7 +61,7 @@ public class BasicMessageService implements MessageService {
     }
 
     @Override
-    public List<Message> findAllMessage() {
+    public List<Message> findAllMessages() {
         return messageRepository.findAllMessages();
     }
 
