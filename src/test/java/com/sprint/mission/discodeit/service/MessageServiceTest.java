@@ -77,7 +77,8 @@ class MessageServiceTest {
     }
 
     private Message createMessage(User user, Channel channel, String content) {
-        return Message.of(user, channel, content);
+        Message message = Message.of(user, channel, content);
+        return messageRepository.saveMessage(message);
     }
 
     @Nested
@@ -106,41 +107,40 @@ class MessageServiceTest {
             assertEquals(content, createdMessage.getContent());
         }
     }
-//
-//    @Nested
-//    @DisplayName("메세지 단일 조회 테스트")
-//    class findMessageByIdOrThrowTest {
-//        @Test
-//        @DisplayName("메세지 단일 조회 성공")
-//        void success() {
-//            // given
-//            User user = User.of("test1", "nickname1", "email1",
-//                    "password1", "profileImageUrl1", true);
-//            String channelName = "channel1";
-//            Channel channel = Channel.of(channelName, user);
-//            String content = "hello";
-//            Message message = Message.of(user, channel, content);
-//
-//            when(messageRepository.findMessageById(message.getId())).thenReturn(message);
-//
-//            // when
-//            Message foundMessage = messageService.findMessageByIdOrThrow(message.getId());
-//
-//            // then
-//            assertEquals(content, foundMessage.getContent());
-//        }
-//
-//        @Test
-//        @DisplayName("메세지 아이디 존재 여부 확인 후 에외 발생")
-//        void findMessageByIdOrThrow_ThrowsException_WhenMessageIdDoesNotExist() {
-//            when(messageRepository.findMessageById(any())).thenReturn(null);
-//            UUID randomId = UUID.randomUUID();
-//
-//            assertThatThrownBy(() -> messageService.findMessageByIdOrThrow(randomId))
-//                    .isInstanceOf(RuntimeException.class)
-//                    .hasMessage(ErrorMessage.MESSAGE_NOT_FOUND.format(randomId));
-//        }
-//    }
+
+    @Nested
+    @DisplayName("메세지 단일 조회 테스트")
+    class findMessageByIdOrThrowTest {
+        @Test
+        @DisplayName("메세지 단일 조회 성공")
+        void success() {
+            // given
+            User user = createUser(0);
+
+            String channelName = "channel1";
+            String channelDescription = "description";
+            Channel channel = createPublicChannel(user, channelName, channelDescription);
+
+            String content = "hello";
+            Message message = createMessage(user, channel, content);
+
+            // when
+            Message foundMessage = messageService.findMessageByIdOrThrow(message.getId());
+
+            // then
+            assertEquals(content, foundMessage.getContent());
+        }
+
+        @Test
+        @DisplayName("메세지 아이디 존재 여부 확인 후 에외 발생")
+        void findMessageByIdOrThrow_ThrowsException_WhenMessageIdDoesNotExist() {
+            UUID randomId = UUID.randomUUID();
+
+            assertThatThrownBy(() -> messageService.findMessageByIdOrThrow(randomId))
+                    .isInstanceOf(RuntimeException.class)
+                    .hasMessage(ErrorMessage.MESSAGE_NOT_FOUND.format("id: " + randomId));
+        }
+    }
 //
 //    @Nested
 //    @DisplayName("메세지 목록 조회 테스트")

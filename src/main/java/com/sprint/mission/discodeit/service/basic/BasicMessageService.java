@@ -63,7 +63,7 @@ public class BasicMessageService implements MessageService {
     @Override
     public Message findMessageByIdOrThrow(UUID messageId) {
         return Optional.ofNullable(messageRepository.findMessageById(messageId))
-                .orElseThrow(() -> new RuntimeException(ErrorMessage.MESSAGE_NOT_FOUND.format(messageId)));
+                .orElseThrow(() -> new RuntimeException(ErrorMessage.MESSAGE_NOT_FOUND.format("id: " + messageId)));
     }
 
     @Override
@@ -80,7 +80,7 @@ public class BasicMessageService implements MessageService {
         Message foundMessage = findMessageByIdOrThrow(updateMessageRequest.messageId());
 
         if (foundMessage.isNotOwner(sendUserId)) {
-            throw new RuntimeException(ErrorMessage.NOT_MESSAGE_CREATOR.format(sendUserId));
+            throw new RuntimeException(ErrorMessage.NOT_MESSAGE_CREATOR.format("id: " + sendUserId));
         }
 
         foundMessage.updateContent(updateMessageRequest.content());
@@ -97,7 +97,7 @@ public class BasicMessageService implements MessageService {
         Message foundMessage = findMessageByIdOrThrow(messageId);
 
         if (foundMessage.isNotOwner(sendUserId)) {
-            throw new RuntimeException(ErrorMessage.NOT_MESSAGE_CREATOR.format(sendUserId));
+            throw new RuntimeException(ErrorMessage.NOT_MESSAGE_CREATOR.format("id: " + sendUserId));
         }
 
         foundMessage.getBinaryContentList()
