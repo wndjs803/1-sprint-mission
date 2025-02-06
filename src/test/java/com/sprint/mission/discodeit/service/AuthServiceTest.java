@@ -10,6 +10,8 @@ import com.sprint.mission.discodeit.repository.UserStatusRepository;
 import com.sprint.mission.discodeit.repository.jcf.JCFUserRepository;
 import com.sprint.mission.discodeit.repository.jcf.JCFUserStatusRepository;
 import com.sprint.mission.discodeit.service.basic.BasicAuthService;
+import com.sprint.mission.discodeit.service.basic.BasicUserStatusService;
+import com.sprint.mission.discodeit.validator.UserStatusValidator;
 import com.sprint.mission.discodeit.validator.UserValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,13 +25,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
 
+    private UserRepository userRepository;
+    private UserStatusRepository userStatusRepository;
+
     private UserValidator userValidator;
     private UserMapper userMapper;
-    private UserStatusRepository userStatusRepository;
+    private UserStatusService userStatusService;
     private AuthService authService;
-
-    private UserRepository userRepository;
-
 
     @BeforeEach
     void setUp() {
@@ -37,7 +39,10 @@ class AuthServiceTest {
         userValidator = new UserValidator(userRepository);
         userMapper = new UserMapper();
         userStatusRepository = new JCFUserStatusRepository();
-        authService = new BasicAuthService(userValidator, userMapper, userStatusRepository);
+        userValidator = new UserValidator(userRepository);
+        userStatusService = new BasicUserStatusService(userStatusRepository, userValidator,
+                new UserStatusValidator(userStatusRepository));
+        authService = new BasicAuthService(userValidator, userStatusService, userMapper);
     }
 
     @Test

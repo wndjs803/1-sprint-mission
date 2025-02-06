@@ -16,9 +16,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class BasicUserStatusService implements UserStatusService {
 
-    private UserStatusRepository userStatusRepository;
-    private UserValidator userValidator;
-    private UserStatusValidator userStatusValidator;
+    private final UserStatusRepository userStatusRepository;
+    private final UserStatusValidator userStatusValidator;
+    private final UserValidator userValidator;
 
     @Override
     public UserStatus createUserStatus(UUID userId) {
@@ -45,7 +45,7 @@ public class BasicUserStatusService implements UserStatusService {
 
         userStatus.updateUserStatusInfo();
 
-        return userStatus;
+        return userStatusRepository.saveUserStatus(userStatus);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class BasicUserStatusService implements UserStatusService {
 
         userStatus.updateUserStatusInfo();
 
-        return userStatus;
+        return userStatusRepository.saveUserStatus(userStatus);
     }
 
     @Override
