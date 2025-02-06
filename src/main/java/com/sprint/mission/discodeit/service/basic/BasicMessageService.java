@@ -54,6 +54,7 @@ public class BasicMessageService implements MessageService {
         return messageMapper.toCreateMessageResponse(messageRepository.saveMessage(message));
     }
 
+    // 요구 사항에 없기에 시간 남으면 수정
     @Override
     public Message findMessageByIdOrThrow(UUID messageId) {
         return Optional.ofNullable(messageRepository.findMessageById(messageId))
@@ -61,8 +62,9 @@ public class BasicMessageService implements MessageService {
     }
 
     @Override
-    public List<Message> findAllMessages() {
-        return messageRepository.findAllMessages();
+    public List<Message> findAllMessagesByChannelId(UUID channelId) {
+        Channel channel = channelValidator.validateChannelExistsByChannelId(channelId);
+        return messageRepository.findAllMessagesByChannel(channel);
     }
 
     @Override

@@ -14,7 +14,7 @@ public interface MessageService {
 
     Message findMessageByIdOrThrow(UUID messageId);
 
-    List<Message> findAllMessages();
+    List<Message> findAllMessagesByChannelId(UUID channelId);
 
     Message updateMessage(UUID sendUserId, UUID messageId, String content);
 
