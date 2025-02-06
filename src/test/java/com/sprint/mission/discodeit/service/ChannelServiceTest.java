@@ -6,9 +6,7 @@ import com.sprint.mission.discodeit.dto.channel.request.CreatePrivateChannelRequ
 import com.sprint.mission.discodeit.dto.channel.request.CreatePublicChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.DeleteChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.UpdateChannelRequest;
-import com.sprint.mission.discodeit.dto.channel.response.CreateChannelResponse;
 import com.sprint.mission.discodeit.dto.channel.response.FindChannelResponse;
-import com.sprint.mission.discodeit.dto.channel.response.UpdateChannelResponse;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.ChannelType;
 import com.sprint.mission.discodeit.entity.User;
