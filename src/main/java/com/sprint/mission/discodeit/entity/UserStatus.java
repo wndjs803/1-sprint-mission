@@ -36,13 +36,17 @@ public class UserStatus extends BaseEntity {
         this.updateUpdatedAt(TimeUtil.getCurrentTime());
     }
 
-    public void updateOnline() {
-        this.isOnline = ChronoUnit.MINUTES.between(Instant.now(), this.loginAt) < 5;
+    public boolean isLoggedInWithinLast5Minutes() {
+        return ChronoUnit.MINUTES.between(Instant.now(), this.loginAt) < 5;
+    }
+
+    public void updateOnline(boolean isOnline) {
+        this.isOnline = isOnline;
         this.updateUpdatedAt(TimeUtil.getCurrentTime());
     }
 
-    public void updateUserStatusInfo() {
+    public void updateUserStatusInfo(boolean isOnline) {
         this.updateLoginAt();
-        this.updateOnline();
+        this.updateOnline(isOnline);
     }
 }

@@ -1,5 +1,7 @@
 package com.sprint.mission.discodeit.service.basic;
 
+import com.sprint.mission.discodeit.dto.userStatus.request.UpdateUserStatusByIdRequest;
+import com.sprint.mission.discodeit.dto.userStatus.request.UpdateUserStatusByUserIdRequest;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.repository.UserStatusRepository;
@@ -40,20 +42,21 @@ public class BasicUserStatusService implements UserStatusService {
     }
 
     @Override
-    public UserStatus updateUserStatusById(UUID userStatusId) {
-        UserStatus userStatus = userStatusValidator.validateUserStatusExistsById(userStatusId);
+    public UserStatus updateUserStatusById(UpdateUserStatusByIdRequest updateUserStatusByIdRequest) {
+        UserStatus userStatus =
+                userStatusValidator.validateUserStatusExistsById(updateUserStatusByIdRequest.userStatusId());
 
-        userStatus.updateUserStatusInfo();
+        userStatus.updateUserStatusInfo(updateUserStatusByIdRequest.isOnline());
 
         return userStatusRepository.saveUserStatus(userStatus);
     }
 
     @Override
-    public UserStatus updateUserStatusByUserId(UUID userId) {
-        User user = userValidator.validateUserExistsByUserId(userId);
+    public UserStatus updateUserStatusByUserId(UpdateUserStatusByUserIdRequest updateUserStatusByUserIdRequest) {
+        User user = userValidator.validateUserExistsByUserId(updateUserStatusByUserIdRequest.userId());
         UserStatus userStatus = userStatusValidator.validateUserStatusExistsByUser(user);
 
-        userStatus.updateUserStatusInfo();
+        userStatus.updateUserStatusInfo(updateUserStatusByUserIdRequest.isOnline());
 
         return userStatusRepository.saveUserStatus(userStatus);
     }

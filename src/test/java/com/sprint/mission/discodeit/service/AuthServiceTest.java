@@ -40,8 +40,8 @@ class AuthServiceTest {
         userMapper = new UserMapper();
         userStatusRepository = new JCFUserStatusRepository();
         userValidator = new UserValidator(userRepository);
-        userStatusService = new BasicUserStatusService(userStatusRepository, userValidator,
-                new UserStatusValidator(userStatusRepository));
+        userStatusService = new BasicUserStatusService(userStatusRepository,
+                new UserStatusValidator(userStatusRepository), userValidator);
         authService = new BasicAuthService(userValidator, userStatusService, userMapper);
     }
 
