@@ -14,6 +14,8 @@ public class UserStatus extends BaseEntity {
     private Instant loginAt;
     private boolean isOnline = false;
 
+    private static final long LOGIN_EXPIRATION_MINUTES = 5;
+
     private UserStatus(User user) {
         super();
         this.user = user;
@@ -36,8 +38,8 @@ public class UserStatus extends BaseEntity {
         this.updateUpdatedAt(TimeUtil.getCurrentTime());
     }
 
-    public boolean isLoggedInWithinLast5Minutes() {
-        return ChronoUnit.MINUTES.between(Instant.now(), this.loginAt) < 5;
+    public boolean isRecentLogin() {
+        return ChronoUnit.MINUTES.between(Instant.now(), this.loginAt) < LOGIN_EXPIRATION_MINUTES;
     }
 
     public void updateOnline(boolean isOnline) {
