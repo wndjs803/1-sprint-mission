@@ -47,6 +47,15 @@ public class Message extends BaseEntity {
             throw new IllegalArgumentException(ErrorMessage.BINARYCONTENT_NOT_NULL.getMessage());
         }
         this.binaryContentList.add(binaryContent);
+        this.updateUpdatedAt(TimeUtil.getCurrentTime());
+    }
+
+    public void deleteBinaryContent(BinaryContent binaryContent) {
+        if (binaryContent == null) {
+            throw new IllegalArgumentException(ErrorMessage.BINARYCONTENT_NOT_NULL.getMessage());
+        }
+        this.binaryContentList.remove(binaryContent);
+        this.updateUpdatedAt(TimeUtil.getCurrentTime());
     }
 
     @Override
