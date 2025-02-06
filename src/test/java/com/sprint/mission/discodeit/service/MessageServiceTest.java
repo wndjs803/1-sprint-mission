@@ -3,6 +3,7 @@ package com.sprint.mission.discodeit.service;
 import com.sprint.mission.discodeit.common.ErrorMessage;
 import com.sprint.mission.discodeit.common.MultipartFileConverter;
 import com.sprint.mission.discodeit.dto.message.request.CreateMessageRequest;
+import com.sprint.mission.discodeit.dto.message.request.UpdateMessageRequest;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.ChannelType;
 import com.sprint.mission.discodeit.entity.Message;
@@ -173,57 +174,58 @@ class MessageServiceTest {
             assertTrue(foundMessageList.contains(message3));
         }
     }
-//
-//    @Nested
-//    @DisplayName("메세지 수정 테스트")
-//    class updateMessageTest {
-//        @Test
-//        @DisplayName("메세지 수정 성공")
-//        void success() {
-//            // given
-//            User user = User.of("test1", "nickname1", "email1",
-//                    "password1", "profileImageUrl1", true);
-//            String channelName = "channel1";
-//            Channel channel = Channel.of(channelName, user);
-//            String content = "hello";
-//            Message message = Message.of(user, channel, content);
-//
-//            when(userService.findUserByIdOrThrow(user.getId())).thenReturn(user);
-//            when(messageRepository.findMessageById(any())).thenReturn(message);
-//
-//            when(messageRepository.saveMessage(any())).thenReturn(message);
-//            String updatedContent = "hi";
-//
-//            // when
-//            Message updatedMessage = messageService.updateMessage(user.getId(), message.getId(), updatedContent);
-//
-//            // then
-//            assertEquals(updatedContent, updatedMessage.getContent());
-//        }
-//
-//        @Test
-//        @DisplayName("메세지 생성자 일치 여부 확인 후 예외 발생")
-//        void updateMessage_ThrowsException_WhenOwnerDoesNotMatch() {
-//            // given
-//            User user = User.of("test1", "nickname1", "email1",
-//                    "password1", "profileImageUrl1", true);
-//            String channelName = "channel1";
-//            Channel channel = Channel.of(channelName, user);
-//            String content = "hello";
-//            Message message = Message.of(user, channel, content);
-//
-//            when(userService.findUserByIdOrThrow(user.getId())).thenReturn(user);
-//            when(messageRepository.findMessageById(any())).thenReturn(message);
-//
-//            String updatedContent = "hi";
-//            UUID randomId = UUID.randomUUID();
-//
-//            // when & then
-//            assertThatThrownBy(() -> messageService.updateMessage(randomId, message.getId(), updatedContent))
-//                    .isInstanceOf(RuntimeException.class)
-//                    .hasMessage(ErrorMessage.NOT_MESSAGE_CREATOR.format(randomId));
-//        }
-//    }
+
+    @Nested
+    @DisplayName("메세지 수정 테스트")
+    class updateMessageTest {
+        @Test
+        @DisplayName("메세지 수정 성공")
+        void success() {
+            // given
+            User user = createUser(0);
+
+            String channelName = "channel1";
+            String channelDescription = "description";
+            Channel channel = createPublicChannel(user, channelName, channelDescription);
+
+            String content = "hello";
+            Message message = createMessage(user, channel, content);
+
+            String updateContent = "hi";
+            UpdateMessageRequest updateMessageRequest =
+                    new UpdateMessageRequest(user.getId(), message.getId(), updateContent);
+
+            // when
+            Message updatedMessage = messageService.updateMessage(updateMessageRequest, new ArrayList<>());
+
+            // then
+            assertEquals(updateContent, updatedMessage.getContent());
+        }
+
+        @Test
+        @DisplayName("메세지 생성자 일치 여부 확인 후 예외 발생")
+        void updateMessage_ThrowsException_WhenOwnerDoesNotMatch() {
+            // given
+            User user = createUser(0);
+            User anotherUser = createUser(1);
+
+            String channelName = "channel1";
+            String channelDescription = "description";
+            Channel channel = createPublicChannel(user, channelName, channelDescription);
+
+            String content = "hello";
+            Message message = createMessage(user, channel, content);
+
+            String updateContent = "hi";
+            UpdateMessageRequest updateMessageRequest =
+                    new UpdateMessageRequest(anotherUser.getId(), message.getId(), updateContent);
+
+            // when & then
+            assertThatThrownBy(() -> messageService.updateMessage(updateMessageRequest, new ArrayList<>()))
+                    .isInstanceOf(RuntimeException.class)
+                    .hasMessage(ErrorMessage.NOT_MESSAGE_CREATOR.format("id: " + anotherUser.getId()));
+        }
+    }
 //
 //    @Nested
 //    @DisplayName("메세지 삭제 테스트")
