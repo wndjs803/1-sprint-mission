@@ -159,7 +159,7 @@ class UserServiceTest {
         void success() {
             // given
             User user = createUser(0);
-            UserStatus userStatus = userStatusRepository.findUserStatusByUser(user);
+            UserStatus userStatus = userStatusValidator.validateUserStatusExistsByUser(user);
             BinaryContent profileImage = user.getProfileImage();
 
             // when

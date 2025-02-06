@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository("jcfUserStatusRepository")
@@ -30,10 +31,10 @@ public class JCFUserStatusRepository implements UserStatusRepository {
     }
 
     @Override
-    public UserStatus findUserStatusByUser(User user) {
+    public Optional<UserStatus> findUserStatusByUser(User user) {
         return userStatusData.values().stream()
                 .filter(userStatus -> userStatus.getUser().equals(user))
-                .findFirst().get();
+                .findFirst();
     }
 
     @Override
