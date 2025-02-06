@@ -116,6 +116,7 @@ public class BasicChannelService implements ChannelService {
         // PUBLIC + User가 참가한 PRIVATE 채널
         User user = userValidator.validateUserExistsByUserId(userId);
 
+        // 여기도 repository에서 필터를 해서 조회 or service에서 필터
         List<Channel> channelList = channelRepository.findAllChannels().stream()
                 .filter(channel ->
                         channel.isPublic() || (channel.isPrivate() && channel.isUserInChannel(user)))
@@ -147,9 +148,7 @@ public class BasicChannelService implements ChannelService {
         foundChannel.updateDescription(updateChannelRequest.description());
         foundChannel.updateUpdatedAt(TimeUtil.getCurrentTime());
 
-        Channel updatedChannel = channelRepository.saveChannel(foundChannel);
-
-        return updatedChannel;
+        return channelRepository.saveChannel(foundChannel);
     }
 
     @Override
