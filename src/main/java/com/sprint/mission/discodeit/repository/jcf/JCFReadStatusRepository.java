@@ -23,7 +23,7 @@ public class JCFReadStatusRepository implements ReadStatusRepository {
     }
 
     @Override
-    public ReadStatus findReadStatusByReadStatusId(UUID readStatusId) {
+    public ReadStatus findReadStatusById(UUID readStatusId) {
         return readStatusData.get(readStatusId);
     }
 
