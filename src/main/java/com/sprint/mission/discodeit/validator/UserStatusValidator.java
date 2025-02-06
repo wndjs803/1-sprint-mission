@@ -23,13 +23,13 @@ public class UserStatusValidator {
     }
 
     public UserStatus validateUserStatusExistsByUser(User user) {
-        return Optional.ofNullable(userStatusRepository.findUserStatusByUser(user))
+        return userStatusRepository.findUserStatusByUser(user)
                 .orElseThrow(() -> new IllegalArgumentException(
                         ErrorMessage.USERSTATUS_NOT_FOUND.format("id: " + user.getId())));
     }
 
     public void validateDuplicateByUser(User user) {
-        if (userStatusRepository.findUserStatusByUser(user) != null) {
+        if (userStatusRepository.findUserStatusByUser(user).isPresent()) {
             throw new RuntimeException(ErrorMessage.USERSTATUS_ALREADY_EXIST.format("userId: " + user.getId()));
         }
     }
