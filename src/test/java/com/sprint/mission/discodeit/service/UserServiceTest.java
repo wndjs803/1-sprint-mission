@@ -13,6 +13,7 @@ import com.sprint.mission.discodeit.repository.jcf.JCFBinaryContentRepository;
 import com.sprint.mission.discodeit.repository.jcf.JCFUserRepository;
 import com.sprint.mission.discodeit.repository.jcf.JCFUserStatusRepository;
 import com.sprint.mission.discodeit.service.basic.BasicUserService;
+import com.sprint.mission.discodeit.validator.UserStatusValidator;
 import com.sprint.mission.discodeit.validator.UserValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,6 +33,7 @@ class UserServiceTest {
     private JCFBinaryContentRepository binaryContentRepository;
     private UserMapper userMapper;
     private UserValidator userValidator;
+    private UserStatusValidator userStatusValidator;
     private MultipartFileConverter multipartFileConverter;
     private UserService userService;
 
@@ -42,9 +44,10 @@ class UserServiceTest {
         binaryContentRepository = new JCFBinaryContentRepository();
         userMapper = new UserMapper();
         userValidator = new UserValidator(userRepository);
+        userStatusValidator = new UserStatusValidator(userStatusRepository);
         multipartFileConverter = new MultipartFileConverter();
         userService = new BasicUserService(userRepository, userStatusRepository, binaryContentRepository,
-                userMapper, userValidator, multipartFileConverter);
+                userMapper, userValidator, userStatusValidator, multipartFileConverter);
     }
 
     private User createUser(int num) {

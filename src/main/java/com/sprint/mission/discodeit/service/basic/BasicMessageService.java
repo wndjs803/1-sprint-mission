@@ -62,6 +62,7 @@ public class BasicMessageService implements MessageService {
     // 요구 사항에 없기에 시간 남으면 수정
     @Override
     public Message findMessageByIdOrThrow(UUID messageId) {
+        // messageValidator 로 분리하는 것이 일관성 있지만 다른 클래스에서 참조 안하기에 일단 남겨둔다.
         return Optional.ofNullable(messageRepository.findMessageById(messageId))
                 .orElseThrow(() -> new RuntimeException(ErrorMessage.MESSAGE_NOT_FOUND.format("id: " + messageId)));
     }

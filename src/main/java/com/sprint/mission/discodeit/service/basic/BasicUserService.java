@@ -34,9 +34,12 @@ public class BasicUserService implements UserService {
     private final UserRepository userRepository;
     private final UserStatusRepository userStatusRepository;
     private final BinaryContentRepository binaryContentRepository;
+
     private final UserMapper userMapper;
+
     private final UserValidator userValidator;
     private final UserStatusValidator userStatusValidator;
+
     private final MultipartFileConverter multipartFileConverter;
 
     @Override
@@ -44,7 +47,6 @@ public class BasicUserService implements UserService {
 
         // name 중복 여부
         userValidator.validateDuplicateByName(createUserRequest.name());
-
         // email 중복 여부
         userValidator.validateDuplicateUserByEmail(createUserRequest.email());
 
@@ -62,7 +64,6 @@ public class BasicUserService implements UserService {
     @Override
     public FindUserResponse findUserByIdOrThrow(UUID userId) {
         User foundUser = userValidator.validateUserExistsByUserId(userId);
-
         UserStatus userStatus = userStatusValidator.validateUserStatusExistsByUser(foundUser);
 
         MultipartFile profileImage = multipartFileConverter.toMultipartFile(foundUser.getProfileImage().getContent());
@@ -95,7 +96,6 @@ public class BasicUserService implements UserService {
         User foundUser = userValidator.validateUserExistsByUserId(userId);
 
         // UserStatus 삭제
-        // UserStatus 존재 여부 확인 -> validator or Service
         UserStatus userStatus = userStatusValidator.validateUserStatusExistsByUser(foundUser);
         userStatusRepository.removeUserStatus(userStatus.getId());
 
