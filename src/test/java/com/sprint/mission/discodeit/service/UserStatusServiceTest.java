@@ -14,7 +14,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class UserStatusServiceTest {
 
@@ -38,6 +43,11 @@ class UserStatusServiceTest {
         return userRepository.saveUser(user);
     }
 
+    private UserStatus createUserStatus(User user) {
+        UserStatus userStatus = UserStatus.of(user);
+        return userStatusRepository.saveUserStatus(userStatus);
+    }
+
     @Nested
     @DisplayName("UserStatus 생성 테스트")
     class CreateUserStatusTest {
@@ -54,6 +64,50 @@ class UserStatusServiceTest {
             // then
             assertNotNull(userStatusRepository.findUserStatusByUser(user));
             assertNotNull(userStatusRepository.findUserStatusById(userStatus.getId()));
+        }
+    }
+
+    @Nested
+    @DisplayName("UserStatus 조회 테스트")
+    class FindUserStatusTest {
+
+        @Test
+        @DisplayName("UserStatus 단일 조회 성공")
+        void success() {
+            // given
+            User user = createUser(0);
+            UserStatus userStatus = createUserStatus(user);
+
+            // when
+            UserStatus foundedUserStatus = userStatusService.findUserStatusById(userStatus.getId());
+
+            // then
+            assertEquals(userStatus.getId(), foundedUserStatus.getId());
+            assertEquals(user, foundedUserStatus.getUser());
+            assertFalse(foundedUserStatus.getIsOnline());
+        }
+    }
+
+    @Nested
+    @DisplayName("UserStatus 목록 조회")
+    class FindAllUserStatuses {
+
+        @Test
+        @DisplayName("UserStatus 목록 조회 성공")
+        void success() {
+            // given
+            User user = createUser(0);
+            User user1 = createUser(1);
+            UserStatus userStatus = createUserStatus(user);
+            UserStatus userStatus1 = createUserStatus(user1);
+
+            // when
+            List<UserStatus> userStatusList = userStatusService.findAllUserStatuses();
+
+            // then
+            assertEquals(2, userStatusList.size());
+            assertTrue(userStatusList.contains(userStatus));
+            assertTrue(userStatusList.contains(userStatus1));
         }
     }
 }
