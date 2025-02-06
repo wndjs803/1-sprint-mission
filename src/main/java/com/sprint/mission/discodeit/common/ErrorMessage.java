@@ -29,7 +29,11 @@ public enum ErrorMessage {
     READSTATUS_NOT_FOUND("readStatus를 찾을 수 없습니다. %s"),
 
     // BinaryContent
-    BINARYCONTENT_NOT_NULL("BinaryContent는 null일 수 없습니다.");
+    BINARYCONTENT_NOT_NULL("BinaryContent는 null일 수 없습니다."),
+
+    // UserStatus
+    USERSTATUS_ALREADY_EXIST("이미 UserStatus가 존재합니다. %s"),
+    USERSTATUS_NOT_FOUND("userStatus를 찾을 수 없습니다. %s");
 
     private final String msg;
 
