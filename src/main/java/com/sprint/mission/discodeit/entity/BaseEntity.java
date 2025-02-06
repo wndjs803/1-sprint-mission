@@ -1,6 +1,6 @@
 package com.sprint.mission.discodeit.entity;
 
-import com.sprint.mission.discodeit.common.UtilMethod;
+import com.sprint.mission.discodeit.common.TimeUtil;
 import lombok.Getter;
 
 import java.io.Serializable;
@@ -18,7 +18,7 @@ public abstract class BaseEntity implements Serializable {
 
     public BaseEntity() {
         this.id = UUID.randomUUID();
-        this.createdAt = UtilMethod.getCurrentTime();
+        this.createdAt = TimeUtil.getCurrentTime();
         this.updatedAt = createdAt;
     }
 
