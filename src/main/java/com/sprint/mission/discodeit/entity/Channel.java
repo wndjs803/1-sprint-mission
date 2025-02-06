@@ -6,6 +6,7 @@ import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Getter
@@ -87,5 +88,22 @@ public class Channel extends BaseEntity {
                 ", channelOwner=" + channelOwner +
                 ", channelUserList=" + channelUserList +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        if (!super.equals(object)) return false;
+        Channel channel = (Channel) object;
+        return Objects.equals(name, channel.name)
+                && Objects.equals(description, channel.description)
+                && Objects.equals(channelOwner, channel.channelOwner)
+                && Objects.equals(channelUserList, channel.channelUserList) && channelType == channel.channelType;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), name, description, channelOwner, channelUserList, channelType);
     }
 }
