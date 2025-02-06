@@ -79,14 +79,14 @@ class ChannelServiceTest {
         return userRepository.saveUser(user);
     }
 
-    private CreateChannelResponse createPublicChannel(User channelOwner, String channelName, String description) {
+    private Channel createPublicChannel(User channelOwner, String channelName, String description) {
         CreatePublicChannelRequest createPublicChannelRequest =
                 new CreatePublicChannelRequest(channelOwner.getId(), channelName, description);
 
         return channelService.createPublicChannel(createPublicChannelRequest);
     }
 
-    private CreateChannelResponse createPrivateChannel(User channelOwner) {
+    private Channel createPrivateChannel(User channelOwner) {
         int size = 5;
         List<UUID> channelUsersIdList = new ArrayList<>();
         for (int i = 1; i < size; i++) {
@@ -117,13 +117,13 @@ class ChannelServiceTest {
                     new CreatePublicChannelRequest(channelOwner.getId(), channelName, description);
 
             // when
-            CreateChannelResponse createChannelResponse = channelService.createPublicChannel(createPublicChannelRequest);
+            Channel channel = channelService.createPublicChannel(createPublicChannelRequest);
 
             // then
-            assertEquals(channelName, createChannelResponse.name());
-            assertEquals(description, createChannelResponse.description());
+            assertEquals(channelName, channel.getName());
+            assertEquals(description, channel.getDescription());
 
-            assertNotNull(channelRepository.findChannelById(createChannelResponse.channelId()));
+            assertNotNull(channelRepository.findChannelById(channel.getId()));
         }
 
         @Test
@@ -147,17 +147,16 @@ class ChannelServiceTest {
             when(randomStringGenerator.generateRandomString()).thenReturn("test");
 
             // when
-            CreateChannelResponse createChannelResponse
-                    = channelService.createPrivateChannel(createPrivateChannelRequest);
+            Channel channel = channelService.createPrivateChannel(createPrivateChannelRequest);
 
             // then
-            assertEquals("test", createChannelResponse.name());
-            assertEquals("description", createChannelResponse.description());
+            assertEquals("test", channel.getName());
+            assertEquals("description", channel.getDescription());
 
             channelUserList.forEach(user ->
                     assertNotNull(readStatusRepository.findReadStatusByUserId(user.getId())));
 
-            assertNotNull(channelRepository.findChannelById(createChannelResponse.channelId()));
+            assertNotNull(channelRepository.findChannelById(channel.getId()));
         }
     }
 
@@ -169,12 +168,11 @@ class ChannelServiceTest {
         void successWithPublic() {
             // given
             User channelOwner = createUser(0);
-            CreateChannelResponse createChannelResponse =
-                    createPublicChannel(channelOwner, "channel1", "description");
+            Channel channel = createPublicChannel(channelOwner, "channel1", "description");
 
             // when
             FindChannelResponse findChannelResponse =
-                    channelService.findChannelByIdOrThrow(createChannelResponse.channelId());
+                    channelService.findChannelByIdOrThrow(channel.getId());
             // then
             assertEquals("channel1", findChannelResponse.name());
             assertEquals("description", findChannelResponse.description());
@@ -187,11 +185,11 @@ class ChannelServiceTest {
         void successWithPrivate() {
             // given
             User channelOwner = createUser(0);
-            CreateChannelResponse createChannelResponse = createPrivateChannel(channelOwner);
+            Channel channel = createPrivateChannel(channelOwner);
 
             // when
             FindChannelResponse findChannelResponse =
-                    channelService.findChannelByIdOrThrow(createChannelResponse.channelId());
+                    channelService.findChannelByIdOrThrow(channel.getId());
 
             // then
             assertEquals("test", findChannelResponse.name());
@@ -258,22 +256,21 @@ class ChannelServiceTest {
         void success() {
             // given
             User channelOwner = createUser(0);
-            CreateChannelResponse createChannelResponse =
-                    createPublicChannel(channelOwner, "channel1", "description1");
+            Channel channel = createPublicChannel(channelOwner, "channel1", "description1");
 
             String updatedName = "channel2";
             String updateDescription = "description2";
 
             UpdateChannelRequest updateChannelRequest =
-                    new UpdateChannelRequest(channelOwner.getId(), createChannelResponse.channelId(),
+                    new UpdateChannelRequest(channelOwner.getId(), channel.getId(),
                             updatedName, updateDescription);
 
             // when
-            UpdateChannelResponse updateChannelResponse = channelService.updateChannel(updateChannelRequest);
+            Channel updateChannel = channelService.updateChannel(updateChannelRequest);
 
             // then
-            assertEquals(updatedName, updateChannelResponse.name());
-            assertEquals(updateDescription, updateChannelResponse.description());
+            assertEquals(updatedName, updateChannel.getName());
+            assertEquals(updateDescription, updateChannel.getDescription());
         }
 
         @Test
@@ -282,14 +279,13 @@ class ChannelServiceTest {
             // given
             User channelOwner = createUser(0);
             User anotherUser = createUser(1);
-            CreateChannelResponse createChannelResponse =
-                    createPublicChannel(channelOwner, "channel1", "description1");
+            Channel channel = createPublicChannel(channelOwner, "channel1", "description1");
 
             String updatedName = "channel2";
             String updateDescription = "description2";
 
             UpdateChannelRequest updateChannelRequest =
-                    new UpdateChannelRequest(anotherUser.getId(), createChannelResponse.channelId(),
+                    new UpdateChannelRequest(anotherUser.getId(), channel.getId(),
                             updatedName, updateDescription);
 
             // when & then
@@ -307,11 +303,10 @@ class ChannelServiceTest {
         void success() {
             // given
             User channelOwner = createUser(0);
-            CreateChannelResponse createChannelResponse = createPrivateChannel(channelOwner);
-            Channel channel = channelRepository.findChannelById(createChannelResponse.channelId());
+            Channel channel = createPrivateChannel(channelOwner);
 
             DeleteChannelRequest deleteChannelRequest =
-                    new DeleteChannelRequest(channelOwner.getId(), createChannelResponse.channelId());
+                    new DeleteChannelRequest(channelOwner.getId(), channel.getId());
 
             // when
             channelService.deleteChannel(deleteChannelRequest);
@@ -330,10 +325,10 @@ class ChannelServiceTest {
             // given
             User channelOwner = createUser(0);
             User anotherUser = createUser(1);
-            CreateChannelResponse createChannelResponse = createPrivateChannel(channelOwner);
+            Channel channel = createPrivateChannel(channelOwner);
 
             DeleteChannelRequest deleteChannelRequest =
-                    new DeleteChannelRequest(anotherUser.getId(), createChannelResponse.channelId());
+                    new DeleteChannelRequest(anotherUser.getId(), channel.getId());
 
 
             // when & then
