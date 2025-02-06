@@ -4,6 +4,7 @@ import com.sprint.mission.discodeit.common.TimeUtil;
 import lombok.Getter;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 @Getter
 public class User extends BaseEntity implements Serializable {
@@ -67,5 +68,19 @@ public class User extends BaseEntity implements Serializable {
                 ", password='" + password + '\'' +
                 ", profileImage=" + profileImage +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        if (!super.equals(object)) return false;
+        User user = (User) object;
+        return Objects.equals(name, user.name) && Objects.equals(nickname, user.nickname) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(profileImage, user.profileImage);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), name, nickname, email, password, profileImage);
     }
 }
