@@ -50,6 +50,13 @@ public class User extends BaseEntity implements Serializable {
         this.profileImage = profileImage;
         this.updateUpdatedAt(TimeUtil.getCurrentTime());
     }
+    
+    public void updateUserInfo(String name, String nickname, String email, String password) {
+        this.updateName(name);
+        this.updateNickname(nickname);
+        this.updateEmail(email);
+        this.updatePassword(password);
+    }
 
     @Override
     public String toString() {

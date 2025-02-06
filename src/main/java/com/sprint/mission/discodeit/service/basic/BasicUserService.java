@@ -1,7 +1,6 @@
 package com.sprint.mission.discodeit.service.basic;
 
 import com.sprint.mission.discodeit.common.MultipartFileConverter;
-import com.sprint.mission.discodeit.common.TimeUtil;
 import com.sprint.mission.discodeit.dto.user.request.CreateUserRequest;
 import com.sprint.mission.discodeit.dto.user.request.UpdateUserRequest;
 import com.sprint.mission.discodeit.dto.user.response.CreateUserResponse;
@@ -82,14 +81,10 @@ public class BasicUserService implements UserService {
     public UpdateUserResponse updateUser(UpdateUserRequest updateUserRequest, MultipartFile profileImageFile) {
         User foundUser = userValidator.validateUserExistsByUserId(updateUserRequest.userId());
 
-        foundUser.updateName(updateUserRequest.name());
-        foundUser.updateNickname(updateUserRequest.nickname());
-        foundUser.updateEmail(updateUserRequest.email());
-        foundUser.updatePassword(updateUserRequest.password());
+        foundUser.updateUserInfo(updateUserRequest.name(), updateUserRequest.nickname(),
+                updateUserRequest.email(), updateUserRequest.password());
 
         updateProfileImage(foundUser, profileImageFile);
-
-        foundUser.updateUpdatedAt(TimeUtil.getCurrentTime());
 
         return userMapper.toUpdateUserResponse(foundUser);
     }
