@@ -75,7 +75,9 @@ class ChannelServiceTest {
 
     @AfterEach
     void clean() {
-        fileStorage.clearDataDirectory();
+        if (fileStorage != null) {
+            fileStorage.clearDataDirectory();
+        }
     }
 
     private void jcfSetUp() {
