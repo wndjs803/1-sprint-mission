@@ -148,7 +148,7 @@ class UserServiceTest {
 
     @Nested
     @DisplayName("유저 수정 테스트")
-    class updateUserTest {
+    class UpdateUserTest {
         @Test
         @DisplayName("유저 수정 성공")
         void success() {
