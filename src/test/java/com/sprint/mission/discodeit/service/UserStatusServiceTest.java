@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.service;
 
 import com.sprint.mission.discodeit.dto.userStatus.request.UpdateUserStatusByIdRequest;
+import com.sprint.mission.discodeit.dto.userStatus.request.UpdateUserStatusByUserIdRequest;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.repository.UserRepository;
@@ -132,6 +133,25 @@ class UserStatusServiceTest {
             // then
             assertEquals(userStatus.getId(), updatedUserStatus.getId());
             assertTrue(updatedUserStatus.getIsOnline());
+        }
+
+        @Test
+        @DisplayName("UserStatus 수정 성공 by userId")
+        void successByUserId() {
+            // given
+            User user = createUser(0);
+            UserStatus userStatus = createUserStatus(user);
+
+            UpdateUserStatusByUserIdRequest updateUserStatusByUserIdRequest =
+                    new UpdateUserStatusByUserIdRequest(user.getId(), true);
+
+            // when
+            UserStatus updatedUserStatus = userStatusService.updateUserStatusByUserId(updateUserStatusByUserIdRequest);
+
+            // then
+            assertEquals(userStatus.getId(), updatedUserStatus.getId());
+            assertTrue(updatedUserStatus.getIsOnline());
+            assertEquals(user, updatedUserStatus.getUser());
         }
     }
 }
