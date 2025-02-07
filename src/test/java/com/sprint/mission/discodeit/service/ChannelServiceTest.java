@@ -16,6 +16,9 @@ import com.sprint.mission.discodeit.repository.MessageRepository;
 import com.sprint.mission.discodeit.repository.ReadStatusRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
 
+import com.sprint.mission.discodeit.repository.file.FileChannelRepository;
+import com.sprint.mission.discodeit.repository.file.FileStorage;
+import com.sprint.mission.discodeit.repository.file.FileUserRepository;
 import com.sprint.mission.discodeit.repository.jcf.JCFChannelRepository;
 import com.sprint.mission.discodeit.repository.jcf.JCFMessageRepository;
 import com.sprint.mission.discodeit.repository.jcf.JCFReadStatusRepository;
@@ -24,6 +27,7 @@ import com.sprint.mission.discodeit.service.basic.BasicChannelService;
 import com.sprint.mission.discodeit.validator.ChannelValidator;
 import com.sprint.mission.discodeit.validator.ReadStatusValidator;
 import com.sprint.mission.discodeit.validator.UserValidator;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -56,20 +60,37 @@ class ChannelServiceTest {
     @Mock
     private RandomStringGenerator randomStringGenerator;
     private ChannelService channelService;
-
+    private FileStorage fileStorage;
 
     @BeforeEach
     void setUp() {
-        channelRepository = new JCFChannelRepository();
-        readStatusRepository = new JCFReadStatusRepository();
-        messageRepository = new JCFMessageRepository();
-        userRepository = new JCFUserRepository();
+        fileSetup();
         channelValidator = new ChannelValidator(channelRepository);
         userValidator = new UserValidator(userRepository);
         readStatusValidator = new ReadStatusValidator(readStatusRepository);
         channelMapper = new ChannelMapper();
         channelService = new BasicChannelService(channelRepository, readStatusRepository, messageRepository,
                 channelValidator, userValidator, readStatusValidator, channelMapper, randomStringGenerator);
+    }
+
+    @AfterEach
+    void clean() {
+        fileStorage.clearDataDirectory();
+    }
+
+    private void jcfSetUp() {
+        channelRepository = new JCFChannelRepository();
+        readStatusRepository = new JCFReadStatusRepository();
+        messageRepository = new JCFMessageRepository();
+        userRepository = new JCFUserRepository();
+    }
+
+    private void fileSetup() {
+        fileStorage = new FileStorage();
+        userRepository = new FileUserRepository(fileStorage);
+        channelRepository = new FileChannelRepository(fileStorage);
+        readStatusRepository = new JCFReadStatusRepository(); // 추후 변경
+        messageRepository = new JCFMessageRepository(); // 추후 변
     }
 
     private User createUser(int num) {
@@ -102,7 +123,7 @@ class ChannelServiceTest {
 
     @Nested
     @DisplayName("채널 생성 테스트")
-    class createChannelTest {
+    class CreateChannelTest {
         @Test
         @DisplayName("Public 채널 생성 성공")
         void successWithPublic() {
