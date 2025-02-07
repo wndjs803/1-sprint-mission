@@ -43,13 +43,35 @@ class BinaryContentServiceTest {
     class CreateBinaryContentTest {
 
         @Test
-        @DisplayName("BinaryContent 생성 성공")
-        void success() {
+        @DisplayName("BinaryContent 생성 성공 by MultipartFile")
+        void successByMultipartFile() {
             // given
             MultipartFile multipartFile = createMulipartFile();
 
             // when
             BinaryContent binaryContent = binaryContentService.createBinaryContent(multipartFile);
+
+            // then
+            byte[] multipartFileBytes = null;
+            try {
+                multipartFileBytes = multipartFile.getBytes();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            byte[] content = binaryContent.getContent();
+
+            assertEquals(multipartFileBytes, content);
+        }
+
+        @Test
+        @DisplayName("BinaryContent 생성 성공 by BinaryContent")
+        void successByBinaryContent() {
+            // given
+            MultipartFile multipartFile = createMulipartFile();
+            byte[] bytes = multipartFileConverter.toByteArray(multipartFile);
+
+            // when
+            BinaryContent binaryContent = binaryContentService.createBinaryContent(BinaryContent.of(bytes));
 
             // then
             byte[] multipartFileBytes = null;
