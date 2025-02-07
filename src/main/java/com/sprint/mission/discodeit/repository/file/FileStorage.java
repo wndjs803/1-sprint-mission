@@ -10,11 +10,14 @@ import java.io.ObjectOutputStream;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class FileStorage {
+    private final Path baseDirectory = Paths.get(System.getProperty("user.dir"), "data");
 
     public void init(Path directory) {
         try {
@@ -79,6 +82,14 @@ public class FileStorage {
         } catch (IOException e) {
             throw new RuntimeException(ErrorMessage.FILES_LOAD_FAIL.format(directory));
         }
+    }
+
+    public Path getFilePath(Path directory, UUID id) {
+        return directory.resolve(id.toString().concat(".ser"));
+    }
+
+    public Path getDirectory(String subDir) {
+        return baseDirectory.resolve(subDir);
     }
 
     private <T> T deserialize(Path filePath) throws IOException, ClassNotFoundException {

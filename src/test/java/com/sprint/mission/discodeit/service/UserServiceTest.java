@@ -9,6 +9,11 @@ import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.mapper.UserMapper;
+import com.sprint.mission.discodeit.repository.BinaryContentRepository;
+import com.sprint.mission.discodeit.repository.UserRepository;
+import com.sprint.mission.discodeit.repository.UserStatusRepository;
+import com.sprint.mission.discodeit.repository.file.FileStorage;
+import com.sprint.mission.discodeit.repository.file.FileUserRepository;
 import com.sprint.mission.discodeit.repository.jcf.JCFBinaryContentRepository;
 import com.sprint.mission.discodeit.repository.jcf.JCFUserRepository;
 import com.sprint.mission.discodeit.repository.jcf.JCFUserStatusRepository;
@@ -28,9 +33,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class UserServiceTest {
-    private JCFUserRepository userRepository;
-    private JCFUserStatusRepository userStatusRepository;
-    private JCFBinaryContentRepository binaryContentRepository;
+    private UserRepository userRepository;
+    private UserStatusRepository userStatusRepository;
+    private BinaryContentRepository binaryContentRepository;
     private UserMapper userMapper;
     private UserValidator userValidator;
     private UserStatusValidator userStatusValidator;
@@ -39,15 +44,27 @@ class UserServiceTest {
 
     @BeforeEach
     void setUp() {
-        userRepository = new JCFUserRepository();
-        userStatusRepository = new JCFUserStatusRepository();
-        binaryContentRepository = new JCFBinaryContentRepository();
+//        jcfSetUp();
+        fileSetUp();
         userMapper = new UserMapper();
         userValidator = new UserValidator(userRepository);
         userStatusValidator = new UserStatusValidator(userStatusRepository);
         multipartFileConverter = new MultipartFileConverter();
         userService = new BasicUserService(userRepository, userStatusRepository, binaryContentRepository,
                 userMapper, userValidator, userStatusValidator, multipartFileConverter);
+    }
+
+    private void jcfSetUp() {
+        userRepository = new JCFUserRepository();
+        userStatusRepository = new JCFUserStatusRepository();
+        binaryContentRepository = new JCFBinaryContentRepository();
+    }
+
+    private void fileSetUp() {
+        FileStorage fileStorage = new FileStorage();
+        userRepository = new FileUserRepository(fileStorage);
+        userStatusRepository = new JCFUserStatusRepository(); // 추후 변경
+        binaryContentRepository = new JCFBinaryContentRepository(); // 추후 변경
     }
 
     private User createUser(int num) {
@@ -60,7 +77,7 @@ class UserServiceTest {
 
     @Nested
     @DisplayName("유저 생성 테스트")
-    class createUserTest {
+    class CreateUserTest {
         @Test
         @DisplayName("유저 생성 성공")
         void success() {
@@ -81,7 +98,7 @@ class UserServiceTest {
 
     @Nested
     @DisplayName("유저 단일 조회 테스트")
-    class findUserByIdOrThrowTest {
+    class FindUserByIdOrThrowTest {
         @Test
         @DisplayName("유저 단일 조회 성공")
         void success() {

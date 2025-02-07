@@ -6,6 +6,7 @@ import lombok.Getter;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.UUID;
 
 @Getter
@@ -35,5 +36,21 @@ public class BinaryContent implements Serializable {
                 ", content=" + Arrays.toString(content) +
                 ", createdAt=" + createdAt +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        BinaryContent that = (BinaryContent) object;
+        return Objects.equals(id, that.id) && Arrays.equals(content, that.content)
+                && Objects.equals(createdAt, that.createdAt);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(id);
+        result = 31 * result + Arrays.hashCode(content);
+        return result;
     }
 }
