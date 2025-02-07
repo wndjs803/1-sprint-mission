@@ -10,7 +10,7 @@ import java.io.InputStream;
 
 public class CustomMultipartFile implements MultipartFile {
 
-    private byte[] input;
+    private final byte[] input;
 
     public CustomMultipartFile(byte[] byteArray) {
         this.input = byteArray;
