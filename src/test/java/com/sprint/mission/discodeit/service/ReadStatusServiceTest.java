@@ -8,6 +8,10 @@ import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.repository.ReadStatusRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
+import com.sprint.mission.discodeit.repository.file.FileChannelRepository;
+import com.sprint.mission.discodeit.repository.file.FileReadStatusRepository;
+import com.sprint.mission.discodeit.repository.file.FileStorage;
+import com.sprint.mission.discodeit.repository.file.FileUserRepository;
 import com.sprint.mission.discodeit.repository.jcf.JCFChannelRepository;
 import com.sprint.mission.discodeit.repository.jcf.JCFReadStatusRepository;
 import com.sprint.mission.discodeit.repository.jcf.JCFUserRepository;
@@ -15,6 +19,7 @@ import com.sprint.mission.discodeit.service.basic.BasicReadStatusService;
 import com.sprint.mission.discodeit.validator.ChannelValidator;
 import com.sprint.mission.discodeit.validator.ReadStatusValidator;
 import com.sprint.mission.discodeit.validator.UserValidator;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -34,17 +39,37 @@ class ReadStatusServiceTest {
     private UserValidator userValidator;
     private ChannelValidator channelValidator;
     private ReadStatusService readStatusService;
+    private FileStorage fileStorage;
 
     @BeforeEach
     void setUp() {
-        readStatusRepository = new JCFReadStatusRepository();
+//        jcfSetUp();
+        fileSetUp();
         readStatusValidator = new ReadStatusValidator(readStatusRepository);
-        userRepository = new JCFUserRepository();
         userValidator = new UserValidator(userRepository);
-        channelRepository = new JCFChannelRepository();
         channelValidator = new ChannelValidator(channelRepository);
         readStatusService = new BasicReadStatusService(readStatusRepository, readStatusValidator,
                 userValidator, channelValidator);
+    }
+
+    @AfterEach
+    void clean() {
+        if (fileStorage != null) {
+            fileStorage.clearDataDirectory();
+        }
+    }
+
+    private void jcfSetUp() {
+        readStatusRepository = new JCFReadStatusRepository();
+        channelRepository = new JCFChannelRepository();
+        userRepository = new JCFUserRepository();
+    }
+
+    private void fileSetUp() {
+        fileStorage = new FileStorage();
+        readStatusRepository = new FileReadStatusRepository(fileStorage);
+        channelRepository = new FileChannelRepository(fileStorage);
+        userRepository = new FileUserRepository(fileStorage);
     }
 
     private User createUser(int num) {
