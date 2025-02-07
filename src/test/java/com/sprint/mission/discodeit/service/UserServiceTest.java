@@ -46,8 +46,8 @@ class UserServiceTest {
 
     @BeforeEach
     void setUp() {
-//        jcfSetUp();
-        fileSetUp();
+        jcfSetUp();
+//        fileSetUp();
         userMapper = new UserMapper();
         userValidator = new UserValidator(userRepository);
         userStatusValidator = new UserStatusValidator(userStatusRepository);
@@ -58,7 +58,9 @@ class UserServiceTest {
 
     @AfterEach
     void clean() {
-        fileStorage.clearDataDirectory();
+        if (fileStorage != null) {
+            fileStorage.clearDataDirectory();
+        }
     }
 
     private void jcfSetUp() {
