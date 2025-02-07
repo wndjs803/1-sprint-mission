@@ -1,8 +1,8 @@
 package com.sprint.mission.discodeit.service.basic;
 
 import com.sprint.mission.discodeit.common.ErrorMessage;
-import com.sprint.mission.discodeit.common.RandomStringGenerator;
-import com.sprint.mission.discodeit.common.TimeUtil;
+import com.sprint.mission.discodeit.common.util.RandomStringGenerator;
+import com.sprint.mission.discodeit.common.util.TimeUtil;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePrivateChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePublicChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.DeleteChannelRequest;
@@ -22,7 +22,6 @@ import com.sprint.mission.discodeit.validator.ChannelValidator;
 import com.sprint.mission.discodeit.validator.ReadStatusValidator;
 import com.sprint.mission.discodeit.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -35,8 +34,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class BasicChannelService implements ChannelService {
 
-//    @Qualifier("fileChannelRepository")
-    @Qualifier("jcfChannelRepository")
     private final ChannelRepository channelRepository;
     private final ReadStatusRepository readStatusRepository;
     private final MessageRepository messageRepository;

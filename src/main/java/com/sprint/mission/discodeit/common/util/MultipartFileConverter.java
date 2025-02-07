@@ -1,5 +1,6 @@
-package com.sprint.mission.discodeit.common;
+package com.sprint.mission.discodeit.common.util;
 
+import com.sprint.mission.discodeit.common.ErrorMessage;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 

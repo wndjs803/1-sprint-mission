@@ -1,6 +1,6 @@
 package com.sprint.mission.discodeit.entity;
 
-import com.sprint.mission.discodeit.common.TimeUtil;
+import com.sprint.mission.discodeit.common.util.TimeUtil;
 import lombok.Getter;
 
 import java.io.Serializable;

@@ -1,7 +1,7 @@
 package com.sprint.mission.discodeit.service;
 
 import com.sprint.mission.discodeit.common.ErrorMessage;
-import com.sprint.mission.discodeit.common.MultipartFileConverter;
+import com.sprint.mission.discodeit.common.util.MultipartFileConverter;
 import com.sprint.mission.discodeit.dto.user.request.CreateUserRequest;
 import com.sprint.mission.discodeit.dto.user.request.UpdateUserRequest;
 import com.sprint.mission.discodeit.dto.user.response.FindUserResponse;
