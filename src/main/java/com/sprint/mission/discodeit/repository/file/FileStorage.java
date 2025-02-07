@@ -17,6 +17,7 @@ import java.util.UUID;
 
 @Component
 public class FileStorage {
+
     private final Path baseDirectory = Paths.get(System.getProperty("user.dir"), "data");
 
     public void init(Path directory) {

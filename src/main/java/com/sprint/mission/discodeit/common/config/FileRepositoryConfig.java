@@ -15,7 +15,11 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnProperty(name = "discodeit.repository.type", havingValue = "file")
 public class FileRepositoryConfig {
 
-    private final FileStorage fileStorage = new FileStorage();
+    private final FileStorage fileStorage;
+
+    public FileRepositoryConfig(FileStorage fileStorage) {
+        this.fileStorage = fileStorage;
+    }
 
     @Bean
     public FileBinaryContentRepository fileBinaryContentRepository() {

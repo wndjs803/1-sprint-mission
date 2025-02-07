@@ -11,6 +11,7 @@ public class FileChannelRepository implements ChannelRepository {
     private final FileStorage fileStorage;
     private final Path directory;
     private static final String SUBDIRECTORY = "channel";
+
     public FileChannelRepository(FileStorage fileStorage) {
         this.fileStorage = fileStorage;
         directory = fileStorage.getDirectory(SUBDIRECTORY);
