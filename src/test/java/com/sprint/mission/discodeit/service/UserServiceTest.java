@@ -170,7 +170,7 @@ class UserServiceTest {
 
     @Nested
     @DisplayName("유저 삭제 테스트")
-    class deleteUserTest {
+    class DeleteUserTest {
         @Test
         @DisplayName("유저 삭제 성공")
         void success() {
