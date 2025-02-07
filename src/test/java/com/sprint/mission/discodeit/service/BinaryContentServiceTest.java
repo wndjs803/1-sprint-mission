@@ -144,4 +144,23 @@ class BinaryContentServiceTest {
             assertTrue(binaryContentList.contains(binaryContent3));
         }
     }
+
+    @Nested
+    @DisplayName("BinaryContent 삭제 테스트")
+    class DeleteBinaryContentTest {
+
+        @Test
+        @DisplayName("BinaryContent 샥제 성공")
+        void success() {
+            // given
+            MultipartFile multipartFile = createMulipartFile();
+            BinaryContent binaryContent = createBinaryContent(multipartFile);
+
+            // when
+            binaryContentService.deleteBinaryContent(binaryContent.getId());
+
+            // then
+            assertNull(binaryContentRepository.findBinaryContentById(binaryContent.getId()));
+        }
+    }
 }
