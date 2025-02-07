@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-@Repository("jcfChannelRepository")
 @NoArgsConstructor
 public class JCFChannelRepository implements ChannelRepository {
     private final Map<UUID, Channel> channelData = new HashMap<>();

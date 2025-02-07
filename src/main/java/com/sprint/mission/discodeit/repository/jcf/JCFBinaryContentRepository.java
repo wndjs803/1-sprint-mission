@@ -3,7 +3,6 @@ package com.sprint.mission.discodeit.repository.jcf;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-@Service("jcfBinaryContentRepository")
 @NoArgsConstructor
 public class JCFBinaryContentRepository implements BinaryContentRepository {
 
