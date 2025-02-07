@@ -14,6 +14,10 @@ import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.repository.MessageRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
+import com.sprint.mission.discodeit.repository.file.FileChannelRepository;
+import com.sprint.mission.discodeit.repository.file.FileMessageRepository;
+import com.sprint.mission.discodeit.repository.file.FileStorage;
+import com.sprint.mission.discodeit.repository.file.FileUserRepository;
 import com.sprint.mission.discodeit.repository.jcf.JCFBinaryContentRepository;
 import com.sprint.mission.discodeit.repository.jcf.JCFChannelRepository;
 import com.sprint.mission.discodeit.repository.jcf.JCFMessageRepository;
@@ -21,6 +25,7 @@ import com.sprint.mission.discodeit.repository.jcf.JCFUserRepository;
 import com.sprint.mission.discodeit.service.basic.BasicMessageService;
 import com.sprint.mission.discodeit.validator.ChannelValidator;
 import com.sprint.mission.discodeit.validator.UserValidator;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -48,20 +53,41 @@ class MessageServiceTest {
 
     private MessageMapper messageMapper;
     private MessageService messageService;
+    private FileStorage fileStorage;
 
 
     @BeforeEach
     void setUp() {
-        messageRepository = new JCFMessageRepository();
-        binaryContentRepository = new JCFBinaryContentRepository();
-        userRepository = new JCFUserRepository();
-        channelRepository = new JCFChannelRepository();
+//        jcfSetUp();
+        fileSetUp();
         userValidator = new UserValidator(userRepository);
         channelValidator = new ChannelValidator(channelRepository);
         multipartFileConverter = new MultipartFileConverter();
         messageMapper = new MessageMapper();
         messageService = new BasicMessageService(messageRepository, binaryContentRepository, userValidator,
                 channelValidator, multipartFileConverter, messageMapper);
+    }
+
+    @AfterEach
+    void clean() {
+        if (fileStorage != null) {
+            fileStorage.clearDataDirectory();
+        }
+    }
+
+    private void jcfSetUp() {
+        messageRepository = new JCFMessageRepository();
+        binaryContentRepository = new JCFBinaryContentRepository();
+        userRepository = new JCFUserRepository();
+        channelRepository = new JCFChannelRepository();
+    }
+
+    private void fileSetUp() {
+        fileStorage = new FileStorage();
+        messageRepository = new FileMessageRepository(fileStorage);
+        userRepository = new FileUserRepository(fileStorage);
+        channelRepository = new FileChannelRepository(fileStorage);
+        binaryContentRepository = new JCFBinaryContentRepository(); // 추후 변경
     }
 
     private User createUser(int num) {
@@ -139,7 +165,7 @@ class MessageServiceTest {
                     .hasMessage(ErrorMessage.MESSAGE_NOT_FOUND.format("id: " + randomId));
         }
     }
-//
+
     @Nested
     @DisplayName("메세지 목록 조회 테스트")
     class findAllMessageTest {
