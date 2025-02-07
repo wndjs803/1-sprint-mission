@@ -13,16 +13,19 @@ import java.util.UUID;
 @Repository
 public class FileUserRepository implements UserRepository {
     private final FileStorage fileStorage;
-    private final Path directory = Paths.get(System.getProperty("user.dir"), "data", "user");
+    private final Path directory;
+    private static final String SUBDIRECTORY = "user";
+
 
     public FileUserRepository(FileStorage fileStorage) {
         this.fileStorage = fileStorage;
+        directory = fileStorage.getDirectory(SUBDIRECTORY);
         fileStorage.init(directory);
     }
 
     @Override
     public User saveUser(User user) {
-        Path filePath = directory.resolve(user.getId().toString().concat(".ser"));
+        Path filePath = fileStorage.getFilePath(directory, user.getId());
         return fileStorage.save(filePath, user);
     }
 
@@ -32,7 +35,7 @@ public class FileUserRepository implements UserRepository {
 
         return userList.stream()
                 .filter(user -> user.getId().equals(userId))
-                .findFirst().get();
+                .findFirst().orElse(null);
     }
 
     @Override
@@ -56,16 +59,28 @@ public class FileUserRepository implements UserRepository {
 
     @Override
     public Optional<User> findUserByName(String name) {
-        return null;
+        List<User> userList = fileStorage.load(directory);
+
+        return userList.stream()
+                .filter(user -> user.getName().equals(name))
+                .findFirst();
     }
 
     @Override
     public Optional<User>  findUserByEmail(String email) {
-        return null;
+        List<User> userList = fileStorage.load(directory);
+
+        return userList.stream()
+                .filter(user -> user.getEmail().equals(email))
+                .findFirst();
     }
 
     @Override
     public Optional<User>  findUserByNameAndPassword(String name, String password) {
-        return null;
+        List<User> userList = fileStorage.load(directory);
+
+        return userList.stream()
+                .filter(user -> user.getName().equals(name) && user.getPassword().equals(password))
+                .findFirst();
     }
 }
