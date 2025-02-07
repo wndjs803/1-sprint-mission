@@ -6,11 +6,15 @@ import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.repository.UserStatusRepository;
+import com.sprint.mission.discodeit.repository.file.FileStorage;
+import com.sprint.mission.discodeit.repository.file.FileUserRepository;
+import com.sprint.mission.discodeit.repository.file.FileUserStatusRepository;
 import com.sprint.mission.discodeit.repository.jcf.JCFUserRepository;
 import com.sprint.mission.discodeit.repository.jcf.JCFUserStatusRepository;
 import com.sprint.mission.discodeit.service.basic.BasicUserStatusService;
 import com.sprint.mission.discodeit.validator.UserStatusValidator;
 import com.sprint.mission.discodeit.validator.UserValidator;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -31,14 +35,33 @@ class UserStatusServiceTest {
     private UserStatusValidator userStatusValidator;
     private UserValidator userValidator;
     private UserStatusService userStatusService;
+    private FileStorage fileStorage;
 
     @BeforeEach
     void setUp() {
-        userStatusRepository = new JCFUserStatusRepository();
+//        jcfSetUp();
+        fileSetUp();
         userStatusValidator = new UserStatusValidator(userStatusRepository);
-        userRepository = new JCFUserRepository();
         userValidator = new UserValidator(userRepository);
         userStatusService = new BasicUserStatusService(userStatusRepository, userStatusValidator, userValidator);
+    }
+
+    @AfterEach
+    void clean() {
+        if (fileStorage != null) {
+            fileStorage.clearDataDirectory();
+        }
+    }
+
+    private void jcfSetUp() {
+        userStatusRepository = new JCFUserStatusRepository();
+        userRepository = new JCFUserRepository();
+    }
+
+    private void fileSetUp() {
+        fileStorage = new FileStorage();
+        userStatusRepository = new FileUserStatusRepository(fileStorage);
+        userRepository = new FileUserRepository(fileStorage);
     }
 
     private User createUser(int num) {
