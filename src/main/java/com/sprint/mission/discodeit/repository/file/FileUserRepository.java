@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class FileUserRepository implements UserRepository {
+
     private final FileStorage fileStorage;
     private final Path directory;
     private static final String SUBDIRECTORY = "user";
