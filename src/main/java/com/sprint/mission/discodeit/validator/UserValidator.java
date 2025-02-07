@@ -14,7 +14,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserValidator {
 
-    @Qualifier("jcfUserRepository")
     private final UserRepository userRepository;
 
     public User validateUserExistsByUserId(UUID userId) {

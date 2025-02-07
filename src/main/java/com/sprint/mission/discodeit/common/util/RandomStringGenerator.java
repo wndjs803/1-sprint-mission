@@ -1,4 +1,4 @@
-package com.sprint.mission.discodeit.common;
+package com.sprint.mission.discodeit.common.util;
 
 import org.springframework.stereotype.Component;
 
