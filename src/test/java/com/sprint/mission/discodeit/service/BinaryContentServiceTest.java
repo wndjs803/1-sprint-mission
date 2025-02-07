@@ -38,6 +38,12 @@ class BinaryContentServiceTest {
         );
     }
 
+    private BinaryContent createBinaryContent(MultipartFile multipartFile) {
+        byte[] bytes = multipartFileConverter.toByteArray(multipartFile);
+        BinaryContent binaryContent = BinaryContent.of(bytes);
+        return binaryContentRepository.saveBinaryContent(binaryContent);
+    }
+
     @Nested
     @DisplayName("BinaryContent 생성 테스트")
     class CreateBinaryContentTest {
@@ -83,6 +89,26 @@ class BinaryContentServiceTest {
             byte[] content = binaryContent.getContent();
 
             assertEquals(multipartFileBytes, content);
+        }
+    }
+
+    @Nested
+    @DisplayName("BinaryContent 단일 조회 테스트")
+    class FindBinaryContentTest {
+
+        @Test
+        @DisplayName("BinaryContent 단일 조회 성공")
+        void success() {
+            // given
+            MultipartFile multipartFile = createMulipartFile();
+            BinaryContent binaryContent = createBinaryContent(multipartFile);
+
+            // when
+            BinaryContent foundedBinaryContent = binaryContentService.findBinaryContentById(binaryContent.getId());
+
+            // then
+            assertEquals(binaryContent.getId(), foundedBinaryContent.getId());
+            assertEquals(binaryContent.getContent(), foundedBinaryContent.getContent());
         }
     }
 }
