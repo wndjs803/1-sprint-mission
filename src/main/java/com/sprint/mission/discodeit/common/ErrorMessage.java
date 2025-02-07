@@ -30,6 +30,7 @@ public enum ErrorMessage {
 
     // BinaryContent
     BINARYCONTENT_NOT_NULL("BinaryContent는 null일 수 없습니다."),
+    BINARYCONTENT_NOT_FOUND("binaryContent를 찾을 수 없습니다. %s"),
 
     // UserStatus
     USERSTATUS_ALREADY_EXIST("이미 UserStatus가 존재합니다. %s"),
