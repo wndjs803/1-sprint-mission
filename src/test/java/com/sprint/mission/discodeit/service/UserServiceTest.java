@@ -128,7 +128,7 @@ class UserServiceTest {
 
     @Nested
     @DisplayName("유저 목록 조회 테스트")
-    class findAllUsersTest {
+    class FindAllUsersTest {
         @Test
         @DisplayName("유저 목록 조회 성공")
         void success() {
