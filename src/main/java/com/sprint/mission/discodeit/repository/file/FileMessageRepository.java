@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class FileMessageRepository implements MessageRepository {
+
     private final FileStorage fileStorage;
     private final Path directory;
     private static final String SUBDIRECTORY = "message";

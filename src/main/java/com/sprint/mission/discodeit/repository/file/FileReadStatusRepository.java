@@ -20,7 +20,6 @@ public class FileReadStatusRepository implements ReadStatusRepository {
         fileStorage.init(directory);
     }
 
-
     @Override
     public ReadStatus saveReadStatus(ReadStatus readStatus) {
         Path filePath = fileStorage.getFilePath(directory, readStatus.getId());
