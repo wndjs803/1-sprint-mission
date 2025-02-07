@@ -3,8 +3,11 @@ package com.sprint.mission.discodeit.service;
 import com.sprint.mission.discodeit.common.MultipartFileConverter;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
+import com.sprint.mission.discodeit.repository.file.FileBinaryContentRepository;
+import com.sprint.mission.discodeit.repository.file.FileStorage;
 import com.sprint.mission.discodeit.repository.jcf.JCFBinaryContentRepository;
 import com.sprint.mission.discodeit.service.basic.BasicBinaryContentService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -26,11 +29,30 @@ class BinaryContentServiceTest {
     private BinaryContentRepository binaryContentRepository;
     private MultipartFileConverter multipartFileConverter;
     private BinaryContentService binaryContentService;
+    private FileStorage fileStorage;
+
     @BeforeEach
     void setUp() {
-        binaryContentRepository = new JCFBinaryContentRepository();
+//        jcfSetUp();
+        fileSetUp();
         multipartFileConverter = new MultipartFileConverter();
         binaryContentService = new BasicBinaryContentService(binaryContentRepository, multipartFileConverter);
+    }
+
+    @AfterEach
+    void clean() {
+        if (fileStorage != null) {
+            fileStorage.clearDataDirectory();
+        }
+    }
+
+    private void jcfSetUp() {
+        binaryContentRepository = new JCFBinaryContentRepository();
+    }
+
+    private void fileSetUp() {
+        fileStorage = new FileStorage();
+        binaryContentRepository = new FileBinaryContentRepository(fileStorage);
     }
 
     private MultipartFile createMulipartFile() {
@@ -111,8 +133,7 @@ class BinaryContentServiceTest {
             BinaryContent foundedBinaryContent = binaryContentService.findBinaryContentById(binaryContent.getId());
 
             // then
-            assertEquals(binaryContent.getId(), foundedBinaryContent.getId());
-            assertEquals(binaryContent.getContent(), foundedBinaryContent.getContent());
+            assertEquals(binaryContent, foundedBinaryContent);
         }
     }
 
