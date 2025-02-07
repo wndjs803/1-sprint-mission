@@ -29,6 +29,25 @@ public class FileStorage {
         }
     }
 
+    public void clearDataDirectory() {
+        try {
+            if (Files.exists(baseDirectory)) {
+                Files.walk(baseDirectory)
+                        .sorted((a, b) -> b.compareTo(a)) // 파일부터 삭제 후 디렉토리 삭제
+                        .forEach(path -> {
+                            try {
+                                Files.deleteIfExists(path);
+                            } catch (IOException e) {
+                                throw new RuntimeException(ErrorMessage.FILE_REMOVE_FAIL.format(path.toString()));
+                            }
+                        });
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(ErrorMessage.FILES_LOAD_FAIL.format(baseDirectory));
+        }
+    }
+
+
     public <T> T save(Path filePath, T data) {
         try (ObjectOutputStream oos = new ObjectOutputStream(Files.newOutputStream(filePath))) {
             oos.writeObject(data);
