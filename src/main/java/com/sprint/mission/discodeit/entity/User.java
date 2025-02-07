@@ -76,7 +76,9 @@ public class User extends BaseEntity implements Serializable {
         if (object == null || getClass() != object.getClass()) return false;
         if (!super.equals(object)) return false;
         User user = (User) object;
-        return Objects.equals(name, user.name) && Objects.equals(nickname, user.nickname) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(profileImage, user.profileImage);
+        return Objects.equals(name, user.name) && Objects.equals(nickname, user.nickname)
+                && Objects.equals(email, user.email) && Objects.equals(password, user.password)
+                && Objects.equals(profileImage, user.profileImage);
     }
 
     @Override
