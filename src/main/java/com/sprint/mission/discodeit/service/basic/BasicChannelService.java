@@ -72,6 +72,8 @@ public class BasicChannelService implements ChannelService {
         // 유저 초대 및 ReadStatus 생성
         for (UUID userId : createPrivateChannelRequest.channelUserList()) {
             User user = userValidator.validateUserExistsByUserId(userId);
+
+            // service로 대체해야할까?
             ReadStatus readStatus = ReadStatus.of(user, channel);
             readStatusRepository.saveReadStatus(readStatus);
 
@@ -90,6 +92,7 @@ public class BasicChannelService implements ChannelService {
         // 가장 최근 메세지의 시간 정보(createdAt)
         // 1. repository(DB)에서 가장 최근 메세지의 시간 정보(createdAt)를 필터링하여 가져오는것 -> 가져오는 데이터 양이 적어진다.
         // 2. 애플리케이션으로 데이터를 가져와서 필터링 -> 메서드 재사용성 증가
+        // service로 대체해야 할까?
         Message foundMessage = messageRepository.findAllMessagesByChannel(channel).stream()
                 .max(Comparator.comparing(message -> message.getCreatedAt()))
                 .orElse(null);
@@ -169,6 +172,7 @@ public class BasicChannelService implements ChannelService {
 
         foundChannel.getChannelUserList()
                 .forEach(user -> {
+                    // service 대체?
                     ReadStatus readStatus = readStatusValidator.validateReadStatusExistsByUserId(user.getId());
                     readStatusRepository.removeReadStatus(readStatus.getId());
                 });
