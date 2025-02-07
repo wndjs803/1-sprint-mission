@@ -21,6 +21,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class UserStatusServiceTest {
@@ -152,6 +153,25 @@ class UserStatusServiceTest {
             assertEquals(userStatus.getId(), updatedUserStatus.getId());
             assertTrue(updatedUserStatus.getIsOnline());
             assertEquals(user, updatedUserStatus.getUser());
+        }
+    }
+
+    @Nested
+    @DisplayName("UserStatus 삭제 테스트")
+    class DeleteUserStatusTest {
+
+        @Test
+        @DisplayName("UserStatus 삭제 성공")
+        void success() {
+            // given
+            User user = createUser(0);
+            UserStatus userStatus = createUserStatus(user);
+
+            // when
+            userStatusService.deleteUserStatus(userStatus.getId());
+
+            // then
+            assertNull(userStatusRepository.findUserStatusById(userStatus.getId()));
         }
     }
 }
