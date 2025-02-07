@@ -3,14 +3,12 @@ package com.sprint.mission.discodeit.repository.jcf;
 import com.sprint.mission.discodeit.entity.ReadStatus;
 import com.sprint.mission.discodeit.repository.ReadStatusRepository;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-@Service("jcfReadStatusRepository")
 @NoArgsConstructor
 public class JCFReadStatusRepository implements ReadStatusRepository {
 

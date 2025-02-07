@@ -1,1 +1,4 @@
-spring.application.name=discodeit
+# application.yaml
+discodeit:
+  repository:
+    type: jcf   # jcf | file
