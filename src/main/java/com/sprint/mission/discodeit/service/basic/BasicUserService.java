@@ -97,6 +97,7 @@ public class BasicUserService implements UserService {
 
         // UserStatus 삭제
         UserStatus userStatus = userStatusValidator.validateUserStatusExistsByUser(foundUser);
+        // service?
         userStatusRepository.removeUserStatus(userStatus.getId());
 
         // BinaryContent 삭제
