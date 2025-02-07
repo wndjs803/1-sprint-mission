@@ -13,9 +13,13 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class BinaryContentServiceTest {
 
@@ -109,6 +113,35 @@ class BinaryContentServiceTest {
             // then
             assertEquals(binaryContent.getId(), foundedBinaryContent.getId());
             assertEquals(binaryContent.getContent(), foundedBinaryContent.getContent());
+        }
+    }
+
+    @Nested
+    @DisplayName("BinaryContent 목록 조회 테스트")
+    class FindAllBinaryContentsTest {
+
+        @Test
+        @DisplayName("BinaryContent 목록 조회 성공")
+        void success() {
+            // given
+            MultipartFile multipartFile = createMulipartFile();
+            BinaryContent binaryContent1 = createBinaryContent(multipartFile);
+            BinaryContent binaryContent2 = createBinaryContent(multipartFile);
+            BinaryContent binaryContent3 = createBinaryContent(multipartFile);
+
+            List<UUID> binaryContentIdList = new ArrayList<>();
+            binaryContentIdList.add(binaryContent1.getId());
+            binaryContentIdList.add(binaryContent2.getId());
+            binaryContentIdList.add(binaryContent3.getId());
+
+            // when
+            List<BinaryContent> binaryContentList = binaryContentService.findAllBinaryContentsById(binaryContentIdList);
+
+            // then
+            assertEquals(3, binaryContentList.size());
+            assertTrue(binaryContentList.contains(binaryContent1));
+            assertTrue(binaryContentList.contains(binaryContent2));
+            assertTrue(binaryContentList.contains(binaryContent3));
         }
     }
 }
