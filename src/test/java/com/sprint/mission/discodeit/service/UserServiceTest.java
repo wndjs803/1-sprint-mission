@@ -20,6 +20,7 @@ import com.sprint.mission.discodeit.repository.jcf.JCFUserStatusRepository;
 import com.sprint.mission.discodeit.service.basic.BasicUserService;
 import com.sprint.mission.discodeit.validator.UserStatusValidator;
 import com.sprint.mission.discodeit.validator.UserValidator;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -41,6 +42,7 @@ class UserServiceTest {
     private UserStatusValidator userStatusValidator;
     private MultipartFileConverter multipartFileConverter;
     private UserService userService;
+    private FileStorage fileStorage;
 
     @BeforeEach
     void setUp() {
@@ -54,6 +56,11 @@ class UserServiceTest {
                 userMapper, userValidator, userStatusValidator, multipartFileConverter);
     }
 
+    @AfterEach
+    void clean() {
+        fileStorage.clearDataDirectory();
+    }
+
     private void jcfSetUp() {
         userRepository = new JCFUserRepository();
         userStatusRepository = new JCFUserStatusRepository();
@@ -61,7 +68,7 @@ class UserServiceTest {
     }
 
     private void fileSetUp() {
-        FileStorage fileStorage = new FileStorage();
+        fileStorage = new FileStorage();
         userRepository = new FileUserRepository(fileStorage);
         userStatusRepository = new JCFUserStatusRepository(); // 추후 변경
         binaryContentRepository = new JCFBinaryContentRepository(); // 추후 변경
