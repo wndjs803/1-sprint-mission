@@ -1,7 +1,7 @@
 package com.sprint.mission.discodeit.service.basic;
 
 import com.sprint.mission.discodeit.common.ErrorMessage;
-import com.sprint.mission.discodeit.common.MultipartFileConverter;
+import com.sprint.mission.discodeit.common.util.MultipartFileConverter;
 import com.sprint.mission.discodeit.dto.message.request.CreateMessageRequest;
 import com.sprint.mission.discodeit.dto.message.request.DeleteMessageRequest;
 import com.sprint.mission.discodeit.dto.message.request.UpdateMessageRequest;
@@ -16,7 +16,6 @@ import com.sprint.mission.discodeit.service.MessageService;
 import com.sprint.mission.discodeit.validator.ChannelValidator;
 import com.sprint.mission.discodeit.validator.UserValidator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,8 +27,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class BasicMessageService implements MessageService {
 
-//    @Qualifier("fileMessageRepository")
-    @Qualifier("jcfMessageRepository")
     private final MessageRepository messageRepository;
     private final BinaryContentRepository binaryContentRepository;
 

@@ -1,7 +1,7 @@
 package com.sprint.mission.discodeit.entity;
 
 import com.sprint.mission.discodeit.common.ErrorMessage;
-import com.sprint.mission.discodeit.common.TimeUtil;
+import com.sprint.mission.discodeit.common.util.TimeUtil;
 import lombok.Getter;
 
 import java.util.ArrayList;
