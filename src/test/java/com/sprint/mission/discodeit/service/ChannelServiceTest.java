@@ -181,7 +181,7 @@ class ChannelServiceTest {
 
     @Nested
     @DisplayName("채널 단일 조회 테스트")
-    class findChannelByIdOrThrowTest {
+    class FindChannelByIdOrThrowTest {
         @Test
         @DisplayName("Public 채널 단일 조회 성공")
         void successWithPublic() {
@@ -229,7 +229,7 @@ class ChannelServiceTest {
 
     @Nested
     @DisplayName("채널 목록 조회 테스트")
-    class findAllChannelsTest {
+    class FindAllChannelsTest {
         @Test
         @DisplayName("채널 목록 조회 성공")
         void success() {
@@ -269,7 +269,7 @@ class ChannelServiceTest {
 
     @Nested
     @DisplayName("채널 수정 테스트")
-    class updateChannelNameTest {
+    class UpdateChannelNameTest {
         @Test
         @DisplayName("채널 수정 성공")
         void success() {
@@ -316,7 +316,7 @@ class ChannelServiceTest {
 
     @Nested
     @DisplayName("채널 삭제 테스트")
-    class deleteChannelTest {
+    class DeleteChannelTest {
         @Test
         @DisplayName("채널 삭제 성공")
         void success() {
