@@ -27,10 +27,10 @@ public class Message extends BaseEntity {
 
     public static Message of(User sendUser, Channel channel, String content) {
         if (sendUser == null) {
-            throw new UserNotNullException(ErrorCode.USER_NOT_NULL.getMessage());
+            throw new UserNotNullException();
         }
         if (channel == null) {
-            throw new ChannelNotNullException(ErrorCode.CHANNEL_NOT_NULL.getMessage());
+            throw new ChannelNotNullException();
         }
         return new Message(sendUser, channel, content);
     }
