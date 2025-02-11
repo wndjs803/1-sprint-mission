@@ -6,9 +6,11 @@ import com.sprint.mission.discodeit.repository.MessageRepository;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @NoArgsConstructor
@@ -36,6 +38,12 @@ public class JCFMessageRepository implements MessageRepository {
         return messageData.values().stream()
                 .filter(message -> message.getChannel() == channel)
                 .toList();
+    }
+
+    @Override
+    public Optional<Message> findLastMessage() {
+        return messageData.values().stream()
+                .max(Comparator.comparing(message -> message.getCreatedAt()));
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.repository.file;
 
 import com.sprint.mission.discodeit.entity.Channel;
+import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
 
 import java.nio.file.Path;
@@ -36,6 +37,11 @@ public class FileChannelRepository implements ChannelRepository {
     @Override
     public List<Channel> findAllChannels() {
         return fileStorage.load(directory);
+    }
+
+    @Override
+    public List<Channel> findAccessibleChannels(User user) {
+        return null;
     }
 
     @Override
