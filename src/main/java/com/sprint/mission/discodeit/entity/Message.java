@@ -1,6 +1,8 @@
 package com.sprint.mission.discodeit.entity;
 
 import com.sprint.mission.discodeit.global.error.ErrorCode;
+import com.sprint.mission.discodeit.global.error.execption.channel.ChannelNotNullException;
+import com.sprint.mission.discodeit.global.error.execption.user.UserNotNullException;
 import com.sprint.mission.discodeit.global.util.TimeUtil;
 import lombok.Getter;
 
@@ -25,10 +27,10 @@ public class Message extends BaseEntity {
 
     public static Message of(User sendUser, Channel channel, String content) {
         if (sendUser == null) {
-            throw new IllegalArgumentException(ErrorCode.USER_NOT_NULL.getMessage());
+            throw new UserNotNullException(ErrorCode.USER_NOT_NULL.getMessage());
         }
         if (channel == null) {
-            throw new IllegalArgumentException(ErrorCode.CHANNEL_NOT_NULL.getMessage());
+            throw new ChannelNotNullException(ErrorCode.CHANNEL_NOT_NULL.getMessage());
         }
         return new Message(sendUser, channel, content);
     }
