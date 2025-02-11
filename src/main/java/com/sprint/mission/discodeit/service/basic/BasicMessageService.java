@@ -48,6 +48,7 @@ public class BasicMessageService implements MessageService {
 
         multipartFileList.forEach(
                 multipartFile -> {
+                    // binaryContentService의 create와 똑같이 동작
                     BinaryContent binaryContent = BinaryContent.of(multipartFileConverter.toByteArray(multipartFile));
                     binaryContentRepository.saveBinaryContent(binaryContent);
                     message.addBinaryContent(binaryContent);
