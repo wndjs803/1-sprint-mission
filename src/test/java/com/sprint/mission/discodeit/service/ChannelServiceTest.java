@@ -1,6 +1,9 @@
 package com.sprint.mission.discodeit.service;
 
 import com.sprint.mission.discodeit.global.error.ErrorCode;
+import com.sprint.mission.discodeit.global.error.execption.channel.CannotUpdatePrivateChannelException;
+import com.sprint.mission.discodeit.global.error.execption.channel.ChannelNotFoundException;
+import com.sprint.mission.discodeit.global.error.execption.channel.NotChannelCreatorException;
 import com.sprint.mission.discodeit.global.util.RandomStringGenerator;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePrivateChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePublicChannelRequest;
@@ -64,7 +67,8 @@ class ChannelServiceTest {
 
     @BeforeEach
     void setUp() {
-        fileSetup();
+//        fileSetup();
+        jcfSetUp();
         channelValidator = new ChannelValidator(channelRepository);
         userValidator = new UserValidator(userRepository);
         readStatusValidator = new ReadStatusValidator(readStatusRepository);
@@ -224,7 +228,7 @@ class ChannelServiceTest {
         void findChannelByIdOrThrow_ThrowsException_WhenChannelIdDoesNotExist() {
             UUID randomId = UUID.randomUUID();
             assertThatThrownBy(() -> channelService.findChannelByIdOrThrow(randomId))
-                    .isInstanceOf(RuntimeException.class)
+                    .isInstanceOf(ChannelNotFoundException.class)
                     .hasMessage(ErrorCode.CHANNEL_NOT_FOUND.format("id: " + randomId));
         }
     }
@@ -296,7 +300,7 @@ class ChannelServiceTest {
 
         @Test
         @DisplayName("채널 생성자 일치 여부 확인 후 예외 발생")
-        void updateChannelName_ThrowsException_WhenOwnerDoesNotMatch() {
+        void updateChannel_ThrowsException_WhenOwnerDoesNotMatch() {
             // given
             User channelOwner = createUser(0);
             User anotherUser = createUser(1);
@@ -311,8 +315,29 @@ class ChannelServiceTest {
 
             // when & then
             assertThatThrownBy(() -> channelService.updateChannel(updateChannelRequest))
-                    .isInstanceOf(RuntimeException.class)
+                    .isInstanceOf(NotChannelCreatorException.class)
                     .hasMessage(ErrorCode.NOT_CHANNEL_CREATOR.format("id: " + anotherUser.getId()));
+        }
+
+        @Test
+        @DisplayName("Private 여부 확인 후 예외 발생")
+        void updateChannel_ThrowsException_WhenStatusIsPrivate() {
+            // given
+            User channelOwner = createUser(0);
+            User anotherUser = createUser(1);
+            Channel channel = createPrivateChannel(channelOwner);
+
+            String updatedName = "channel2";
+            String updateDescription = "description2";
+
+            UpdateChannelRequest updateChannelRequest =
+                    new UpdateChannelRequest(anotherUser.getId(), channel.getId(),
+                            updatedName, updateDescription);
+
+            // when & then
+            assertThatThrownBy(() -> channelService.updateChannel(updateChannelRequest))
+                    .isInstanceOf(CannotUpdatePrivateChannelException.class)
+                    .hasMessage(ErrorCode.CANNOT_UPDATE_PRIVATE_CHANNEL.format("id: " + channel.getId()));
         }
     }
 
@@ -354,7 +379,7 @@ class ChannelServiceTest {
 
             // when & then
             assertThatThrownBy(() -> channelService.deleteChannel(deleteChannelRequest))
-                    .isInstanceOf(RuntimeException.class)
+                    .isInstanceOf(NotChannelCreatorException.class)
                     .hasMessage(ErrorCode.NOT_CHANNEL_CREATOR.format("id: " + anotherUser.getId()));
         }
     }
