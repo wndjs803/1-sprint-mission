@@ -2,6 +2,7 @@ package com.sprint.mission.discodeit.service.basic;
 
 import com.sprint.mission.discodeit.global.error.ErrorCode;
 import com.sprint.mission.discodeit.global.error.execption.message.MessageNotFoundException;
+import com.sprint.mission.discodeit.global.error.execption.message.NotMessageCreatorException;
 import com.sprint.mission.discodeit.global.util.MultipartFileConverter;
 import com.sprint.mission.discodeit.dto.message.request.CreateMessageRequest;
 import com.sprint.mission.discodeit.dto.message.request.DeleteMessageRequest;
@@ -79,7 +80,7 @@ public class BasicMessageService implements MessageService {
         Message foundMessage = findMessageByIdOrThrow(updateMessageRequest.messageId());
 
         if (foundMessage.isNotOwner(sendUserId)) {
-            throw new RuntimeException(ErrorCode.NOT_MESSAGE_CREATOR.format("id: " + sendUserId));
+            throw new NotMessageCreatorException("id: " + sendUserId);
         }
 
         foundMessage.updateContent(updateMessageRequest.content());
@@ -96,7 +97,7 @@ public class BasicMessageService implements MessageService {
         Message foundMessage = findMessageByIdOrThrow(messageId);
 
         if (foundMessage.isNotOwner(sendUserId)) {
-            throw new RuntimeException(ErrorCode.NOT_MESSAGE_CREATOR.format("id: " + sendUserId));
+            throw new NotMessageCreatorException("id: " + sendUserId);
         }
 
         foundMessage.getBinaryContentList()
