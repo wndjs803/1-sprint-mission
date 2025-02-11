@@ -26,12 +26,12 @@ public enum ErrorCode {
     NOT_MESSAGE_CREATOR(400, "MESSAGE-002", "메세지 생성자가 아닙니다. %s"),
 
     // File
-    DIRECTORY_INIT_FAIL(400,"FILE-001", "디렉토리 생성에 실패했습니다. path: %s"),
-    FILE_WRITE_FAIL(400,"FILE-002", "파일 쓰기에 실패했습니다. path: %s, data: %s"),
-    FILE_READ_FAIL(400,"FILE-003", "파일 읽기에 실패했습니다. path: %s"),
-    FILE_REMOVE_FAIL(400,"FILE-004", "파일 제거에 실패했습니다. path: %s"),
-    FILES_LOAD_FAIL(400,"FILE-005", "파일들을 로드하는데 실패했습니다. path: %s"),
-    FILE_CONVERSION_FAIL(400,"FILE-006", "파일을 바이트 배열로 변환하는 데 실패했습니다. 이유: %s"),
+    DIRECTORY_INIT_FAIL(500,"FILE-001", "디렉토리 생성에 실패했습니다. path: %s"),
+    FILE_WRITE_FAIL(500,"FILE-002", "파일 쓰기에 실패했습니다. path: %s, data: %s"),
+    FILE_READ_FAIL(500,"FILE-003", "파일 읽기에 실패했습니다. path: %s"),
+    FILE_REMOVE_FAIL(500,"FILE-004", "파일 제거에 실패했습니다. path: %s"),
+    FILES_LOAD_FAIL(500,"FILE-005", "파일들을 로드하는데 실패했습니다. path: %s"),
+    FILE_CONVERSION_FAIL(500,"FILE-006", "파일을 바이트 배열로 변환하는 데 실패했습니다. 이유: %s"),
 
     // ReadStatus
     READSTATUS_NOT_FOUND(404, "READSTATUS-001", "readStatus를 찾을 수 없습니다. %s"),

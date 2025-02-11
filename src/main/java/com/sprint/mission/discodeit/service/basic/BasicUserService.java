@@ -101,6 +101,8 @@ public class BasicUserService implements UserService {
         // BinaryContent 존재 여부 확인 -> validator or Service
         binaryContentRepository.removeBinaryContent(foundUser.getProfileImage().getId());
 
+        // 참여한 채널에서도 유저 삭제
+
         // 유저 삭제
         userRepository.removeUser(userId);
     }
