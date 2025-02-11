@@ -37,7 +37,7 @@ public class UserValidator {
 
     public User validateUserExistsByNameAndPassword(String name, String password) {
         return userRepository.findUserByNameAndPassword(name, password)
-                .orElseThrow(() -> new RuntimeException(ErrorCode.USER_NOT_FOUND.format(
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND.format(
                         "name: " + name + " password: " + password)));
     }
 

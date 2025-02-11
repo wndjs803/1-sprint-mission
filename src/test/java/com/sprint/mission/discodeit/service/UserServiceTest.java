@@ -234,7 +234,7 @@ class UserServiceTest {
         void notExistUser() {
             UUID randomId = UUID.randomUUID();
             assertThatThrownBy(() -> userService.deleteUser(randomId))
-                    .isInstanceOf(RuntimeException.class)
+                    .isInstanceOf(UserNotFoundException.class)
                     .hasMessage(ErrorCode.USER_NOT_FOUND.format("id: " + randomId));
         }
     }
