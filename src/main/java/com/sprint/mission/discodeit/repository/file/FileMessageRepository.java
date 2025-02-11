@@ -18,7 +18,7 @@ public class FileMessageRepository implements MessageRepository {
     }
 
     public static FileMessageRepository getInstance() {
-        return FileMessageRepository.LazyHolder.INSTANCE;
+        return LazyHolder.INSTANCE;
     }
 
     private static class LazyHolder {

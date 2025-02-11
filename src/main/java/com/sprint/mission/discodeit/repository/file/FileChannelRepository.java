@@ -18,7 +18,7 @@ public class FileChannelRepository implements ChannelRepository {
     }
 
     public static FileChannelRepository getInstance() {
-        return FileChannelRepository.LazyHolder.INSTANCE;
+        return LazyHolder.INSTANCE;
     }
 
     private static class LazyHolder {

@@ -16,7 +16,7 @@ public class JCFMessageRepository implements MessageRepository {
     }
 
     public static JCFMessageRepository getInstance() {
-        return JCFMessageRepository.LazyHolder.INSTANCE;
+        return LazyHolder.INSTANCE;
     }
 
     private static class LazyHolder {

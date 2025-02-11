@@ -18,7 +18,7 @@ public class FileUserRepository implements UserRepository {
     }
 
     public static FileUserRepository getInstance() {
-        return FileUserRepository.LazyHolder.INSTANCE;
+        return LazyHolder.INSTANCE;
     }
 
     private static class LazyHolder {

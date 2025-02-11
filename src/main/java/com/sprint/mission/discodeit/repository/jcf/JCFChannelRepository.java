@@ -16,7 +16,7 @@ public class JCFChannelRepository implements ChannelRepository {
     }
 
     public static JCFChannelRepository getInstance() {
-        return JCFChannelRepository.LazyHolder.INSTANCE;
+        return LazyHolder.INSTANCE;
     }
 
     private static class LazyHolder {
