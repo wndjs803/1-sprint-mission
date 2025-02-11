@@ -1,6 +1,5 @@
 package com.sprint.mission.discodeit.validator;
 
-import com.sprint.mission.discodeit.global.error.ErrorCode;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.global.error.execption.userStatus.UserStatusAlreadyExistException;
@@ -25,8 +24,7 @@ public class UserStatusValidator {
 
     public UserStatus validateUserStatusExistsByUser(User user) {
         return userStatusRepository.findUserStatusByUser(user)
-                .orElseThrow(() -> new IllegalArgumentException(
-                        ErrorCode.USERSTATUS_NOT_FOUND.format("id: " + user.getId())));
+                .orElseThrow(() -> new UserStatusNotFoundException("id: " + user.getId()));
     }
 
     public void validateDuplicateByUser(User user) {

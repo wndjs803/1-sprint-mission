@@ -1,6 +1,5 @@
 package com.sprint.mission.discodeit.service.basic;
 
-import com.sprint.mission.discodeit.global.error.ErrorCode;
 import com.sprint.mission.discodeit.global.error.execption.message.MessageNotFoundException;
 import com.sprint.mission.discodeit.global.error.execption.message.NotMessageCreatorException;
 import com.sprint.mission.discodeit.global.util.MultipartFileConverter;

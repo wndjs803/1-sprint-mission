@@ -1,6 +1,5 @@
 package com.sprint.mission.discodeit.validator;
 
-import com.sprint.mission.discodeit.global.error.ErrorCode;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.global.error.execption.user.UserAlreadyExistException;
 import com.sprint.mission.discodeit.global.error.execption.user.UserNotFoundException;
