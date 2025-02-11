@@ -1,7 +1,7 @@
 package com.sprint.mission.discodeit.service.basic;
 
-import com.sprint.mission.discodeit.common.ErrorMessage;
-import com.sprint.mission.discodeit.common.util.MultipartFileConverter;
+import com.sprint.mission.discodeit.global.error.ErrorCode;
+import com.sprint.mission.discodeit.global.util.MultipartFileConverter;
 import com.sprint.mission.discodeit.dto.message.request.CreateMessageRequest;
 import com.sprint.mission.discodeit.dto.message.request.DeleteMessageRequest;
 import com.sprint.mission.discodeit.dto.message.request.UpdateMessageRequest;
@@ -61,7 +61,7 @@ public class BasicMessageService implements MessageService {
     public Message findMessageByIdOrThrow(UUID messageId) {
         // messageValidator 로 분리하는 것이 일관성 있지만 다른 클래스에서 참조 안하기에 일단 남겨둔다.
         return Optional.ofNullable(messageRepository.findMessageById(messageId))
-                .orElseThrow(() -> new RuntimeException(ErrorMessage.MESSAGE_NOT_FOUND.format("id: " + messageId)));
+                .orElseThrow(() -> new RuntimeException(ErrorCode.MESSAGE_NOT_FOUND.format("id: " + messageId)));
     }
 
     @Override
@@ -78,7 +78,7 @@ public class BasicMessageService implements MessageService {
         Message foundMessage = findMessageByIdOrThrow(updateMessageRequest.messageId());
 
         if (foundMessage.isNotOwner(sendUserId)) {
-            throw new RuntimeException(ErrorMessage.NOT_MESSAGE_CREATOR.format("id: " + sendUserId));
+            throw new RuntimeException(ErrorCode.NOT_MESSAGE_CREATOR.format("id: " + sendUserId));
         }
 
         foundMessage.updateContent(updateMessageRequest.content());
@@ -95,7 +95,7 @@ public class BasicMessageService implements MessageService {
         Message foundMessage = findMessageByIdOrThrow(messageId);
 
         if (foundMessage.isNotOwner(sendUserId)) {
-            throw new RuntimeException(ErrorMessage.NOT_MESSAGE_CREATOR.format("id: " + sendUserId));
+            throw new RuntimeException(ErrorCode.NOT_MESSAGE_CREATOR.format("id: " + sendUserId));
         }
 
         foundMessage.getBinaryContentList()

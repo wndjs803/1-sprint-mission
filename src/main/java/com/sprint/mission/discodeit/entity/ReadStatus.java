@@ -1,6 +1,6 @@
 package com.sprint.mission.discodeit.entity;
 
-import com.sprint.mission.discodeit.common.ErrorMessage;
+import com.sprint.mission.discodeit.global.error.ErrorCode;
 import lombok.Getter;
 
 @Getter
@@ -19,10 +19,10 @@ public class ReadStatus extends BaseEntity {
 
     public static ReadStatus of(User user, Channel channel) {
         if (user == null) {
-            throw new IllegalArgumentException(ErrorMessage.USER_NOT_NULL.getMessage());
+            throw new IllegalArgumentException(ErrorCode.USER_NOT_NULL.getMessage());
         }
         if (channel == null) {
-            throw new IllegalArgumentException(ErrorMessage.CHANNEL_NOT_NULL.getMessage());
+            throw new IllegalArgumentException(ErrorCode.CHANNEL_NOT_NULL.getMessage());
         }
         return new ReadStatus(user, channel);
     }
