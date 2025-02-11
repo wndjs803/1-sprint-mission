@@ -1,5 +1,8 @@
 package com.sprint.mission.discodeit.service;
 
+import com.sprint.mission.discodeit.global.error.ErrorCode;
+import com.sprint.mission.discodeit.global.error.execption.bianryContent.BinaryContentNofFoundException;
+import com.sprint.mission.discodeit.global.error.execption.readStatus.ReadStatusNotFoundException;
 import com.sprint.mission.discodeit.global.util.MultipartFileConverter;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
@@ -20,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -134,6 +138,21 @@ class BinaryContentServiceTest {
 
             // then
             assertEquals(binaryContent, foundedBinaryContent);
+        }
+
+        @Test
+        @DisplayName("BinaryContent 단일 조회 성공")
+        void fail_ThrowNotFoundException() {
+            // given
+            MultipartFile multipartFile = createMulipartFile();
+            createBinaryContent(multipartFile);
+
+            UUID randomId = UUID.randomUUID();
+
+            // when & then
+            assertThatThrownBy(() -> binaryContentService.findBinaryContentById(randomId))
+                    .isInstanceOf(BinaryContentNofFoundException.class)
+                    .hasMessage(ErrorCode.BINARYCONTENT_NOT_FOUND.format("id: " + randomId));
         }
     }
 
