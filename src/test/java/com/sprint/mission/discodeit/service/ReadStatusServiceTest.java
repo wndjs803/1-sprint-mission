@@ -5,6 +5,9 @@ import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.ChannelType;
 import com.sprint.mission.discodeit.entity.ReadStatus;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.global.error.ErrorCode;
+import com.sprint.mission.discodeit.global.error.execption.message.MessageNotFoundException;
+import com.sprint.mission.discodeit.global.error.execption.readStatus.ReadStatusNotFoundException;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.repository.ReadStatusRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
@@ -25,6 +28,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -131,6 +137,22 @@ class ReadStatusServiceTest {
         }
 
         @Test
+        @DisplayName("존재하지 않는 Id 조회 후 예외 발생")
+        void findReadStatusById_ThrowsException_WhenIdDoesNotExist() {
+            // given
+            User user = createUser(0);
+            Channel channel = createPublicChannel(user, 0);
+            createReadStatus(user, channel);
+
+            UUID randomId = UUID.randomUUID();
+
+            // when & then
+            assertThatThrownBy(() -> readStatusService.findReadStatusById(randomId))
+                    .isInstanceOf(ReadStatusNotFoundException.class)
+                    .hasMessage(ErrorCode.READSTATUS_NOT_FOUND.format("id: " + randomId));
+        }
+
+        @Test
         @DisplayName("단일 조회 성공 by userId")
         void successByUserId() {
             // given
@@ -143,6 +165,22 @@ class ReadStatusServiceTest {
 
             // then
             assertEquals(readStatus, foundedReadStatus);
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 userId 조회 후 예외 발생")
+        void findReadStatusById_ThrowsException_WhenUserIdDoesNotExist() {
+            // given
+            User user = createUser(0);
+            Channel channel = createPublicChannel(user, 0);
+            createReadStatus(user, channel);
+
+            UUID randomId = UUID.randomUUID();
+
+            // when & then
+            assertThatThrownBy(() -> readStatusService.findAllReadStatusesByUserId(randomId))
+                    .isInstanceOf(ReadStatusNotFoundException.class)
+                    .hasMessage(ErrorCode.READSTATUS_NOT_FOUND.format("userId: " + randomId));
         }
     }
 

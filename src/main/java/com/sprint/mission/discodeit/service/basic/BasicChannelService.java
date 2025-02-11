@@ -172,6 +172,8 @@ public class BasicChannelService implements ChannelService {
         foundChannel.getChannelUserList()
                 .forEach(user -> {
                     // service 대체?
+                    // user 검증
+                    userValidator.validateUserExistsByUserId(user.getId());
                     ReadStatus readStatus = readStatusValidator.validateReadStatusExistsByUserId(user.getId());
                     readStatusRepository.removeReadStatus(readStatus.getId());
                 });
