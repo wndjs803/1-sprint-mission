@@ -1,11 +1,8 @@
 package com.sprint.mission.discodeit.entity;
 
-import com.sprint.mission.discodeit.global.UtilMethod;
+import java.io.Serializable;
 
-import java.util.List;
-import java.util.UUID;
-
-public class User extends BaseEntity {
+public class User extends BaseEntity implements Serializable {
     private String name;
     private String nickname;
     private String email;
@@ -13,8 +10,8 @@ public class User extends BaseEntity {
     private String profileImageUrl;
     private boolean active;
 
-    public User(String name, String nickname, String email, String password,
-                String profileImageUrl, boolean active) {
+    private User(String name, String nickname, String email, String password,
+                 String profileImageUrl, boolean active) {
         super();
         this.name = name;
         this.nickname = nickname;
@@ -24,6 +21,10 @@ public class User extends BaseEntity {
         this.active = active;
     }
 
+    public static User of(String name, String nickname, String email, String password,
+                          String profileImageUrl, boolean active) {
+        return new User(name, nickname, email, password, profileImageUrl, active);
+    }
 
     public String getName() {
         return name;
@@ -49,7 +50,6 @@ public class User extends BaseEntity {
         return active;
     }
 
-
     public void updateName(String name) {
         this.name = name;
     }
@@ -70,8 +70,18 @@ public class User extends BaseEntity {
         this.profileImageUrl = profileImageUrl;
     }
 
-    public void updateActive(){
+    public void updateActive() {
         this.active = !this.active;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "name='" + name + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", email='" + email + '\'' +
+                ", profileImageUrl='" + profileImageUrl + '\'' +
+                ", active=" + active +
+                '}';
+    }
 }
