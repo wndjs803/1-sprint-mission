@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.service;
 
 import com.sprint.mission.discodeit.global.error.ErrorCode;
+import com.sprint.mission.discodeit.global.error.execption.message.MessageNotFoundException;
 import com.sprint.mission.discodeit.global.util.MultipartFileConverter;
 import com.sprint.mission.discodeit.dto.message.request.CreateMessageRequest;
 import com.sprint.mission.discodeit.dto.message.request.DeleteMessageRequest;
@@ -161,7 +162,7 @@ class MessageServiceTest {
             UUID randomId = UUID.randomUUID();
 
             assertThatThrownBy(() -> messageService.findMessageByIdOrThrow(randomId))
-                    .isInstanceOf(RuntimeException.class)
+                    .isInstanceOf(MessageNotFoundException.class)
                     .hasMessage(ErrorCode.MESSAGE_NOT_FOUND.format("id: " + randomId));
         }
     }

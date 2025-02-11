@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.service.basic;
 
 import com.sprint.mission.discodeit.global.error.ErrorCode;
+import com.sprint.mission.discodeit.global.error.execption.message.MessageNotFoundException;
 import com.sprint.mission.discodeit.global.util.MultipartFileConverter;
 import com.sprint.mission.discodeit.dto.message.request.CreateMessageRequest;
 import com.sprint.mission.discodeit.dto.message.request.DeleteMessageRequest;
@@ -61,7 +62,7 @@ public class BasicMessageService implements MessageService {
     public Message findMessageByIdOrThrow(UUID messageId) {
         // messageValidator 로 분리하는 것이 일관성 있지만 다른 클래스에서 참조 안하기에 일단 남겨둔다.
         return Optional.ofNullable(messageRepository.findMessageById(messageId))
-                .orElseThrow(() -> new RuntimeException(ErrorCode.MESSAGE_NOT_FOUND.format("id: " + messageId)));
+                .orElseThrow(() -> new MessageNotFoundException("id: " + messageId));
     }
 
     @Override
