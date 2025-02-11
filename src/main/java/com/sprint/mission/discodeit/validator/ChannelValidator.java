@@ -1,6 +1,6 @@
 package com.sprint.mission.discodeit.validator;
 
-import com.sprint.mission.discodeit.common.ErrorMessage;
+import com.sprint.mission.discodeit.global.error.ErrorCode;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +17,6 @@ public class ChannelValidator {
 
     public Channel validateChannelExistsByChannelId(UUID channelId) {
         return Optional.ofNullable(channelRepository.findChannelById(channelId))
-                .orElseThrow(() -> new RuntimeException(ErrorMessage.CHANNEL_NOT_FOUND.format("id: " + channelId)));
+                .orElseThrow(() -> new RuntimeException(ErrorCode.CHANNEL_NOT_FOUND.format("id: " + channelId)));
     }
 }

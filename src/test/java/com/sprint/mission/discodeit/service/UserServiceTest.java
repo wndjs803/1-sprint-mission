@@ -1,7 +1,7 @@
 package com.sprint.mission.discodeit.service;
 
-import com.sprint.mission.discodeit.common.ErrorMessage;
-import com.sprint.mission.discodeit.common.util.MultipartFileConverter;
+import com.sprint.mission.discodeit.global.error.ErrorCode;
+import com.sprint.mission.discodeit.global.util.MultipartFileConverter;
 import com.sprint.mission.discodeit.dto.user.request.CreateUserRequest;
 import com.sprint.mission.discodeit.dto.user.request.UpdateUserRequest;
 import com.sprint.mission.discodeit.dto.user.response.FindUserResponse;
@@ -131,7 +131,7 @@ class UserServiceTest {
             UUID randomId = UUID.randomUUID();
             assertThatThrownBy(() -> userService.findUserByIdOrThrow(randomId))
                     .isInstanceOf(RuntimeException.class)
-                    .hasMessage(ErrorMessage.USER_NOT_FOUND.format("id: " + randomId));
+                    .hasMessage(ErrorCode.USER_NOT_FOUND.format("id: " + randomId));
         }
     }
 
@@ -203,7 +203,7 @@ class UserServiceTest {
             UUID randomId = UUID.randomUUID();
             assertThatThrownBy(() -> userService.deleteUser(randomId))
                     .isInstanceOf(RuntimeException.class)
-                    .hasMessage(ErrorMessage.USER_NOT_FOUND.format("id: " + randomId));
+                    .hasMessage(ErrorCode.USER_NOT_FOUND.format("id: " + randomId));
         }
     }
 }

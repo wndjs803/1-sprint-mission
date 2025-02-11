@@ -1,4 +1,4 @@
-package com.sprint.mission.discodeit.common.config;
+package com.sprint.mission.discodeit.global.config;
 
 import com.sprint.mission.discodeit.repository.file.FileBinaryContentRepository;
 import com.sprint.mission.discodeit.repository.file.FileChannelRepository;

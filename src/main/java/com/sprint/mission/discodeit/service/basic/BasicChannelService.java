@@ -1,8 +1,8 @@
 package com.sprint.mission.discodeit.service.basic;
 
-import com.sprint.mission.discodeit.common.ErrorMessage;
-import com.sprint.mission.discodeit.common.util.RandomStringGenerator;
-import com.sprint.mission.discodeit.common.util.TimeUtil;
+import com.sprint.mission.discodeit.global.error.ErrorCode;
+import com.sprint.mission.discodeit.global.util.RandomStringGenerator;
+import com.sprint.mission.discodeit.global.util.TimeUtil;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePrivateChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePublicChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.DeleteChannelRequest;
@@ -132,7 +132,7 @@ public class BasicChannelService implements ChannelService {
         Channel foundChannel = channelValidator.validateChannelExistsByChannelId(updateChannelRequest.channelId());
 
         if (foundChannel.isPrivate()) {
-            throw new RuntimeException(ErrorMessage.CANNOT_UPDATE_PRIVATE_CHANNEL
+            throw new RuntimeException(ErrorCode.CANNOT_UPDATE_PRIVATE_CHANNEL
                     .format("id: " + foundChannel.getId()));
         }
 
@@ -141,7 +141,7 @@ public class BasicChannelService implements ChannelService {
         userValidator.validateUserExistsByUserId(channelOwnerId);
 
         if (foundChannel.isNotOwner(channelOwnerId)) {
-            throw new RuntimeException(ErrorMessage.NOT_CHANNEL_CREATOR.format("id: " + channelOwnerId));
+            throw new RuntimeException(ErrorCode.NOT_CHANNEL_CREATOR.format("id: " + channelOwnerId));
         }
 
         foundChannel.updateName(updateChannelRequest.name());
@@ -160,7 +160,7 @@ public class BasicChannelService implements ChannelService {
         Channel foundChannel = channelValidator.validateChannelExistsByChannelId(channelId);
 
         if (foundChannel.isNotOwner(channelOwnerId)) {
-            throw new RuntimeException(ErrorMessage.NOT_CHANNEL_CREATOR.format("id: " + channelOwnerId));
+            throw new RuntimeException(ErrorCode.NOT_CHANNEL_CREATOR.format("id: " + channelOwnerId));
         }
 
         // Message, ReadStatus 함께 삭제

@@ -1,7 +1,7 @@
 package com.sprint.mission.discodeit.entity;
 
-import com.sprint.mission.discodeit.common.ErrorMessage;
-import com.sprint.mission.discodeit.common.util.TimeUtil;
+import com.sprint.mission.discodeit.global.error.ErrorCode;
+import com.sprint.mission.discodeit.global.util.TimeUtil;
 import lombok.Getter;
 
 import java.time.Instant;
@@ -24,7 +24,7 @@ public class UserStatus extends BaseEntity {
 
     public static UserStatus of(User user) {
         if (user == null) {
-            throw new IllegalArgumentException(ErrorMessage.USER_NOT_NULL.getMessage());
+            throw new IllegalArgumentException(ErrorCode.USER_NOT_NULL.getMessage());
         }
         return new UserStatus(user);
     }

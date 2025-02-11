@@ -1,7 +1,7 @@
 package com.sprint.mission.discodeit.service;
 
-import com.sprint.mission.discodeit.common.ErrorMessage;
-import com.sprint.mission.discodeit.common.util.RandomStringGenerator;
+import com.sprint.mission.discodeit.global.error.ErrorCode;
+import com.sprint.mission.discodeit.global.util.RandomStringGenerator;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePrivateChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePublicChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.DeleteChannelRequest;
@@ -225,7 +225,7 @@ class ChannelServiceTest {
             UUID randomId = UUID.randomUUID();
             assertThatThrownBy(() -> channelService.findChannelByIdOrThrow(randomId))
                     .isInstanceOf(RuntimeException.class)
-                    .hasMessage(ErrorMessage.CHANNEL_NOT_FOUND.format("id: " + randomId));
+                    .hasMessage(ErrorCode.CHANNEL_NOT_FOUND.format("id: " + randomId));
         }
     }
 
@@ -312,7 +312,7 @@ class ChannelServiceTest {
             // when & then
             assertThatThrownBy(() -> channelService.updateChannel(updateChannelRequest))
                     .isInstanceOf(RuntimeException.class)
-                    .hasMessage(ErrorMessage.NOT_CHANNEL_CREATOR.format("id: " + anotherUser.getId()));
+                    .hasMessage(ErrorCode.NOT_CHANNEL_CREATOR.format("id: " + anotherUser.getId()));
         }
     }
 
@@ -355,7 +355,7 @@ class ChannelServiceTest {
             // when & then
             assertThatThrownBy(() -> channelService.deleteChannel(deleteChannelRequest))
                     .isInstanceOf(RuntimeException.class)
-                    .hasMessage(ErrorMessage.NOT_CHANNEL_CREATOR.format("id: " + anotherUser.getId()));
+                    .hasMessage(ErrorCode.NOT_CHANNEL_CREATOR.format("id: " + anotherUser.getId()));
         }
     }
 //
