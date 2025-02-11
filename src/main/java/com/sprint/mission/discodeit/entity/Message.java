@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.entity;
 
 import com.sprint.mission.discodeit.global.error.ErrorCode;
+import com.sprint.mission.discodeit.global.error.execption.bianryContent.BinaryContentNotNullException;
 import com.sprint.mission.discodeit.global.error.execption.channel.ChannelNotNullException;
 import com.sprint.mission.discodeit.global.error.execption.user.UserNotNullException;
 import com.sprint.mission.discodeit.global.util.TimeUtil;
@@ -46,7 +47,7 @@ public class Message extends BaseEntity {
 
     public void addBinaryContent(BinaryContent binaryContent) {
         if (binaryContent == null) {
-            throw new IllegalArgumentException(ErrorCode.BINARYCONTENT_NOT_NULL.getMessage());
+            throw new BinaryContentNotNullException();
         }
         this.binaryContentList.add(binaryContent);
         this.updateUpdatedAt(TimeUtil.getCurrentTime());
@@ -54,7 +55,7 @@ public class Message extends BaseEntity {
 
     public void deleteBinaryContent(BinaryContent binaryContent) {
         if (binaryContent == null) {
-            throw new IllegalArgumentException(ErrorCode.BINARYCONTENT_NOT_NULL.getMessage());
+            throw new BinaryContentNotNullException();
         }
         this.binaryContentList.remove(binaryContent);
         this.updateUpdatedAt(TimeUtil.getCurrentTime());

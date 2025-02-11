@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.service.basic;
 
 import com.sprint.mission.discodeit.global.error.ErrorCode;
+import com.sprint.mission.discodeit.global.error.execption.bianryContent.BinaryContentNofFoundException;
 import com.sprint.mission.discodeit.global.util.MultipartFileConverter;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
@@ -36,8 +37,7 @@ public class BasicBinaryContentService implements BinaryContentService {
     @Override
     public BinaryContent findBinaryContentById(UUID binaryContentId) {
         return Optional.ofNullable(binaryContentRepository.findBinaryContentById(binaryContentId))
-                .orElseThrow(() -> new IllegalArgumentException(
-                        ErrorCode.BINARYCONTENT_NOT_FOUND.format("id: " + binaryContentId)));
+                .orElseThrow(() -> new BinaryContentNofFoundException("id: " + binaryContentId));
     }
 
     @Override

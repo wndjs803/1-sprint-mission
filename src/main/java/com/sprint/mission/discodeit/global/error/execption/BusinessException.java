@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 public class BusinessException extends RuntimeException {
 
-    private ErrorCode errorCode;
+    private final ErrorCode errorCode;
 
     public BusinessException(String message, ErrorCode errorCode) {
         super(message);
@@ -17,5 +17,4 @@ public class BusinessException extends RuntimeException {
         super(errorCode.getMessage());
         this.errorCode = errorCode;
     }
-
 }
