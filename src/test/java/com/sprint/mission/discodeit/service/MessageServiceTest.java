@@ -2,6 +2,7 @@ package com.sprint.mission.discodeit.service;
 
 import com.sprint.mission.discodeit.global.error.ErrorCode;
 import com.sprint.mission.discodeit.global.error.execption.message.MessageNotFoundException;
+import com.sprint.mission.discodeit.global.error.execption.message.NotMessageCreatorException;
 import com.sprint.mission.discodeit.global.util.MultipartFileConverter;
 import com.sprint.mission.discodeit.dto.message.request.CreateMessageRequest;
 import com.sprint.mission.discodeit.dto.message.request.DeleteMessageRequest;
@@ -59,8 +60,8 @@ class MessageServiceTest {
 
     @BeforeEach
     void setUp() {
-//        jcfSetUp();
-        fileSetUp();
+        jcfSetUp();
+//        fileSetUp();
         userValidator = new UserValidator(userRepository);
         channelValidator = new ChannelValidator(channelRepository);
         multipartFileConverter = new MultipartFileConverter();
@@ -245,7 +246,7 @@ class MessageServiceTest {
 
             // when & then
             assertThatThrownBy(() -> messageService.updateMessage(updateMessageRequest, new ArrayList<>()))
-                    .isInstanceOf(RuntimeException.class)
+                    .isInstanceOf(NotMessageCreatorException.class)
                     .hasMessage(ErrorCode.NOT_MESSAGE_CREATOR.format("id: " + anotherUser.getId()));
         }
     }
@@ -294,7 +295,7 @@ class MessageServiceTest {
 
             // when & then
             assertThatThrownBy(() -> messageService.deleteMessage(deleteMessageRequest))
-                    .isInstanceOf(RuntimeException.class)
+                    .isInstanceOf(NotMessageCreatorException.class)
                     .hasMessage(ErrorCode.NOT_MESSAGE_CREATOR.format("id: " + anotherUser.getId()));
         }
     }
