@@ -53,6 +53,11 @@ public class Channel extends BaseEntity {
         this.updateUpdatedAt(TimeUtil.getCurrentTime());
     }
 
+    public void updateChannelInfo(String name, String description) {
+        this.updateName(name);
+        this.updateDescription(description);
+    }
+
     public void addChannelUser(User user) {
         if (user == null) {
             throw new UserNotNullException();
