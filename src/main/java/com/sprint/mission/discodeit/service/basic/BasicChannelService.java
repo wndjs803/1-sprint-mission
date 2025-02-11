@@ -134,8 +134,7 @@ public class BasicChannelService implements ChannelService {
         Channel foundChannel = channelValidator.validateChannelExistsByChannelId(updateChannelRequest.channelId());
 
         if (foundChannel.isPrivate()) {
-            throw new CannotUpdatePrivateChannelException(ErrorCode.CANNOT_UPDATE_PRIVATE_CHANNEL
-                    .format("id: " + foundChannel.getId()));
+            throw new CannotUpdatePrivateChannelException("id: " + foundChannel.getId());
         }
 
         UUID channelOwnerId = updateChannelRequest.channelOwnerId();
@@ -143,7 +142,7 @@ public class BasicChannelService implements ChannelService {
         userValidator.validateUserExistsByUserId(channelOwnerId);
 
         if (foundChannel.isNotOwner(channelOwnerId)) {
-            throw new NotChannelCreatorException(ErrorCode.NOT_CHANNEL_CREATOR.format("id: " + channelOwnerId));
+            throw new NotChannelCreatorException("id: " + channelOwnerId);
         }
 
         // 하나의 메서드로
@@ -163,7 +162,7 @@ public class BasicChannelService implements ChannelService {
         Channel foundChannel = channelValidator.validateChannelExistsByChannelId(channelId);
 
         if (foundChannel.isNotOwner(channelOwnerId)) {
-            throw new NotChannelCreatorException(ErrorCode.NOT_CHANNEL_CREATOR.format("id: " + channelOwnerId));
+            throw new NotChannelCreatorException("id: " + channelOwnerId);
         }
 
         // Message, ReadStatus 함께 삭제
