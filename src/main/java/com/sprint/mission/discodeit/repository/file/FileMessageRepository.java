@@ -6,6 +6,7 @@ import com.sprint.mission.discodeit.repository.MessageRepository;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class FileMessageRepository implements MessageRepository {
@@ -47,6 +48,11 @@ public class FileMessageRepository implements MessageRepository {
         return messageList.stream()
                 .filter(message -> message.getChannel().equals(channel))
                 .toList();
+    }
+
+    @Override
+    public Optional<Message> findLastMessage() {
+        return Optional.empty();
     }
 
     @Override

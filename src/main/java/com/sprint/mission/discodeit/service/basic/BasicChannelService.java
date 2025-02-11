@@ -3,7 +3,6 @@ package com.sprint.mission.discodeit.service.basic;
 import com.sprint.mission.discodeit.global.error.execption.channel.CannotUpdatePrivateChannelException;
 import com.sprint.mission.discodeit.global.error.execption.channel.NotChannelCreatorException;
 import com.sprint.mission.discodeit.global.util.RandomStringGenerator;
-import com.sprint.mission.discodeit.global.util.TimeUtil;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePrivateChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePublicChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.DeleteChannelRequest;
@@ -27,7 +26,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -68,15 +66,16 @@ public class BasicChannelService implements ChannelService {
         Channel channel = channelMapper.toEntity(name, description, channelOwner, ChannelType.PRIVATE);
 
         // 유저 초대 및 ReadStatus 생성
-        for (UUID userId : createPrivateChannelRequest.channelUserList()) {
-            User user = userValidator.validateUserExistsByUserId(userId);
+        createPrivateChannelRequest.channelUserList().forEach(
+                userId -> {
+                    // 이 동작은 readStatusService의 createReadStatus 메서드와 동작이 정확히 일치한다.
+                    // 하지만 이 동작 하나만을 위해 readStatusService를 추가하는 것이 정말 맞는 것일까?
+                    User user = userValidator.validateUserExistsByUserId(userId);
+                    readStatusRepository.saveReadStatus(ReadStatus.of(user, channel));
 
-            // service로 대체해야할까?
-            ReadStatus readStatus = ReadStatus.of(user, channel);
-            readStatusRepository.saveReadStatus(readStatus);
-
-            channel.addChannelUser(user);
-        }
+                    channel.addChannelUser(user);
+                }
+        );
 
         channelRepository.saveChannel(channel);
 
@@ -88,12 +87,11 @@ public class BasicChannelService implements ChannelService {
         Channel channel = channelValidator.validateChannelExistsByChannelId(channelId);
 
         // 가장 최근 메세지의 시간 정보(createdAt)
-        // 1. repository(DB)에서 가장 최근 메세지의 시간 정보(createdAt)를 필터링하여 가져오는것 -> 가져오는 데이터 양이 적어진다.
+        // 1. repository(DB)에서 가장 최근 메세지의 시간 정보(createdAt)를 필터링하여 가져오는것 -> 가져오는 데이터 양이 적어진다.(O)
+        // -> DB로 생각했을 때 가져오는 데이터 양이 더 적을 때 빠를 것이다.
         // 2. 애플리케이션으로 데이터를 가져와서 필터링 -> 메서드 재사용성 증가
-        // service로 대체해야 할까?
-        Message foundMessage = messageRepository.findAllMessagesByChannel(channel).stream()
-                .max(Comparator.comparing(message -> message.getCreatedAt()))
-                .orElse(null);
+        // -> 불필요한 데이터까지 메모리에 올라가게 된다.
+        Message foundMessage = messageRepository.findLastMessage().orElse(null);
 
         // 채널에 메세지가 하나도 없을 때 시간 정보를 null로 해서 보내도 될까? -> 일단 EPOCH 로 기본값 지정
         Instant lastMessageTime = Instant.EPOCH;
@@ -117,11 +115,7 @@ public class BasicChannelService implements ChannelService {
         // PUBLIC + User가 참가한 PRIVATE 채널
         User user = userValidator.validateUserExistsByUserId(userId);
 
-        // 여기도 repository에서 필터를 해서 조회 or service에서 필터
-        List<Channel> channelList = channelRepository.findAllChannels().stream()
-                .filter(channel ->
-                        channel.isPublic() || (channel.isPrivate() && channel.isUserInChannel(user)))
-                .toList();
+        List<Channel> channelList = channelRepository.findAccessibleChannels(user);
 
         return channelList.stream()
                 .map(channel -> findChannelByIdOrThrow(channel.getId()))
@@ -144,10 +138,7 @@ public class BasicChannelService implements ChannelService {
             throw new NotChannelCreatorException("id: " + channelOwnerId);
         }
 
-        // 하나의 메서드로
-        foundChannel.updateName(updateChannelRequest.name());
-        foundChannel.updateDescription(updateChannelRequest.description());
-        foundChannel.updateUpdatedAt(TimeUtil.getCurrentTime());
+        foundChannel.updateChannelInfo(updateChannelRequest.name(), updateChannelRequest.description());
 
         return channelRepository.saveChannel(foundChannel);
     }
@@ -164,13 +155,13 @@ public class BasicChannelService implements ChannelService {
             throw new NotChannelCreatorException("id: " + channelOwnerId);
         }
 
-        // Message, ReadStatus 함께 삭제
+        // Message 삭제
         messageRepository.findAllMessagesByChannel(foundChannel)
                 .forEach(message -> messageRepository.removeMessage(message.getId()));
 
+        // ReadStatus 삭제
         foundChannel.getChannelUserList()
                 .forEach(user -> {
-                    // service 대체?
                     // user 검증
                     userValidator.validateUserExistsByUserId(user.getId());
                     ReadStatus readStatus = readStatusValidator.validateReadStatusExistsByUserId(user.getId());
