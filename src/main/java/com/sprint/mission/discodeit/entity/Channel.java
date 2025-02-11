@@ -1,7 +1,7 @@
 package com.sprint.mission.discodeit.entity;
 
-import com.sprint.mission.discodeit.common.ErrorMessage;
-import com.sprint.mission.discodeit.common.util.TimeUtil;
+import com.sprint.mission.discodeit.global.error.ErrorCode;
+import com.sprint.mission.discodeit.global.util.TimeUtil;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -28,14 +28,14 @@ public class Channel extends BaseEntity {
 
     public static Channel of(String name, String description, User channelOwner, ChannelType channelType) {
         if (channelOwner == null) {
-            throw new IllegalArgumentException(ErrorMessage.CHANNEL_OWNER_NOT_NULL.getMessage());
+            throw new IllegalArgumentException(ErrorCode.CHANNEL_OWNER_NOT_NULL.getMessage());
         }
         return new Channel(name, description, channelOwner, channelType);
     }
 
     public void updateChannelOwner(User channelOwner) {
         if (channelOwner == null) {
-            throw new IllegalArgumentException(ErrorMessage.CHANNEL_OWNER_NOT_NULL.getMessage());
+            throw new IllegalArgumentException(ErrorCode.CHANNEL_OWNER_NOT_NULL.getMessage());
         }
         this.channelOwner = channelOwner;
         this.updateUpdatedAt(TimeUtil.getCurrentTime());
@@ -53,14 +53,14 @@ public class Channel extends BaseEntity {
 
     public void addChannelUser(User user) {
         if (user == null) {
-            throw new IllegalArgumentException(ErrorMessage.USER_NOT_NULL.getMessage());
+            throw new IllegalArgumentException(ErrorCode.USER_NOT_NULL.getMessage());
         }
         this.channelUserList.add(user);
     }
 
     public void removeUserFromChannel(User user) {
         if (user == null) {
-            throw new IllegalArgumentException(ErrorMessage.USER_NOT_NULL.getMessage());
+            throw new IllegalArgumentException(ErrorCode.USER_NOT_NULL.getMessage());
         }
         this.channelUserList.remove(user);
     }

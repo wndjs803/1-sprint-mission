@@ -1,6 +1,6 @@
-package com.sprint.mission.discodeit.common.util;
+package com.sprint.mission.discodeit.global.util;
 
-import com.sprint.mission.discodeit.common.ErrorMessage;
+import com.sprint.mission.discodeit.global.error.ErrorCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,7 +12,7 @@ public class MultipartFileConverter {
         try {
             return multipartFile.getBytes();
         } catch (IOException e) {
-            throw new RuntimeException(ErrorMessage.FILE_CONVERSION_FAIL.format(e.getMessage()));
+            throw new RuntimeException(ErrorCode.FILE_CONVERSION_FAIL.format(e.getMessage()));
         }
     }
 

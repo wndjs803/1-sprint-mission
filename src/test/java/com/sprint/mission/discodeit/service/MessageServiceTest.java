@@ -1,7 +1,7 @@
 package com.sprint.mission.discodeit.service;
 
-import com.sprint.mission.discodeit.common.ErrorMessage;
-import com.sprint.mission.discodeit.common.util.MultipartFileConverter;
+import com.sprint.mission.discodeit.global.error.ErrorCode;
+import com.sprint.mission.discodeit.global.util.MultipartFileConverter;
 import com.sprint.mission.discodeit.dto.message.request.CreateMessageRequest;
 import com.sprint.mission.discodeit.dto.message.request.DeleteMessageRequest;
 import com.sprint.mission.discodeit.dto.message.request.UpdateMessageRequest;
@@ -162,7 +162,7 @@ class MessageServiceTest {
 
             assertThatThrownBy(() -> messageService.findMessageByIdOrThrow(randomId))
                     .isInstanceOf(RuntimeException.class)
-                    .hasMessage(ErrorMessage.MESSAGE_NOT_FOUND.format("id: " + randomId));
+                    .hasMessage(ErrorCode.MESSAGE_NOT_FOUND.format("id: " + randomId));
         }
     }
 
@@ -245,7 +245,7 @@ class MessageServiceTest {
             // when & then
             assertThatThrownBy(() -> messageService.updateMessage(updateMessageRequest, new ArrayList<>()))
                     .isInstanceOf(RuntimeException.class)
-                    .hasMessage(ErrorMessage.NOT_MESSAGE_CREATOR.format("id: " + anotherUser.getId()));
+                    .hasMessage(ErrorCode.NOT_MESSAGE_CREATOR.format("id: " + anotherUser.getId()));
         }
     }
 
@@ -294,7 +294,7 @@ class MessageServiceTest {
             // when & then
             assertThatThrownBy(() -> messageService.deleteMessage(deleteMessageRequest))
                     .isInstanceOf(RuntimeException.class)
-                    .hasMessage(ErrorMessage.NOT_MESSAGE_CREATOR.format("id: " + anotherUser.getId()));
+                    .hasMessage(ErrorCode.NOT_MESSAGE_CREATOR.format("id: " + anotherUser.getId()));
         }
     }
 
