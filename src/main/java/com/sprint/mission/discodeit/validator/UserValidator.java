@@ -31,7 +31,7 @@ public class UserValidator {
 
     public void validateDuplicateUserByEmail(String email) {
         if (userRepository.findUserByEmail(email).isPresent()) {
-            throw new RuntimeException(ErrorCode.USER_ALREADY_EXIST.format("email: " + email));
+            throw new UserAlreadyExistException(ErrorCode.USER_ALREADY_EXIST.format("email: " + email));
         }
     }
 

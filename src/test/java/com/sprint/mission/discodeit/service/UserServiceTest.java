@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.service;
 
 import com.sprint.mission.discodeit.global.error.ErrorCode;
+import com.sprint.mission.discodeit.global.error.execption.user.UserAlreadyExistException;
 import com.sprint.mission.discodeit.global.error.execption.user.UserNotFoundException;
 import com.sprint.mission.discodeit.global.util.MultipartFileConverter;
 import com.sprint.mission.discodeit.dto.user.request.CreateUserRequest;
@@ -103,6 +104,36 @@ class UserServiceTest {
             assertEquals("nickname1", user.getNickname());
             assertEquals("email1", user.getEmail());
             assertEquals("password1", user.getPassword());
+        }
+
+        @Test
+        @DisplayName("유저 이름 중복")
+        void duplicateByName() {
+            // given
+            createUser(1);
+
+            CreateUserRequest createUserRequest =
+                    new CreateUserRequest("test1", "nickname1", "email1", "password1");
+
+            // when & then
+            assertThatThrownBy(() -> userService.createUser(createUserRequest, null))
+                    .isInstanceOf(UserAlreadyExistException.class)
+                    .hasMessage(ErrorCode.USER_ALREADY_EXIST.format("name: test1"));
+        }
+
+        @Test
+        @DisplayName("유저 이메일 중복")
+        void duplicateByEmail() {
+            // given
+            createUser(1);
+
+            CreateUserRequest createUserRequest =
+                    new CreateUserRequest("test2", "nickname1", "email1", "password1");
+
+            // when & then
+            assertThatThrownBy(() -> userService.createUser(createUserRequest, null))
+                    .isInstanceOf(UserAlreadyExistException.class)
+                    .hasMessage(ErrorCode.USER_ALREADY_EXIST.format("email: email1"));
         }
     }
 
