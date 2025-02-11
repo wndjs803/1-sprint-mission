@@ -2,6 +2,8 @@ package com.sprint.mission.discodeit.validator;
 
 import com.sprint.mission.discodeit.global.error.ErrorCode;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.global.error.execption.user.UserAlreadyExistException;
+import com.sprint.mission.discodeit.global.error.execption.user.UserNotFoundException;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -17,12 +19,12 @@ public class UserValidator {
 
     public User validateUserExistsByUserId(UUID userId) {
         return Optional.ofNullable(userRepository.findUserById(userId))
-                .orElseThrow(() -> new RuntimeException(ErrorCode.USER_NOT_FOUND.format("id: " + userId)));
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND.format("id: " + userId)));
     }
 
     public void validateDuplicateByName(String name) {
         if (userRepository.findUserByName(name).isPresent()) {
-            throw new RuntimeException(ErrorCode.USER_ALREADY_EXIST.format("name: " + name));
+            throw new UserAlreadyExistException(ErrorCode.USER_ALREADY_EXIST.format("name: " + name));
         }
 
     }
