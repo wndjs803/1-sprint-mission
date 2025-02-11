@@ -6,6 +6,6 @@ import com.sprint.mission.discodeit.global.error.execption.InvalidValueException
 public class UserNotNullException extends InvalidValueException {
 
     public UserNotNullException() {
-        super(ErrorCode.USER_NOT_NULL.getMessage());
+        super(ErrorCode.USER_NOT_NULL.getMessage(), ErrorCode.USER_NOT_NULL);
     }
 }
