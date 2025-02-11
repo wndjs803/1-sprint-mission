@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.service;
 
 import com.sprint.mission.discodeit.global.error.ErrorCode;
+import com.sprint.mission.discodeit.global.error.execption.user.UserNotFoundException;
 import com.sprint.mission.discodeit.global.util.MultipartFileConverter;
 import com.sprint.mission.discodeit.dto.user.request.CreateUserRequest;
 import com.sprint.mission.discodeit.dto.user.request.UpdateUserRequest;
@@ -130,7 +131,7 @@ class UserServiceTest {
             // when & then
             UUID randomId = UUID.randomUUID();
             assertThatThrownBy(() -> userService.findUserByIdOrThrow(randomId))
-                    .isInstanceOf(RuntimeException.class)
+                    .isInstanceOf(UserNotFoundException.class)
                     .hasMessage(ErrorCode.USER_NOT_FOUND.format("id: " + randomId));
         }
     }
