@@ -1,6 +1,5 @@
 package com.sprint.mission.discodeit.validator;
 
-import com.sprint.mission.discodeit.global.error.ErrorCode;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.global.error.execption.channel.ChannelNotFoundException;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
