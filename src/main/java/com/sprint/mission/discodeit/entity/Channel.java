@@ -2,6 +2,7 @@ package com.sprint.mission.discodeit.entity;
 
 import com.sprint.mission.discodeit.global.error.ErrorCode;
 import com.sprint.mission.discodeit.global.error.execption.channel.ChannelOwnerNotNullException;
+import com.sprint.mission.discodeit.global.error.execption.user.UserNotNullException;
 import com.sprint.mission.discodeit.global.util.TimeUtil;
 import lombok.Getter;
 
@@ -29,14 +30,14 @@ public class Channel extends BaseEntity {
 
     public static Channel of(String name, String description, User channelOwner, ChannelType channelType) {
         if (channelOwner == null) {
-            throw new ChannelOwnerNotNullException(ErrorCode.CHANNEL_OWNER_NOT_NULL.getMessage());
+            throw new ChannelOwnerNotNullException();
         }
         return new Channel(name, description, channelOwner, channelType);
     }
 
     public void updateChannelOwner(User channelOwner) {
         if (channelOwner == null) {
-            throw new ChannelOwnerNotNullException(ErrorCode.CHANNEL_OWNER_NOT_NULL.getMessage());
+            throw new ChannelOwnerNotNullException();
         }
         this.channelOwner = channelOwner;
         this.updateUpdatedAt(TimeUtil.getCurrentTime());
@@ -54,14 +55,14 @@ public class Channel extends BaseEntity {
 
     public void addChannelUser(User user) {
         if (user == null) {
-            throw new IllegalArgumentException(ErrorCode.USER_NOT_NULL.getMessage());
+            throw new UserNotNullException();
         }
         this.channelUserList.add(user);
     }
 
     public void removeUserFromChannel(User user) {
         if (user == null) {
-            throw new IllegalArgumentException(ErrorCode.USER_NOT_NULL.getMessage());
+            throw new UserNotNullException();
         }
         this.channelUserList.remove(user);
     }

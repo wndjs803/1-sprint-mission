@@ -19,26 +19,25 @@ public class UserValidator {
 
     public User validateUserExistsByUserId(UUID userId) {
         return Optional.ofNullable(userRepository.findUserById(userId))
-                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND.format("id: " + userId)));
+                .orElseThrow(() -> new UserNotFoundException("id: " + userId));
     }
 
     public void validateDuplicateByName(String name) {
         if (userRepository.findUserByName(name).isPresent()) {
-            throw new UserAlreadyExistException(ErrorCode.USER_ALREADY_EXIST.format("name: " + name));
+            throw new UserAlreadyExistException("name: " + name);
         }
 
     }
 
     public void validateDuplicateUserByEmail(String email) {
         if (userRepository.findUserByEmail(email).isPresent()) {
-            throw new UserAlreadyExistException(ErrorCode.USER_ALREADY_EXIST.format("email: " + email));
+            throw new UserAlreadyExistException("email: " + email);
         }
     }
 
     public User validateUserExistsByNameAndPassword(String name, String password) {
         return userRepository.findUserByNameAndPassword(name, password)
-                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND.format(
-                        "name: " + name + " password: " + password)));
+                .orElseThrow(() -> new UserNotFoundException("name: " + name + " password: " + password));
     }
 
 }

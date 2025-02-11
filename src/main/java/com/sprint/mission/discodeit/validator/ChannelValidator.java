@@ -18,7 +18,6 @@ public class ChannelValidator {
 
     public Channel validateChannelExistsByChannelId(UUID channelId) {
         return Optional.ofNullable(channelRepository.findChannelById(channelId))
-                .orElseThrow(() -> new ChannelNotFoundException(
-                        ErrorCode.CHANNEL_NOT_FOUND.format("id: " + channelId)));
+                .orElseThrow(() -> new ChannelNotFoundException("id: " + channelId));
     }
 }
