@@ -25,7 +25,8 @@ public enum ResultCode {
     CHANNEL_LIST_FETCHED(200, "채널 목록 조회에 성공했습니다."),
 
     // Message
-    MESSAGE_CREATED(201, "메세지 생성에 성공했습니다.");
+    MESSAGE_CREATED(201, "메세지 생성에 성공했습니다."),
+    MESSAGE_UPDATED(200, "메세지 정보 수정에 성공했습니다.");
 
 
     private final int code;

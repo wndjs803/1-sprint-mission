@@ -4,7 +4,6 @@ import java.util.UUID;
 
 public record UpdateMessageRequest(
         UUID sendUserId,
-        UUID messageId,
         String content
 ) {
 }

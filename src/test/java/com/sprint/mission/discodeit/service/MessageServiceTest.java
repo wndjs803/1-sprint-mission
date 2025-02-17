@@ -217,10 +217,10 @@ class MessageServiceTest {
 
             String updateContent = "hi";
             UpdateMessageRequest updateMessageRequest =
-                    new UpdateMessageRequest(user.getId(), message.getId(), updateContent);
+                    new UpdateMessageRequest(user.getId(), updateContent);
 
             // when
-            Message updatedMessage = messageService.updateMessage(updateMessageRequest, new ArrayList<>());
+            Message updatedMessage = messageService.updateMessage(message.getId(), updateMessageRequest, new ArrayList<>());
 
             // then
             assertEquals(updateContent, updatedMessage.getContent());
@@ -242,10 +242,10 @@ class MessageServiceTest {
 
             String updateContent = "hi";
             UpdateMessageRequest updateMessageRequest =
-                    new UpdateMessageRequest(anotherUser.getId(), message.getId(), updateContent);
+                    new UpdateMessageRequest(anotherUser.getId(), updateContent);
 
             // when & then
-            assertThatThrownBy(() -> messageService.updateMessage(updateMessageRequest, new ArrayList<>()))
+            assertThatThrownBy(() -> messageService.updateMessage( message.getId(), updateMessageRequest, new ArrayList<>()))
                     .isInstanceOf(NotMessageCreatorException.class)
                     .hasMessage(ErrorCode.NOT_MESSAGE_CREATOR.format("id: " + anotherUser.getId()));
         }
