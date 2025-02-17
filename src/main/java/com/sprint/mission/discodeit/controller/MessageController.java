@@ -1,0 +1,36 @@
+package com.sprint.mission.discodeit.controller;
+
+import com.sprint.mission.discodeit.dto.message.request.CreateMessageRequest;
+import com.sprint.mission.discodeit.entity.Message;
+import com.sprint.mission.discodeit.global.response.ResultCode;
+import com.sprint.mission.discodeit.global.response.ResultResponse;
+import com.sprint.mission.discodeit.service.MessageService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/messages")
+public class MessageController {
+
+    private final MessageService messageService;
+
+    @PostMapping("")
+    public ResponseEntity<ResultResponse<Message>> sendMessage(
+            @RequestPart(value = "createMessageRequest") CreateMessageRequest createMessageRequest,
+            @RequestPart(value = "multipartFileList") List<MultipartFile> multipartFileList) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ResultResponse.of(ResultCode.MESSAGE_CREATED,
+                        messageService.createMessage(createMessageRequest, multipartFileList)));
+    }
+
+
+}
