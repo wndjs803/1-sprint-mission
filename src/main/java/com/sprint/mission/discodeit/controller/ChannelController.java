@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.controller;
 
+import com.sprint.mission.discodeit.dto.channel.request.CreatePrivateChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePublicChannelRequest;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.global.response.ResultCode;
@@ -26,5 +27,13 @@ public class ChannelController {
         return ResponseEntity.status(HttpStatus.CREATED)
                         .body(ResultResponse.of(ResultCode.PUBLIC_CHANNEL_CREATED,
                                 channelService.createPublicChannel(createPublicChannelRequest)));
+    }
+
+    @PostMapping("/private")
+    public ResponseEntity<ResultResponse<Channel>> createPrivateChannel(
+            @RequestBody CreatePrivateChannelRequest createPrivateChannelRequest) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ResultResponse.of(ResultCode.PRIVATE_CHANNEL_CREATED,
+                        channelService.createPrivateChannel(createPrivateChannelRequest)));
     }
 }

@@ -18,7 +18,9 @@ public enum ResultCode {
     LOGIN_SUCCESS(200, "로그인에 성공했습니다."),
 
     // Channel
-    PUBLIC_CHANNEL_CREATED(201, "공개 채널 생성에 성공했습니다.");
+    PUBLIC_CHANNEL_CREATED(201, "공개 채널 생성에 성공했습니다."),
+    PRIVATE_CHANNEL_CREATED(201, "비공개 채널 생성에 성공했습니다.");
+
 
     private final int code;
     private final String message;
