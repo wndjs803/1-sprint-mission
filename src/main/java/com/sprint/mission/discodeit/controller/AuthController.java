@@ -25,6 +25,5 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ResultResponse.of(ResultCode.LOGIN_SUCCESS,
                         authService.login(loginRequest)));
-
     }
 }
