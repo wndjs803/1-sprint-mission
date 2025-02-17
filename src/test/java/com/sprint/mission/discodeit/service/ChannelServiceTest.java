@@ -352,10 +352,10 @@ class ChannelServiceTest {
             Channel channel = createPrivateChannel(channelOwner);
 
             DeleteChannelRequest deleteChannelRequest =
-                    new DeleteChannelRequest(channelOwner.getId(), channel.getId());
+                    new DeleteChannelRequest(channelOwner.getId());
 
             // when
-            channelService.deleteChannel(deleteChannelRequest);
+            channelService.deleteChannel(channel.getId(), deleteChannelRequest);
 
             // then
             assertNull(channelRepository.findChannelById(channel.getId()));
@@ -374,11 +374,11 @@ class ChannelServiceTest {
             Channel channel = createPrivateChannel(channelOwner);
 
             DeleteChannelRequest deleteChannelRequest =
-                    new DeleteChannelRequest(anotherUser.getId(), channel.getId());
+                    new DeleteChannelRequest(anotherUser.getId());
 
 
             // when & then
-            assertThatThrownBy(() -> channelService.deleteChannel(deleteChannelRequest))
+            assertThatThrownBy(() -> channelService.deleteChannel(channel.getId(), deleteChannelRequest))
                     .isInstanceOf(NotChannelCreatorException.class)
                     .hasMessage(ErrorCode.NOT_CHANNEL_CREATOR.format("id: " + anotherUser.getId()));
         }

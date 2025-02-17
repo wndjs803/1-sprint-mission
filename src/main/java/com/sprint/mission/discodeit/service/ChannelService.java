@@ -22,7 +22,7 @@ public interface ChannelService {
 
     Channel updateChannel(UUID channelId, UpdateChannelRequest updateChannelRequest);
 
-    void deleteChannel(DeleteChannelRequest deleteChannelRequest);
+    void deleteChannel(UUID channelId, DeleteChannelRequest deleteChannelRequest);
 
     Channel inviteUsers(UUID channelId, List<User> invitedUsers);
 

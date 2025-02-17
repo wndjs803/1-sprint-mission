@@ -144,9 +144,8 @@ public class BasicChannelService implements ChannelService {
     }
 
     @Override
-    public void deleteChannel(DeleteChannelRequest deleteChannelRequest) {
+    public void deleteChannel(UUID channelId, DeleteChannelRequest deleteChannelRequest) {
         UUID channelOwnerId = deleteChannelRequest.channelOwnerId();
-        UUID channelId = deleteChannelRequest.channelId();
 
         userValidator.validateUserExistsByUserId(channelOwnerId);
         Channel foundChannel = channelValidator.validateChannelExistsByChannelId(channelId);
