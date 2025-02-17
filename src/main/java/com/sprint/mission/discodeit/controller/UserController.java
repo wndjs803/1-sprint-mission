@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.UUID;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
@@ -33,8 +35,11 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody UpdateUserRequest updateUserRequest) {
-        return null;
+    public ResponseEntity<User> updateUser(@PathVariable UUID id,
+                                           @RequestPart(value = "updateUserRequest") UpdateUserRequest updateUserRequest,
+                                           @RequestPart(value = "profileImage") MultipartFile profileImage) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(userService.updateUser(id, updateUserRequest, profileImage));
     }
 
     @DeleteMapping("/{id}")

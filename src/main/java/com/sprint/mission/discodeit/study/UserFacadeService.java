@@ -49,13 +49,13 @@ public class UserFacadeService {
                 .collect(Collectors.toList());
     }
 
-    public User updateUser(UpdateUserRequest updateUserRequest, MultipartFile profileImageFile) {
-        User updatedUser = userService.updateUser(updateUserRequest, profileImageFile);
-
-        updateProfileImage(updatedUser, profileImageFile);
-
-        return updatedUser;
-    }
+//    public User updateUser(UpdateUserRequest updateUserRequest, MultipartFile profileImageFile) {
+//        User updatedUser = userService.updateUser(updateUserRequest, profileImageFile);
+//
+//        updateProfileImage(updatedUser, profileImageFile);
+//
+//        return updatedUser;
+//    }
 
     public void deleteUser(UUID userId) {
         // 유저 존재 여부 확인

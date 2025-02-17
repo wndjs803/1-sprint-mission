@@ -76,8 +76,8 @@ public class BasicUserService implements UserService {
     }
 
     @Override
-    public User updateUser(UpdateUserRequest updateUserRequest, MultipartFile profileImageFile) {
-        User foundUser = userValidator.validateUserExistsByUserId(updateUserRequest.userId());
+    public User updateUser(UUID userId, UpdateUserRequest updateUserRequest, MultipartFile profileImageFile) {
+        User foundUser = userValidator.validateUserExistsByUserId(userId);
 
         foundUser.updateUserInfo(updateUserRequest.name(), updateUserRequest.nickname(),
                 updateUserRequest.email(), updateUserRequest.password());

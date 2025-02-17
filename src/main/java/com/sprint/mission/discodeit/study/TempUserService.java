@@ -42,14 +42,14 @@ public class TempUserService {
                 .collect(Collectors.toList());
     }
 
-    public User updateUser(UpdateUserRequest updateUserRequest, MultipartFile profileImageFile) {
-        User foundUser = userValidator.validateUserExistsByUserId(updateUserRequest.userId());
-
-        foundUser.updateUserInfo(updateUserRequest.name(), updateUserRequest.nickname(),
-                updateUserRequest.email(), updateUserRequest.password());
-
-        return foundUser;
-    }
+//    public User updateUser(UpdateUserRequest updateUserRequest, MultipartFile profileImageFile) {
+//        User foundUser = userValidator.validateUserExistsByUserId(updateUserRequest.userId());
+//
+//        foundUser.updateUserInfo(updateUserRequest.name(), updateUserRequest.nickname(),
+//                updateUserRequest.email(), updateUserRequest.password());
+//
+//        return foundUser;
+//    }
 
     public void deleteUser(UUID userId) {
         userRepository.removeUser(userId);
