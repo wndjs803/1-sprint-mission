@@ -51,14 +51,14 @@ public class TempUserStatusService {
         return userStatusRepository.saveUserStatus(userStatus);
     }
 
-    public UserStatus updateUserStatusByUserId(UpdateUserStatusByUserIdRequest updateUserStatusByUserIdRequest) {
-        User user = userValidator.validateUserExistsByUserId(updateUserStatusByUserIdRequest.userId());
-        UserStatus userStatus = userStatusValidator.validateUserStatusExistsByUser(user);
-
-        userStatus.updateUserStatusInfo(updateUserStatusByUserIdRequest.isOnline());
-
-        return userStatusRepository.saveUserStatus(userStatus);
-    }
+//    public UserStatus updateUserStatusByUserId(UpdateUserStatusByUserIdRequest updateUserStatusByUserIdRequest) {
+//        User user = userValidator.validateUserExistsByUserId(updateUserStatusByUserIdRequest.userId());
+//        UserStatus userStatus = userStatusValidator.validateUserStatusExistsByUser(user);
+//
+//        userStatus.updateUserStatusInfo(updateUserStatusByUserIdRequest.isOnline());
+//
+//        return userStatusRepository.saveUserStatus(userStatus);
+//    }
 
     public void deleteUserStatus(UUID userStatusId) {
         userStatusValidator.validateUserStatusExistsById(userStatusId);
