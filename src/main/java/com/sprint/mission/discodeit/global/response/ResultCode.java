@@ -32,7 +32,8 @@ public enum ResultCode {
 
     // ReadStatus
     READSTATUS_CREATED(201, "read-status 생성에 성공했습니다."),
-    READSTATUS_UPDATED(200, "read-status 정보 수정에 성공했습니다.");
+    READSTATUS_UPDATED(200, "read-status 정보 수정에 성공했습니다."),
+    READSTATUS_FETCHED(200, "read-status 정보 조회에 성공했습니다.");
 
 
     private final int code;
