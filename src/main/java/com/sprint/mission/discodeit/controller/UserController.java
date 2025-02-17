@@ -5,7 +5,6 @@ import com.sprint.mission.discodeit.dto.user.request.UpdateUserRequest;
 import com.sprint.mission.discodeit.dto.user.response.FindUserResponse;
 import com.sprint.mission.discodeit.dto.userStatus.request.UpdateUserStatusByUserIdRequest;
 import com.sprint.mission.discodeit.entity.User;
-import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.global.response.ResultCode;
 import com.sprint.mission.discodeit.global.response.ResultResponse;
 import com.sprint.mission.discodeit.service.UserService;
