@@ -123,8 +123,8 @@ public class BasicChannelService implements ChannelService {
     }
 
     @Override
-    public Channel updateChannel(UpdateChannelRequest updateChannelRequest) {
-        Channel foundChannel = channelValidator.validateChannelExistsByChannelId(updateChannelRequest.channelId());
+    public Channel updateChannel(UUID channelId, UpdateChannelRequest updateChannelRequest) {
+        Channel foundChannel = channelValidator.validateChannelExistsByChannelId(channelId);
 
         if (foundChannel.isPrivate()) {
             throw new CannotUpdatePrivateChannelException("id: " + foundChannel.getId());
