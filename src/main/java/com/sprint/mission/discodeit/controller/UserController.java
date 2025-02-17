@@ -6,6 +6,8 @@ import com.sprint.mission.discodeit.dto.user.response.FindUserResponse;
 import com.sprint.mission.discodeit.dto.userStatus.request.UpdateUserStatusByUserIdRequest;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
+import com.sprint.mission.discodeit.global.response.ResultCode;
+import com.sprint.mission.discodeit.global.response.ResultResponse;
 import com.sprint.mission.discodeit.service.UserService;
 import com.sprint.mission.discodeit.service.UserStatusService;
 import lombok.RequiredArgsConstructor;
@@ -34,38 +36,45 @@ public class UserController {
     private final UserStatusService userStatusService;
 
     @PostMapping("")
-    public ResponseEntity<User> createUser(@RequestPart(value = "createUserRequest") CreateUserRequest createUserRequest,
-                                           @RequestPart(value = "profileImage") MultipartFile profileImage) {
+    public ResponseEntity<ResultResponse<User>> createUser(
+            @RequestPart(value = "createUserRequest") CreateUserRequest createUserRequest,
+            @RequestPart(value = "profileImage") MultipartFile profileImage) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(userService.createUser(createUserRequest, profileImage));
+                .body(ResultResponse.of(ResultCode.USER_CREATED,
+                        userService.createUser(createUserRequest, profileImage)));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable UUID id,
-                                           @RequestPart(value = "updateUserRequest") UpdateUserRequest updateUserRequest,
-                                           @RequestPart(value = "profileImage") MultipartFile profileImage) {
+    public ResponseEntity<ResultResponse<User>> updateUser(
+            @PathVariable UUID id,
+            @RequestPart(value = "updateUserRequest") UpdateUserRequest updateUserRequest,
+            @RequestPart(value = "profileImage") MultipartFile profileImage) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(userService.updateUser(id, updateUserRequest, profileImage));
+                .body(ResultResponse.of(ResultCode.USER_UPDATED,
+                        userService.updateUser(id, updateUserRequest, profileImage)));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable UUID id) {
+    public ResponseEntity<ResultResponse<UUID>> deleteUser(@PathVariable UUID id) {
         userService.deleteUser(id);
         return ResponseEntity.status(HttpStatus.ACCEPTED)
-                .body("success");
+                .body(ResultResponse.of(ResultCode.USER_DELETED, id));
     }
 
     @GetMapping("")
-    public ResponseEntity<List<FindUserResponse>> findAllUsers() {
+    public ResponseEntity<ResultResponse<List<FindUserResponse>>> findAllUsers() {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(userService.findAllUsers());
+                .body(ResultResponse.of(ResultCode.USER_LIST_FETCHED,
+                        userService.findAllUsers()));
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<Boolean> updateUserStatus(@PathVariable UUID id,
-                                                   @RequestBody UpdateUserStatusByUserIdRequest updateUserStatusByUserIdRequest) {
-        UserStatus userStatus = userStatusService.updateUserStatusByUserId(id, updateUserStatusByUserIdRequest);
+    public ResponseEntity<ResultResponse<Boolean>> updateUserStatus(
+            @PathVariable UUID id,
+            @RequestBody UpdateUserStatusByUserIdRequest updateUserStatusByUserIdRequest) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(userStatus.getIsOnline());
+                .body(ResultResponse.of(ResultCode.USER_ONLINE_STATUS_UPDATED,
+                        userStatusService.updateUserStatusByUserId(
+                                id, updateUserStatusByUserIdRequest).getIsOnline()));
     }
 }
