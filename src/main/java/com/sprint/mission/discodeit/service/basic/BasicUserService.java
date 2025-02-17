@@ -63,7 +63,7 @@ public class BasicUserService implements UserService {
         User foundUser = userValidator.validateUserExistsByUserId(userId);
         UserStatus userStatus = userStatusValidator.validateUserStatusExistsByUser(foundUser);
 
-        MultipartFile profileImage = multipartFileConverter.toMultipartFile(foundUser.getProfileImage().getContent());
+        byte[] profileImage = foundUser.getProfileImage().getContent();
 
         return userMapper.toFindUserResponse(foundUser, profileImage, userStatus.getIsOnline());
     }

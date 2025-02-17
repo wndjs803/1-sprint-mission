@@ -21,7 +21,7 @@ public class UserMapper {
         return new CreateUserResponse(user.getId(), user.getName(), user.getNickname(), user.getEmail(), user.getPassword());
     }
 
-    public FindUserResponse toFindUserResponse(User user, MultipartFile profileImage, boolean isOnline) {
+    public FindUserResponse toFindUserResponse(User user, byte[] profileImage, boolean isOnline) {
         return new FindUserResponse(user.getName(), user.getNickname(), user.getEmail(), profileImage, isOnline);
     }
 

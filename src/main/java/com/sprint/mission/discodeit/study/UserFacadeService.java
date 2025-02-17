@@ -39,7 +39,7 @@ public class UserFacadeService {
         User foundUser = userService.findUserByIdOrThrow(userId);
         UserStatus userStatus = userStatusService.findUserStatusByUser(foundUser);
 
-        MultipartFile profileImage = binaryContentService.getMultipartFile(foundUser.getProfileImage());
+        byte[] profileImage = foundUser.getProfileImage().getContent();
         return userMapper.toFindUserResponse(foundUser, profileImage, userStatus.getIsOnline());
     }
 
