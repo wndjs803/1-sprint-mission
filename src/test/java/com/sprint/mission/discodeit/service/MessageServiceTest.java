@@ -267,10 +267,10 @@ class MessageServiceTest {
             String content = "hello";
             Message message = createMessage(user, channel, content);
 
-            DeleteMessageRequest deleteMessageRequest = new DeleteMessageRequest(user.getId(), message.getId());
+            DeleteMessageRequest deleteMessageRequest = new DeleteMessageRequest(user.getId());
 
             // when
-            messageService.deleteMessage(deleteMessageRequest);
+            messageService.deleteMessage(message.getId(), deleteMessageRequest);
 
             // then
             assertNull(messageRepository.findMessageById(message.getId()));
@@ -291,10 +291,10 @@ class MessageServiceTest {
             String content = "hello";
             Message message = createMessage(user, channel, content);
 
-            DeleteMessageRequest deleteMessageRequest = new DeleteMessageRequest(anotherUser.getId(), message.getId());
+            DeleteMessageRequest deleteMessageRequest = new DeleteMessageRequest(anotherUser.getId());
 
             // when & then
-            assertThatThrownBy(() -> messageService.deleteMessage(deleteMessageRequest))
+            assertThatThrownBy(() -> messageService.deleteMessage(message.getId(), deleteMessageRequest))
                     .isInstanceOf(NotMessageCreatorException.class)
                     .hasMessage(ErrorCode.NOT_MESSAGE_CREATOR.format("id: " + anotherUser.getId()));
         }

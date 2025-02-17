@@ -91,8 +91,7 @@ public class BasicMessageService implements MessageService {
     }
 
     @Override
-    public void deleteMessage(DeleteMessageRequest deleteMessageRequest) {
-        UUID messageId = deleteMessageRequest.messageId();
+    public void deleteMessage(UUID messageId, DeleteMessageRequest deleteMessageRequest) {
         UUID sendUserId = deleteMessageRequest.sendUserId();
 
         Message foundMessage = findMessageByIdOrThrow(messageId);

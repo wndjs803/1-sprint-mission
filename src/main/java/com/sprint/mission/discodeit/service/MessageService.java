@@ -20,5 +20,5 @@ public interface MessageService {
     Message updateMessage(UUID messageId, UpdateMessageRequest updateMessageRequest,
                           List<MultipartFile> multipartFileList);
 
-    void deleteMessage(DeleteMessageRequest deleteMessageRequest);
+    void deleteMessage(UUID messageId, DeleteMessageRequest deleteMessageRequest);
 }
