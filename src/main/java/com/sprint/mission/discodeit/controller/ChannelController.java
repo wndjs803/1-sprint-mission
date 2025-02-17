@@ -4,6 +4,7 @@ import com.sprint.mission.discodeit.dto.channel.request.CreatePrivateChannelRequ
 import com.sprint.mission.discodeit.dto.channel.request.CreatePublicChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.DeleteChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.UpdateChannelRequest;
+import com.sprint.mission.discodeit.dto.channel.response.FindChannelResponse;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.global.response.ResultCode;
 import com.sprint.mission.discodeit.global.response.ResultResponse;
@@ -18,13 +19,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("channels")
+@RequestMapping("/channels")
 public class ChannelController {
 
     private final ChannelService channelService;
@@ -61,5 +64,13 @@ public class ChannelController {
         channelService.deleteChannel(id, deleteChannelRequest);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ResultResponse.of(ResultCode.CHANNEL_DELETED, true));
+    }
+
+    @GetMapping("")
+    public ResponseEntity<ResultResponse<List<FindChannelResponse>>> findUserAccessibleChannels(
+            @RequestParam UUID userId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ResultResponse.of(ResultCode.CHANNEL_LIST_FETCHED,
+                        channelService.findAllChannelsByUserId(userId)));
     }
 }
