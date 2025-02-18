@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -124,21 +125,13 @@ public class BasicMessageService implements MessageService {
 
 
         // 새로운 리스트에 포함되지 않은 것을 삭제
-//        originBinaryContentList.stream()
-//                .filter(binaryContent -> !newBinaryContentList.contains(binaryContent))
-//                .forEach(binaryContent -> {
-//                    if (binaryContent != null) {
-//                        binaryContentRepository.removeBinaryContent(binaryContent.getId());
-//                        message.deleteBinaryContent(binaryContent);
-//                    }
-//                });
-        // 왜 오류가 났었던거지?
-        for (BinaryContent binaryContent : originBinaryContentList) {
-            if (!newBinaryContentList.contains(binaryContent) && binaryContent != null) {
-                binaryContentRepository.removeBinaryContent(binaryContent.getId());
-                message.deleteBinaryContent(binaryContent);
-            }
-        }
+        List<BinaryContent> removeList = originBinaryContentList.stream()
+                .filter(binaryContent -> !newBinaryContentList.contains(binaryContent))
+                .toList();
 
+        removeList.forEach(binaryContent -> {
+            binaryContentRepository.removeBinaryContent(binaryContent.getId());
+            message.deleteBinaryContent(binaryContent);
+        });
     }
 }
