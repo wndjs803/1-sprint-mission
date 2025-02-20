@@ -1,7 +1,6 @@
 package com.sprint.mission.discodeit.study;
 
 import com.sprint.mission.discodeit.dto.user.request.CreateUserRequest;
-import com.sprint.mission.discodeit.dto.user.request.UpdateUserRequest;
 import com.sprint.mission.discodeit.dto.user.response.FindUserResponse;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.User;

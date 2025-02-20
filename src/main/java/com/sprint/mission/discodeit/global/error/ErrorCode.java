@@ -2,9 +2,6 @@ package com.sprint.mission.discodeit.global.error;
 
 import lombok.Getter;
 
-import java.util.Arrays;
-import java.util.function.IntFunction;
-
 @Getter
 public enum ErrorCode {
 

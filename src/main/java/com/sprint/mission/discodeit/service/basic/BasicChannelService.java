@@ -1,8 +1,5 @@
 package com.sprint.mission.discodeit.service.basic;
 
-import com.sprint.mission.discodeit.global.error.execption.channel.CannotUpdatePrivateChannelException;
-import com.sprint.mission.discodeit.global.error.execption.channel.NotChannelCreatorException;
-import com.sprint.mission.discodeit.global.util.RandomStringGenerator;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePrivateChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePublicChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.DeleteChannelRequest;
@@ -13,6 +10,9 @@ import com.sprint.mission.discodeit.entity.ChannelType;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.ReadStatus;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.global.error.execption.channel.CannotUpdatePrivateChannelException;
+import com.sprint.mission.discodeit.global.error.execption.channel.NotChannelCreatorException;
+import com.sprint.mission.discodeit.global.util.RandomStringGenerator;
 import com.sprint.mission.discodeit.mapper.ChannelMapper;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.repository.MessageRepository;

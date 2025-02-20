@@ -1,9 +1,7 @@
 package com.sprint.mission.discodeit.entity;
 
-import com.sprint.mission.discodeit.global.error.ErrorCode;
 import com.sprint.mission.discodeit.global.error.execption.channel.ChannelOwnerNotNullException;
 import com.sprint.mission.discodeit.global.error.execption.user.UserNotNullException;
-import com.sprint.mission.discodeit.global.util.TimeUtil;
 import lombok.Getter;
 
 import java.util.ArrayList;
