@@ -43,9 +43,9 @@ public class BasicMessageService implements MessageService {
     public Message createMessage(CreateMessageRequest createMessageRequest,
                                  List<MultipartFile> multipartFileList) {
 
-        User sendUser = userValidator.validateUserExistsByUserId(createMessageRequest.sendUserId());
+        User sender = userValidator.validateUserExistsByUserId(createMessageRequest.senderId());
         Channel foundChannel = channelValidator.validateChannelExistsByChannelId(createMessageRequest.channelId());
-        Message message = messageMapper.toEntity(sendUser, foundChannel, createMessageRequest.content());
+        Message message = messageMapper.toEntity(sender, foundChannel, createMessageRequest.content());
 
         multipartFileList.forEach(
                 multipartFile -> {
@@ -76,13 +76,13 @@ public class BasicMessageService implements MessageService {
     @Override
     public Message updateMessage(UUID messageId, UpdateMessageRequest updateMessageRequest,
                                  List<MultipartFile> multipartFileList) {
-        UUID sendUserId = updateMessageRequest.sendUserId();
-        userValidator.validateUserExistsByUserId(sendUserId);
+        UUID senderId = updateMessageRequest.senderId();
+        userValidator.validateUserExistsByUserId(senderId);
 
         Message foundMessage = findMessageByIdOrThrow(messageId);
 
-        if (foundMessage.isNotOwner(sendUserId)) {
-            throw new NotMessageCreatorException("id: " + sendUserId);
+        if (foundMessage.isNotOwner(senderId)) {
+            throw new NotMessageCreatorException("id: " + senderId);
         }
 
         foundMessage.updateContent(updateMessageRequest.content());
@@ -93,12 +93,12 @@ public class BasicMessageService implements MessageService {
 
     @Override
     public void deleteMessage(UUID messageId, DeleteMessageRequest deleteMessageRequest) {
-        UUID sendUserId = deleteMessageRequest.sendUserId();
+        UUID senderId = deleteMessageRequest.senderId();
 
         Message foundMessage = findMessageByIdOrThrow(messageId);
 
-        if (foundMessage.isNotOwner(sendUserId)) {
-            throw new NotMessageCreatorException("id: " + sendUserId);
+        if (foundMessage.isNotOwner(senderId)) {
+            throw new NotMessageCreatorException("id: " + senderId);
         }
 
         foundMessage.getBinaryContentList()
