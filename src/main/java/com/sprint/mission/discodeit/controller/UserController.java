@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,7 +35,7 @@ public class UserController {
     private final UserService userService;
     private final UserStatusService userStatusService;
 
-    @PostMapping("")
+    @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity<ResultResponse<User>> createUser(
             @RequestPart(value = "createUserRequest") CreateUserRequest createUserRequest,
             @RequestPart(value = "profileImage") MultipartFile profileImage) {
@@ -43,7 +44,7 @@ public class UserController {
                         userService.createUser(createUserRequest, profileImage)));
     }
 
-    @PatchMapping("/{id}")
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public ResponseEntity<ResultResponse<User>> updateUser(
             @PathVariable UUID id,
             @RequestPart(value = "updateUserRequest") UpdateUserRequest updateUserRequest,
@@ -53,21 +54,21 @@ public class UserController {
                         userService.updateUser(id, updateUserRequest, profileImage)));
     }
 
-    @DeleteMapping("/{id}")
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<ResultResponse<UUID>> deleteUser(@PathVariable UUID id) {
         userService.deleteUser(id);
         return ResponseEntity.status(HttpStatus.ACCEPTED)
                 .body(ResultResponse.of(ResultCode.USER_DELETED, id));
     }
 
-    @GetMapping("")
+    @RequestMapping(value = "", method = RequestMethod.GET)
     public ResponseEntity<ResultResponse<List<FindUserResponse>>> findAllUsers() {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ResultResponse.of(ResultCode.USER_LIST_FETCHED,
                         userService.findAllUsers()));
     }
 
-    @PatchMapping("/{id}/status")
+    @RequestMapping(value = "/{id}/status", method = RequestMethod.PATCH)
     public ResponseEntity<ResultResponse<Boolean>> updateUserStatus(
             @PathVariable UUID id,
             @RequestBody UpdateUserStatusByUserIdRequest updateUserStatusByUserIdRequest) {

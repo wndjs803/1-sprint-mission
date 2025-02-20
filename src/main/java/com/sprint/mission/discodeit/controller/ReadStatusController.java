@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
@@ -25,7 +26,7 @@ public class ReadStatusController {
 
     private final ReadStatusService readStatusService;
 
-    @PostMapping("")
+    @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity<ResultResponse<ReadStatus>> createReadStatus(
             @RequestBody CreateReadStatusRequest createReadStatusRequest) {
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -33,14 +34,14 @@ public class ReadStatusController {
                         readStatusService.createReadStatus(createReadStatusRequest)));
     }
 
-    @PatchMapping("{id}")
+    @RequestMapping(value = "{id}", method = RequestMethod.PATCH)
     public ResponseEntity<ResultResponse<ReadStatus>> updateReadStatus(@PathVariable UUID id){
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ResultResponse.of(ResultCode.READSTATUS_UPDATED,
                         readStatusService.updateReadStatus(id)));
     }
 
-    @GetMapping("{id}")
+    @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public ResponseEntity<ResultResponse<ReadStatus>> findReadStatus(@PathVariable UUID id){
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ResultResponse.of(ResultCode.READSTATUS_FETCHED,

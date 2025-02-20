@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,7 +33,7 @@ public class ChannelController {
 
     private final ChannelService channelService;
 
-    @PostMapping("/public")
+    @RequestMapping(value = "/public", method = RequestMethod.POST)
     public ResponseEntity<ResultResponse<Channel>> createPublicChannel(
             @RequestBody CreatePublicChannelRequest createPublicChannelRequest) {
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -40,7 +41,7 @@ public class ChannelController {
                                 channelService.createPublicChannel(createPublicChannelRequest)));
     }
 
-    @PostMapping("/private")
+    @RequestMapping(value = "/private", method = RequestMethod.POST)
     public ResponseEntity<ResultResponse<Channel>> createPrivateChannel(
             @RequestBody CreatePrivateChannelRequest createPrivateChannelRequest) {
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -48,7 +49,7 @@ public class ChannelController {
                         channelService.createPrivateChannel(createPrivateChannelRequest)));
     }
 
-    @PatchMapping("/{id}")
+    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
     public ResponseEntity<ResultResponse<Channel>> updateChannel(
             @PathVariable UUID id,
             @RequestBody UpdateChannelRequest updateChannelRequest) {
@@ -57,7 +58,7 @@ public class ChannelController {
                         channelService.updateChannel(id, updateChannelRequest)));
     }
 
-    @DeleteMapping("/{id}")
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<ResultResponse<Boolean>> deleteChannel(
             @PathVariable UUID id,
             @RequestBody DeleteChannelRequest deleteChannelRequest) {
@@ -66,7 +67,7 @@ public class ChannelController {
                 .body(ResultResponse.of(ResultCode.CHANNEL_DELETED, true));
     }
 
-    @GetMapping("")
+    @RequestMapping(value = "", method = RequestMethod.GET)
     public ResponseEntity<ResultResponse<List<FindChannelResponse>>> findUserAccessibleChannels(
             @RequestParam UUID userId) {
         return ResponseEntity.status(HttpStatus.OK)

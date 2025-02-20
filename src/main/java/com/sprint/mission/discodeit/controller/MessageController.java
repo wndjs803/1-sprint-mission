@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,7 +33,7 @@ public class MessageController {
 
     private final MessageService messageService;
 
-    @PostMapping("")
+    @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseEntity<ResultResponse<Message>> sendMessage(
             @RequestPart(value = "createMessageRequest") CreateMessageRequest createMessageRequest,
             @RequestPart(value = "multipartFileList") List<MultipartFile> multipartFileList) {
@@ -41,7 +42,7 @@ public class MessageController {
                         messageService.createMessage(createMessageRequest, multipartFileList)));
     }
 
-    @PatchMapping("/{id}")
+    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
     public ResponseEntity<ResultResponse<Message>> updateMessage(
             @PathVariable UUID id,
             @RequestPart(value = "updateMessageRequest") UpdateMessageRequest updateMessageRequest,
@@ -51,7 +52,7 @@ public class MessageController {
                         messageService.updateMessage(id, updateMessageRequest, multipartFileList)));
     }
 
-    @DeleteMapping("{id}")
+    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     public ResponseEntity<ResultResponse<Boolean>> deleteMessage(
             @PathVariable UUID id,
             @RequestBody DeleteMessageRequest deleteMessageRequest) {
@@ -60,7 +61,7 @@ public class MessageController {
                .body(ResultResponse.of(ResultCode.MESSAGE_DELETED, true));
     }
 
-    @GetMapping("")
+    @RequestMapping(value = "", method = RequestMethod.GET)
     public ResponseEntity<ResultResponse<List<Message>>> findMessagesByChannel(@RequestParam UUID channelId) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ResultResponse.of(ResultCode.MESSAGE_LIST_FETCHED,
