@@ -94,9 +94,9 @@ public class BasicChannelService implements ChannelService {
         Message foundMessage = messageRepository.findLastMessage().orElse(null);
 
         // 채널에 메세지가 하나도 없을 때 시간 정보를 null로 해서 보내도 될까? -> 일단 EPOCH 로 기본값 지정
-        Instant lastMessageTime = Instant.EPOCH;
+        Instant lastMessageAt = Instant.EPOCH;
         if (foundMessage != null) {
-           lastMessageTime = foundMessage.getCreatedAt();
+           lastMessageAt = foundMessage.getCreatedAt();
         }
 
         List<UUID> channelUsersIdList = new ArrayList<>();
@@ -107,7 +107,7 @@ public class BasicChannelService implements ChannelService {
                     .toList();
         }
 
-        return channelMapper.toFindChannelResponse(channel, lastMessageTime, channelUsersIdList);
+        return channelMapper.toFindChannelResponse(channel, lastMessageAt, channelUsersIdList);
     }
 
     @Override
