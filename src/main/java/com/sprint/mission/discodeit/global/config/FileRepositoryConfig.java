@@ -8,12 +8,10 @@ import com.sprint.mission.discodeit.repository.file.FileStorage;
 import com.sprint.mission.discodeit.repository.file.FileUserRepository;
 import com.sprint.mission.discodeit.repository.file.FileUserStatusRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
-@ConditionalOnProperty(name = "discodeit.repository.type", havingValue = "file")
+//@Configuration
+//@ConditionalOnProperty(name = "discodeit.repository.type", havingValue = "file")
 @RequiredArgsConstructor
 public class FileRepositoryConfig {
 
