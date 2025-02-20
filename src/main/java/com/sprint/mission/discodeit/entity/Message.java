@@ -38,7 +38,7 @@ public class Message extends BaseEntity {
 
     public void updateContent(String content) {
         this.content = content;
-        this.updateUpdatedAt(TimeUtil.getCurrentTime());
+        this.updateUpdatedAt();
     }
 
     public boolean isNotOwner(UUID senderId) {
@@ -50,7 +50,7 @@ public class Message extends BaseEntity {
             throw new BinaryContentNotNullException();
         }
         this.binaryContentList.add(binaryContent);
-        this.updateUpdatedAt(TimeUtil.getCurrentTime());
+        this.updateUpdatedAt();
     }
 
     public void deleteBinaryContent(BinaryContent binaryContent) {
@@ -58,7 +58,7 @@ public class Message extends BaseEntity {
             throw new BinaryContentNotNullException();
         }
         this.binaryContentList.remove(binaryContent);
-        this.updateUpdatedAt(TimeUtil.getCurrentTime());
+        this.updateUpdatedAt();
     }
 
     @Override

@@ -40,17 +40,17 @@ public class Channel extends BaseEntity {
             throw new ChannelOwnerNotNullException();
         }
         this.channelOwner = channelOwner;
-        this.updateUpdatedAt(TimeUtil.getCurrentTime());
+        this.updateUpdatedAt();
     }
 
     public void updateName(String name) {
         this.name = name;
-        this.updateUpdatedAt(TimeUtil.getCurrentTime());
+        this.updateUpdatedAt();
     }
 
     public void updateDescription(String description) {
         this.description = description;
-        this.updateUpdatedAt(TimeUtil.getCurrentTime());
+        this.updateUpdatedAt();
     }
 
     public void updateChannelInfo(String name, String description) {

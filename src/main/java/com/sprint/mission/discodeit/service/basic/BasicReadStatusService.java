@@ -45,7 +45,7 @@ public class BasicReadStatusService implements ReadStatusService {
     @Override
     public ReadStatus updateReadStatus(UUID readStatusId) {
         ReadStatus readStatus= readStatusValidator.validateReadStatusExistsById(readStatusId);
-        readStatus.updateUpdatedAt(TimeUtil.getCurrentTime());
+        readStatus.updateUpdatedAt();
 
         return readStatus;
     }
