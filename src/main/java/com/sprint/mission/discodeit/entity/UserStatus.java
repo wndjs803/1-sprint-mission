@@ -29,7 +29,7 @@ public class UserStatus extends BaseEntity {
         return new UserStatus(user);
     }
 
-    public boolean getIsOnline() {
+    public boolean isOnline() {
         return this.isOnline;
     }
 

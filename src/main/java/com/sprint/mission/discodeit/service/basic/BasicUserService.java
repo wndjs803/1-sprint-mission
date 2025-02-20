@@ -65,7 +65,7 @@ public class BasicUserService implements UserService {
 
         byte[] profileImage = foundUser.getProfileImage().getContent();
 
-        return userMapper.toFindUserResponse(foundUser, profileImage, userStatus.getIsOnline());
+        return userMapper.toFindUserResponse(foundUser, profileImage, userStatus.isOnline());
     }
 
     @Override

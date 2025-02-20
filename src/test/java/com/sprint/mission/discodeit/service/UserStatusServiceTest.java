@@ -110,7 +110,7 @@ class UserStatusServiceTest {
             // then
             assertEquals(userStatus.getId(), foundedUserStatus.getId());
             assertEquals(user, foundedUserStatus.getUser());
-            assertFalse(foundedUserStatus.getIsOnline());
+            assertFalse(foundedUserStatus.isOnline());
         }
     }
 
@@ -156,7 +156,7 @@ class UserStatusServiceTest {
 
             // then
             assertEquals(userStatus.getId(), updatedUserStatus.getId());
-            assertTrue(updatedUserStatus.getIsOnline());
+            assertTrue(updatedUserStatus.isOnline());
         }
 
         @Test
@@ -175,7 +175,7 @@ class UserStatusServiceTest {
 
             // then
             assertEquals(userStatus.getId(), updatedUserStatus.getId());
-            assertTrue(updatedUserStatus.getIsOnline());
+            assertTrue(updatedUserStatus.isOnline());
             assertEquals(user, updatedUserStatus.getUser());
         }
     }

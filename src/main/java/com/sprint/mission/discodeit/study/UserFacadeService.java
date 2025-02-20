@@ -40,7 +40,7 @@ public class UserFacadeService {
         UserStatus userStatus = userStatusService.findUserStatusByUser(foundUser);
 
         byte[] profileImage = foundUser.getProfileImage().getContent();
-        return userMapper.toFindUserResponse(foundUser, profileImage, userStatus.getIsOnline());
+        return userMapper.toFindUserResponse(foundUser, profileImage, userStatus.isOnline());
     }
 
     public List<FindUserResponse> findAllUsers() {

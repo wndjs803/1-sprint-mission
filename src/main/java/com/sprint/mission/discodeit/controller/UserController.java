@@ -75,6 +75,6 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ResultResponse.of(ResultCode.USER_ONLINE_STATUS_UPDATED,
                         userStatusService.updateUserStatusByUserId(
-                                id, updateUserStatusByUserIdRequest).getIsOnline()));
+                                id, updateUserStatusByUserIdRequest).isOnline()));
     }
 }
