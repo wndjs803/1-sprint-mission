@@ -2,29 +2,28 @@ package com.sprint.mission.discodeit.service;
 
 import com.sprint.mission.discodeit.dto.channel.request.CreatePrivateChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePublicChannelRequest;
-import com.sprint.mission.discodeit.dto.channel.request.DeleteChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.UpdateChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.response.FindChannelResponse;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.User;
-
 import java.util.List;
 import java.util.UUID;
 
 public interface ChannelService {
-    Channel createPublicChannel(CreatePublicChannelRequest createPublicChannelRequest);
 
-    Channel createPrivateChannel(CreatePrivateChannelRequest createPrivateChannelRequest);
+  Channel createPublicChannel(CreatePublicChannelRequest createPublicChannelRequest);
 
-    FindChannelResponse findChannelByIdOrThrow(UUID channelId);
+  Channel createPrivateChannel(CreatePrivateChannelRequest createPrivateChannelRequest);
 
-    List<FindChannelResponse> findAllChannelsByUserId(UUID userId);
+  FindChannelResponse findChannelByIdOrThrow(UUID channelId);
 
-    Channel updateChannel(UUID channelId, UpdateChannelRequest updateChannelRequest);
+  List<FindChannelResponse> findAllChannelsByUserId(UUID userId);
 
-    void deleteChannel(UUID channelId, DeleteChannelRequest deleteChannelRequest);
+  Channel updateChannel(UUID channelId, UpdateChannelRequest updateChannelRequest);
 
-    Channel inviteUsers(UUID channelId, List<User> invitedUsers);
+  void deleteChannel(UUID channelId, UUID channelOwnerId);
 
-    Channel leaveUsers(UUID channelId, List<User> leaveUsers);
+  Channel inviteUsers(UUID channelId, List<User> invitedUsers);
+
+  Channel leaveUsers(UUID channelId, List<User> leaveUsers);
 }
