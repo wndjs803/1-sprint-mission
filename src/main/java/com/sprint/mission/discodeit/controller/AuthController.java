@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.controller;
 
+import com.sprint.mission.discodeit.controller.api.AuthApi;
 import com.sprint.mission.discodeit.dto.user.request.LoginRequest;
 import com.sprint.mission.discodeit.dto.user.response.LoginResponse;
 import com.sprint.mission.discodeit.global.response.ResultCode;
@@ -16,14 +17,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
-public class AuthController {
+public class AuthController implements AuthApi {
 
-    private final AuthService authService;
+  private final AuthService authService;
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ResponseEntity<ResultResponse<LoginResponse>> login(@RequestBody LoginRequest loginRequest) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(ResultResponse.of(ResultCode.LOGIN_SUCCESS,
-                        authService.login(loginRequest)));
-    }
+  @RequestMapping(value = "/login", method = RequestMethod.POST)
+  public ResponseEntity<ResultResponse<LoginResponse>> login(
+      @RequestBody LoginRequest loginRequest) {
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(ResultResponse.of(ResultCode.LOGIN_SUCCESS,
+            authService.login(loginRequest)));
+  }
 }
