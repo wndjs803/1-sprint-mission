@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,16 +32,18 @@ public class UserController implements UserApi {
   private final UserService userService;
   private final UserStatusService userStatusService;
 
-  @RequestMapping(value = "", method = RequestMethod.POST)
+  @RequestMapping(value = "", method = RequestMethod.POST, consumes = {
+      MediaType.MULTIPART_FORM_DATA_VALUE})
   public ResponseEntity<ResultResponse<User>> createUser(
-      @RequestPart(value = "createUserRequest") CreateUserRequest createUserRequest,
+      @RequestPart("createUserRequest") CreateUserRequest createUserRequest,
       @RequestPart(value = "profileImage") MultipartFile profileImage) {
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(ResultResponse.of(ResultCode.USER_CREATED,
             userService.createUser(createUserRequest, profileImage)));
   }
 
-  @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+  @RequestMapping(value = "/{id}", method = RequestMethod.PATCH, consumes = {
+      MediaType.MULTIPART_FORM_DATA_VALUE})
   public ResponseEntity<ResultResponse<User>> updateUser(
       @PathVariable UUID id,
       @RequestPart(value = "updateUserRequest") UpdateUserRequest updateUserRequest,

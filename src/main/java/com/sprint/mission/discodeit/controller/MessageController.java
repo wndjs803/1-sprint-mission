@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,7 +28,8 @@ public class MessageController implements MessageApi {
 
   private final MessageService messageService;
 
-  @RequestMapping(value = "", method = RequestMethod.POST)
+  @RequestMapping(value = "", method = RequestMethod.POST, consumes = {
+      MediaType.MULTIPART_FORM_DATA_VALUE})
   public ResponseEntity<ResultResponse<Message>> sendMessage(
       @RequestPart(value = "createMessageRequest") CreateMessageRequest createMessageRequest,
       @RequestPart(value = "multipartFileList") List<MultipartFile> multipartFileList) {
@@ -36,7 +38,8 @@ public class MessageController implements MessageApi {
             messageService.createMessage(createMessageRequest, multipartFileList)));
   }
 
-  @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
+  @RequestMapping(value = "/{id}", method = RequestMethod.PATCH, consumes = {
+      MediaType.MULTIPART_FORM_DATA_VALUE})
   public ResponseEntity<ResultResponse<Message>> updateMessage(
       @PathVariable UUID id,
       @RequestPart(value = "updateMessageRequest") UpdateMessageRequest updateMessageRequest,
