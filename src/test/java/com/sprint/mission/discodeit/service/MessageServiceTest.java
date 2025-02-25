@@ -98,8 +98,8 @@ class MessageServiceTest {
     return userRepository.saveUser(user);
   }
 
-  private Channel createPublicChannel(User channelOwner, String channelName, String description) {
-    Channel channel = Channel.of(channelName, description, channelOwner, ChannelType.PUBLIC);
+  private Channel createPublicChannel(String channelName, String description) {
+    Channel channel = Channel.of(channelName, description, ChannelType.PUBLIC);
     return channelRepository.saveChannel(channel);
   }
 
@@ -120,7 +120,7 @@ class MessageServiceTest {
 
       String channelName = "channel1";
       String channelDescription = "description";
-      Channel channel = createPublicChannel(user, channelName, channelDescription);
+      Channel channel = createPublicChannel(channelName, channelDescription);
 
       String content = "hello";
       createMessage(user, channel, content);
@@ -149,7 +149,7 @@ class MessageServiceTest {
 
       String channelName = "channel1";
       String channelDescription = "description";
-      Channel channel = createPublicChannel(user, channelName, channelDescription);
+      Channel channel = createPublicChannel(channelName, channelDescription);
 
       String content = "hello";
       Message message = createMessage(user, channel, content);
@@ -184,7 +184,7 @@ class MessageServiceTest {
 
       String channelName = "channel1";
       String channelDescription = "description";
-      Channel channel = createPublicChannel(user, channelName, channelDescription);
+      Channel channel = createPublicChannel(channelName, channelDescription);
 
       String content1 = "hello";
       String content2 = "world";
@@ -216,7 +216,7 @@ class MessageServiceTest {
 
       String channelName = "channel1";
       String channelDescription = "description";
-      Channel channel = createPublicChannel(user, channelName, channelDescription);
+      Channel channel = createPublicChannel(channelName, channelDescription);
 
       String content = "hello";
       Message message = createMessage(user, channel, content);
@@ -242,7 +242,7 @@ class MessageServiceTest {
 
       String channelName = "channel1";
       String channelDescription = "description";
-      Channel channel = createPublicChannel(user, channelName, channelDescription);
+      Channel channel = createPublicChannel(channelName, channelDescription);
 
       String content = "hello";
       Message message = createMessage(user, channel, content);
@@ -271,7 +271,7 @@ class MessageServiceTest {
 
       String channelName = "channel1";
       String channelDescription = "description";
-      Channel channel = createPublicChannel(user, channelName, channelDescription);
+      Channel channel = createPublicChannel(channelName, channelDescription);
 
       String content = "hello";
       Message message = createMessage(user, channel, content);
@@ -295,7 +295,7 @@ class MessageServiceTest {
 
       String channelName = "channel1";
       String channelDescription = "description";
-      Channel channel = createPublicChannel(user, channelName, channelDescription);
+      Channel channel = createPublicChannel(channelName, channelDescription);
 
       String content = "hello";
       Message message = createMessage(user, channel, content);

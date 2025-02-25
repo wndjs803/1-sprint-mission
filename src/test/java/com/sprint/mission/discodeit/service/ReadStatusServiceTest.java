@@ -88,10 +88,10 @@ class ReadStatusServiceTest {
     return userRepository.saveUser(user);
   }
 
-  private Channel createPublicChannel(User channelOwner, int num) {
+  private Channel createPublicChannel(int num) {
     String channelName = "channel" + num;
     String channelDescription = "description";
-    Channel channel = Channel.of(channelName, channelDescription, channelOwner, ChannelType.PUBLIC);
+    Channel channel = Channel.of(channelName, channelDescription, ChannelType.PUBLIC);
     return channelRepository.saveChannel(channel);
   }
 
@@ -109,7 +109,7 @@ class ReadStatusServiceTest {
     void success() {
       // given
       User user = createUser(0);
-      Channel channel = createPublicChannel(user, 0);
+      Channel channel = createPublicChannel(0);
 
       CreateReadStatusRequest createReadStatusRequest =
           new CreateReadStatusRequest(user.getId(), channel.getId(), Instant.now());
@@ -131,7 +131,7 @@ class ReadStatusServiceTest {
     void successByReadStatusId() {
       // given
       User user = createUser(0);
-      Channel channel = createPublicChannel(user, 0);
+      Channel channel = createPublicChannel(0);
       ReadStatus readStatus = createReadStatus(user, channel);
 
       // when
@@ -146,7 +146,7 @@ class ReadStatusServiceTest {
     void findReadStatusById_ThrowsException_WhenIdDoesNotExist() {
       // given
       User user = createUser(0);
-      Channel channel = createPublicChannel(user, 0);
+      Channel channel = createPublicChannel(0);
       createReadStatus(user, channel);
 
       UUID randomId = UUID.randomUUID();
@@ -162,7 +162,7 @@ class ReadStatusServiceTest {
     void successByUserId() {
       // given
       User user = createUser(0);
-      Channel channel = createPublicChannel(user, 0);
+      Channel channel = createPublicChannel(0);
       ReadStatus readStatus = createReadStatus(user, channel);
 
       // when
@@ -178,7 +178,7 @@ class ReadStatusServiceTest {
     void findReadStatusById_ThrowsException_WhenUserIdDoesNotExist() {
       // given
       User user = createUser(0);
-      Channel channel = createPublicChannel(user, 0);
+      Channel channel = createPublicChannel(0);
       createReadStatus(user, channel);
 
       UUID randomId = UUID.randomUUID();
@@ -199,7 +199,7 @@ class ReadStatusServiceTest {
     void success() {
       // given
       User user = createUser(0);
-      Channel channel = createPublicChannel(user, 0);
+      Channel channel = createPublicChannel(0);
       ReadStatus readStatus = createReadStatus(user, channel);
       Instant now = Instant.now();
       UpdateReadStatusRequest request = new UpdateReadStatusRequest(now);
@@ -222,7 +222,7 @@ class ReadStatusServiceTest {
     void success() {
       // given
       User user = createUser(0);
-      Channel channel = createPublicChannel(user, 0);
+      Channel channel = createPublicChannel(0);
       ReadStatus readStatus = createReadStatus(user, channel);
 
       // when

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -38,8 +39,9 @@ public class ReadStatusController implements ReadStatusApi {
         .body(readStatusService.updateReadStatus(id, updateReadStatusRequest));
   }
 
-  @RequestMapping(value = "{id}", method = RequestMethod.GET)
-  public ResponseEntity<List<ReadStatusDto>> findAllReadStatusByUserId(@PathVariable UUID id) {
+  @RequestMapping(method = RequestMethod.GET)
+  public ResponseEntity<List<ReadStatusDto>> findAllReadStatusByUserId(
+      @RequestParam("userId") UUID id) {
     return ResponseEntity.status(HttpStatus.OK)
         .body(readStatusService.findAllReadStatusesByUserId(id));
   }

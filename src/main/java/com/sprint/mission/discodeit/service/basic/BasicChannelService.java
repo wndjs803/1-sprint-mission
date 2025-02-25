@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.service.basic;
 
+import com.sprint.mission.discodeit.dto.channel.ChannelDto;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePrivateChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePublicChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.UpdateChannelRequest;
@@ -10,7 +11,6 @@ import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.ReadStatus;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.global.error.execption.channel.CannotUpdatePrivateChannelException;
-import com.sprint.mission.discodeit.global.error.execption.channel.NotChannelCreatorException;
 import com.sprint.mission.discodeit.global.util.RandomStringGenerator;
 import com.sprint.mission.discodeit.mapper.ChannelMapper;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
@@ -43,30 +43,23 @@ public class BasicChannelService implements ChannelService {
   private final RandomStringGenerator randomStringGenerator;
 
   @Override
-  public Channel createPublicChannel(CreatePublicChannelRequest createPublicChannelRequest) {
-    User channelOwner = userValidator.validateUserExistsByUserId(
-        createPublicChannelRequest.channelOwnerId());
-
+  public ChannelDto createPublicChannel(CreatePublicChannelRequest createPublicChannelRequest) {
     Channel channel = channelMapper.toEntity(createPublicChannelRequest.name(),
-        createPublicChannelRequest.description(), channelOwner, ChannelType.PUBLIC);
+        createPublicChannelRequest.description(), ChannelType.PUBLIC);
 
-    channelRepository.saveChannel(channel);
-    return channel;
+    return channelMapper.toChannelDto(channelRepository.saveChannel(channel));
   }
 
   @Override
-  public Channel createPrivateChannel(CreatePrivateChannelRequest createPrivateChannelRequest) {
-    User channelOwner = userValidator.validateUserExistsByUserId(
-        createPrivateChannelRequest.channelOwnerId());
-
+  public ChannelDto createPrivateChannel(CreatePrivateChannelRequest createPrivateChannelRequest) {
     // 요구 사항에 name, description 속성 생략 -> 임의 랜던값 지정
     String name = randomStringGenerator.generateRandomString();
     String description = "description";
 
-    Channel channel = channelMapper.toEntity(name, description, channelOwner, ChannelType.PRIVATE);
+    Channel channel = channelMapper.toEntity(name, description, ChannelType.PRIVATE);
 
     // 유저 초대 및 ReadStatus 생성
-    createPrivateChannelRequest.channelUserList().forEach(
+    createPrivateChannelRequest.participantIds().forEach(
         userId -> {
           // 이 동작은 readStatusService의 createReadStatus 메서드와 동작이 정확히 일치한다.
           // 하지만 이 동작 하나만을 위해 readStatusService를 추가하는 것이 정말 맞는 것일까?
@@ -77,9 +70,7 @@ public class BasicChannelService implements ChannelService {
         }
     );
 
-    channelRepository.saveChannel(channel);
-
-    return channel;
+    return channelMapper.toChannelDto(channelRepository.saveChannel(channel));
   }
 
   @Override
@@ -123,34 +114,22 @@ public class BasicChannelService implements ChannelService {
   }
 
   @Override
-  public Channel updateChannel(UUID channelId, UpdateChannelRequest updateChannelRequest) {
+  public ChannelDto updateChannel(UUID channelId, UpdateChannelRequest updateChannelRequest) {
     Channel foundChannel = channelValidator.validateChannelExistsByChannelId(channelId);
 
     if (foundChannel.isPrivate()) {
       throw new CannotUpdatePrivateChannelException("id: " + foundChannel.getId());
     }
 
-    UUID channelOwnerId = updateChannelRequest.channelOwnerId();
+    foundChannel.updateChannelInfo(updateChannelRequest.newName(),
+        updateChannelRequest.newDescription());
 
-    userValidator.validateUserExistsByUserId(channelOwnerId);
-
-    if (foundChannel.isNotOwner(channelOwnerId)) {
-      throw new NotChannelCreatorException("id: " + channelOwnerId);
-    }
-
-    foundChannel.updateChannelInfo(updateChannelRequest.name(), updateChannelRequest.description());
-
-    return channelRepository.saveChannel(foundChannel);
+    return channelMapper.toChannelDto(channelRepository.saveChannel(foundChannel));
   }
 
   @Override
-  public void deleteChannel(UUID channelId, UUID channelOwnerId) {
-    userValidator.validateUserExistsByUserId(channelOwnerId);
+  public void deleteChannel(UUID channelId) {
     Channel foundChannel = channelValidator.validateChannelExistsByChannelId(channelId);
-
-    if (foundChannel.isNotOwner(channelOwnerId)) {
-      throw new NotChannelCreatorException("id: " + channelOwnerId);
-    }
 
     // Message 삭제
     messageRepository.findAllMessagesByChannel(foundChannel)
