@@ -71,7 +71,7 @@ public class BasicChannelService implements ChannelService {
           // 이 동작은 readStatusService의 createReadStatus 메서드와 동작이 정확히 일치한다.
           // 하지만 이 동작 하나만을 위해 readStatusService를 추가하는 것이 정말 맞는 것일까?
           User user = userValidator.validateUserExistsByUserId(userId);
-          readStatusRepository.saveReadStatus(ReadStatus.of(user, channel));
+          readStatusRepository.saveReadStatus(ReadStatus.of(user, channel, Instant.now()));
 
           channel.addChannelUser(user);
         }

@@ -31,6 +31,7 @@ import com.sprint.mission.discodeit.validator.ChannelValidator;
 import com.sprint.mission.discodeit.validator.ReadStatusValidator;
 import com.sprint.mission.discodeit.validator.UserValidator;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -165,10 +166,11 @@ class ReadStatusServiceTest {
       ReadStatus readStatus = createReadStatus(user, channel);
 
       // when
-      ReadStatus foundedReadStatus = readStatusService.findAllReadStatusesByUserId(user.getId());
+      List<ReadStatusDto> foundedReadStatus = readStatusService.findAllReadStatusesByUserId(
+          user.getId());
 
       // then
-      assertEquals(readStatus, foundedReadStatus);
+      assertEquals(1, foundedReadStatus.size());
     }
 
     @Test

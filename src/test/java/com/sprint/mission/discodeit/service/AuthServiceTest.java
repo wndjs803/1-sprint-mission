@@ -3,8 +3,8 @@ package com.sprint.mission.discodeit.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.sprint.mission.discodeit.dto.user.UserDto;
 import com.sprint.mission.discodeit.dto.user.request.LoginRequest;
-import com.sprint.mission.discodeit.dto.user.response.LoginResponse;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.mapper.UserMapper;
@@ -42,6 +42,7 @@ class AuthServiceTest {
     userMapper = new UserMapper();
     userStatusRepository = new JCFUserStatusRepository();
     userValidator = new UserValidator(userRepository);
+    userStatusMapper = new UserStatusMapper();
     userStatusService = new BasicUserStatusService(userStatusRepository,
         new UserStatusValidator(userStatusRepository), userValidator, userStatusMapper);
     authService = new BasicAuthService(userValidator, userStatusService, userMapper);
@@ -58,10 +59,10 @@ class AuthServiceTest {
     LoginRequest loginRequest = new LoginRequest("test1", "password1");
 
     // when
-    LoginResponse loginResponse = authService.login(loginRequest);
+    UserDto loginResponse = authService.login(loginRequest);
 
     // then
-    assertEquals(loginResponse.userId(), user.getId());
+    assertEquals(loginResponse.id(), user.getId());
 
     UserStatus foundUserStatus = userStatusRepository.findUserStatusById(userStatus.getId());
     assertTrue(foundUserStatus.isOnline());
