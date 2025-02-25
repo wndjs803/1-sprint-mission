@@ -1,13 +1,12 @@
 package com.sprint.mission.discodeit.controller;
 
 import com.sprint.mission.discodeit.controller.api.UserApi;
+import com.sprint.mission.discodeit.dto.user.UserDto;
 import com.sprint.mission.discodeit.dto.user.request.CreateUserRequest;
 import com.sprint.mission.discodeit.dto.user.request.UpdateUserRequest;
 import com.sprint.mission.discodeit.dto.user.response.FindUserResponse;
 import com.sprint.mission.discodeit.dto.userStatus.request.UpdateUserStatusByUserIdRequest;
-import com.sprint.mission.discodeit.entity.User;
-import com.sprint.mission.discodeit.global.response.ResultCode;
-import com.sprint.mission.discodeit.global.response.ResultResponse;
+import com.sprint.mission.discodeit.dto.userStatus.request.UserStatusDto;
 import com.sprint.mission.discodeit.service.UserService;
 import com.sprint.mission.discodeit.service.UserStatusService;
 import java.util.List;
@@ -26,7 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/users")
+@RequestMapping("api/users")
 public class UserController implements UserApi {
 
   private final UserService userService;
@@ -34,46 +33,40 @@ public class UserController implements UserApi {
 
   @RequestMapping(value = "", method = RequestMethod.POST, consumes = {
       MediaType.MULTIPART_FORM_DATA_VALUE})
-  public ResponseEntity<ResultResponse<User>> createUser(
-      @RequestPart("createUserRequest") CreateUserRequest createUserRequest,
-      @RequestPart(value = "profileImage") MultipartFile profileImage) {
+  public ResponseEntity<UserDto> createUser(
+      @RequestPart("userCreateRequest") CreateUserRequest createUserRequest,
+      @RequestPart(value = "profile", required = false) MultipartFile profileImage) {
     return ResponseEntity.status(HttpStatus.CREATED)
-        .body(ResultResponse.of(ResultCode.USER_CREATED,
-            userService.createUser(createUserRequest, profileImage)));
+        .body(userService.createUser(createUserRequest, profileImage));
   }
 
   @RequestMapping(value = "/{id}", method = RequestMethod.PATCH, consumes = {
       MediaType.MULTIPART_FORM_DATA_VALUE})
-  public ResponseEntity<ResultResponse<User>> updateUser(
+  public ResponseEntity<UserDto> updateUser(
       @PathVariable UUID id,
-      @RequestPart(value = "updateUserRequest") UpdateUserRequest updateUserRequest,
-      @RequestPart(value = "profileImage") MultipartFile profileImage) {
+      @RequestPart(value = "userUpdateRequest") UpdateUserRequest updateUserRequest,
+      @RequestPart(value = "profile", required = false) MultipartFile profileImage) {
     return ResponseEntity.status(HttpStatus.OK)
-        .body(ResultResponse.of(ResultCode.USER_UPDATED,
-            userService.updateUser(id, updateUserRequest, profileImage)));
+        .body(userService.updateUser(id, updateUserRequest, profileImage));
   }
 
   @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-  public ResponseEntity<ResultResponse<UUID>> deleteUser(@PathVariable UUID id) {
+  public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
     userService.deleteUser(id);
-    return ResponseEntity.status(HttpStatus.ACCEPTED)
-        .body(ResultResponse.of(ResultCode.USER_DELETED, id));
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 
   @RequestMapping(value = "", method = RequestMethod.GET)
-  public ResponseEntity<ResultResponse<List<FindUserResponse>>> findAllUsers() {
+  public ResponseEntity<List<FindUserResponse>> findAllUsers() {
     return ResponseEntity.status(HttpStatus.OK)
-        .body(ResultResponse.of(ResultCode.USER_LIST_FETCHED,
-            userService.findAllUsers()));
+        .body(userService.findAllUsers());
   }
 
   @RequestMapping(value = "/{id}/status", method = RequestMethod.PATCH)
-  public ResponseEntity<ResultResponse<Boolean>> updateUserStatusByUserId(
+  public ResponseEntity<UserStatusDto> updateUserStatusByUserId(
       @PathVariable UUID id,
       @RequestBody UpdateUserStatusByUserIdRequest updateUserStatusByUserIdRequest) {
     return ResponseEntity.status(HttpStatus.OK)
-        .body(ResultResponse.of(ResultCode.USER_ONLINE_STATUS_UPDATED,
-            userStatusService.updateUserStatusByUserId(
-                id, updateUserStatusByUserIdRequest).isOnline()));
+        .body(userStatusService.updateUserStatusByUserId(id, updateUserStatusByUserIdRequest));
   }
 }

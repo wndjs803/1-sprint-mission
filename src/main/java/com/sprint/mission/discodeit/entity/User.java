@@ -1,10 +1,11 @@
 package com.sprint.mission.discodeit.entity;
 
 import java.io.Serializable;
-import java.util.Objects;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
+@EqualsAndHashCode(callSuper = true)
 public class User extends BaseEntity implements Serializable {
 
   private String name;
@@ -50,9 +51,8 @@ public class User extends BaseEntity implements Serializable {
     this.updateUpdatedAt();
   }
 
-  public void updateUserInfo(String name, String nickname, String email, String password) {
+  public void updateUserInfo(String name, String email, String password) {
     this.updateName(name);
-    this.updateNickname(nickname);
     this.updateEmail(email);
     this.updatePassword(password);
   }
@@ -66,27 +66,5 @@ public class User extends BaseEntity implements Serializable {
         ", password='" + password + '\'' +
         ", profileImage=" + profileImage +
         '}';
-  }
-
-  @Override
-  public boolean equals(Object object) {
-    if (this == object) {
-      return true;
-    }
-    if (object == null || getClass() != object.getClass()) {
-      return false;
-    }
-    if (!super.equals(object)) {
-      return false;
-    }
-    User user = (User) object;
-    return Objects.equals(name, user.name) && Objects.equals(nickname, user.nickname)
-        && Objects.equals(email, user.email) && Objects.equals(password, user.password)
-        && Objects.equals(profileImage, user.profileImage);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(super.hashCode(), name, nickname, email, password, profileImage);
   }
 }
