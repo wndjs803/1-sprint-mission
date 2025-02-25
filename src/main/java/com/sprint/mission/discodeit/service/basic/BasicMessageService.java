@@ -48,8 +48,8 @@ public class BasicMessageService implements MessageService {
     multipartFileList.forEach(
         multipartFile -> {
           // binaryContentService의 create와 똑같이 동작
-          BinaryContent binaryContent = BinaryContent.of(
-              multipartFileConverter.toByteArray(multipartFile));
+          BinaryContent binaryContent = BinaryContent.of(multipartFile.getOriginalFilename(),
+              multipartFile.getContentType(), multipartFileConverter.toByteArray(multipartFile));
           binaryContentRepository.saveBinaryContent(binaryContent);
           message.addBinaryContent(binaryContent);
         }
@@ -109,8 +109,8 @@ public class BasicMessageService implements MessageService {
     List<BinaryContent> originBinaryContentList = message.getBinaryContentList();
     List<BinaryContent> newBinaryContentList =
         multipartFileList.stream()
-            .map(multipartFile -> BinaryContent.of(
-                multipartFileConverter.toByteArray(multipartFile)))
+            .map(multipartFile -> BinaryContent.of(multipartFile.getOriginalFilename(),
+                multipartFile.getContentType(), multipartFileConverter.toByteArray(multipartFile)))
             .toList();
 
     // 두 리스트 비교 -> 새로운 파일은 repository save, 없어진 파일은 remove

@@ -1,55 +1,61 @@
 package com.sprint.mission.discodeit.service.basic;
 
+import com.sprint.mission.discodeit.dto.binaryContent.BinaryContentDto;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.global.error.execption.bianryContent.BinaryContentNofFoundException;
 import com.sprint.mission.discodeit.global.util.MultipartFileConverter;
+import com.sprint.mission.discodeit.mapper.BinaryContentMapper;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.service.BinaryContentService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
 public class BasicBinaryContentService implements BinaryContentService {
 
-    private final BinaryContentRepository binaryContentRepository;
-    private final MultipartFileConverter multipartFileConverter;
+  private final BinaryContentRepository binaryContentRepository;
+  private final MultipartFileConverter multipartFileConverter;
+  private final BinaryContentMapper binaryContentMapper;
 
-    @Override
-    public BinaryContent createBinaryContent(MultipartFile multipartFile) {
-        byte[] converterByteArray = multipartFileConverter.toByteArray(multipartFile);
-        BinaryContent binaryContent = BinaryContent.of(converterByteArray);
+  @Override
+  public BinaryContent createBinaryContent(MultipartFile multipartFile) {
+    byte[] converterByteArray = multipartFileConverter.toByteArray(multipartFile);
+    BinaryContent binaryContent = BinaryContent.of(multipartFile.getOriginalFilename(),
+        multipartFile.getContentType(), converterByteArray);
 
-        return binaryContentRepository.saveBinaryContent(binaryContent);
-    }
+    return binaryContentRepository.saveBinaryContent(binaryContent);
+  }
 
-    @Override
-    public BinaryContent createBinaryContent(BinaryContent binaryContent) {
-        return binaryContentRepository.saveBinaryContent(binaryContent);
-    }
+  @Override
+  public BinaryContent createBinaryContent(BinaryContent binaryContent) {
+    return binaryContentRepository.saveBinaryContent(binaryContent);
+  }
 
-    @Override
-    public BinaryContent findBinaryContentById(UUID binaryContentId) {
-        return Optional.ofNullable(binaryContentRepository.findBinaryContentById(binaryContentId))
-                .orElseThrow(() -> new BinaryContentNofFoundException("id: " + binaryContentId));
-    }
+  @Override
+  public BinaryContentDto findBinaryContentById(UUID binaryContentId) {
+    BinaryContent binaryContent =
+        Optional.ofNullable(binaryContentRepository.findBinaryContentById(binaryContentId))
+            .orElseThrow(() -> new BinaryContentNofFoundException("id: " + binaryContentId));
 
-    @Override
-    public List<BinaryContent> findAllBinaryContentsById(List<UUID> binaryContentIdList) {
-        return binaryContentIdList.stream()
-                .map(binaryContentId -> findBinaryContentById(binaryContentId))
-                .toList();
-    }
+    return binaryContentMapper.toBinaryContentDto(binaryContent);
+  }
 
-    @Override
-    public void deleteBinaryContent(UUID binaryContentId) {
-        findBinaryContentById(binaryContentId);
+  @Override
+  public List<BinaryContentDto> findAllBinaryContentsById(List<UUID> binaryContentIdList) {
+    return binaryContentIdList.stream()
+        .map(binaryContentId -> findBinaryContentById(binaryContentId))
+        .toList();
+  }
 
-        binaryContentRepository.removeBinaryContent(binaryContentId);
-    }
+  @Override
+  public void deleteBinaryContent(UUID binaryContentId) {
+    findBinaryContentById(binaryContentId);
+
+    binaryContentRepository.removeBinaryContent(binaryContentId);
+  }
 }
