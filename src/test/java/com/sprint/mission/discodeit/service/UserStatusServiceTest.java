@@ -6,9 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.sprint.mission.discodeit.dto.userStatus.UserStatusDto;
 import com.sprint.mission.discodeit.dto.userStatus.request.UpdateUserStatusByIdRequest;
 import com.sprint.mission.discodeit.dto.userStatus.request.UpdateUserStatusByUserIdRequest;
-import com.sprint.mission.discodeit.dto.userStatus.request.UserStatusDto;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.global.util.TimeUtil;
