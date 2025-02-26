@@ -56,7 +56,7 @@ public class ChannelController implements ChannelApi {
 
   @RequestMapping(value = "", method = RequestMethod.GET)
   public ResponseEntity<List<FindChannelResponse>> findUserAccessibleChannels(
-      @RequestParam UUID userId) {
+      @RequestParam("userId") UUID userId) {
     return ResponseEntity.status(HttpStatus.OK)
         .body(channelService.findAllChannelsByUserId(userId));
   }

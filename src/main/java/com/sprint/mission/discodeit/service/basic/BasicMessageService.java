@@ -45,15 +45,17 @@ public class BasicMessageService implements MessageService {
         createMessageRequest.channelId());
     Message message = messageMapper.toEntity(sender, foundChannel, createMessageRequest.content());
 
-    multipartFileList.forEach(
-        multipartFile -> {
-          // binaryContentService의 create와 똑같이 동작
-          BinaryContent binaryContent = BinaryContent.of(multipartFile.getOriginalFilename(),
-              multipartFile.getContentType(), multipartFileConverter.toByteArray(multipartFile));
-          binaryContentRepository.saveBinaryContent(binaryContent);
-          message.addBinaryContent(binaryContent);
-        }
-    );
+    if (multipartFileList != null) {
+      multipartFileList.forEach(
+          multipartFile -> {
+            // binaryContentService의 create와 똑같이 동작
+            BinaryContent binaryContent = BinaryContent.of(multipartFile.getOriginalFilename(),
+                multipartFile.getContentType(), multipartFileConverter.toByteArray(multipartFile));
+            binaryContentRepository.saveBinaryContent(binaryContent);
+            message.addBinaryContent(binaryContent);
+          }
+      );
+    }
 
     List<UUID> attachmentIds = getAttachmentIds(message);
 

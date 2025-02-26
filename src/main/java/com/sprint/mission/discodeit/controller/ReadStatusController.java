@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/readStatus")
+@RequestMapping("api/readStatuses")
 public class ReadStatusController implements ReadStatusApi {
 
   private final ReadStatusService readStatusService;
@@ -33,8 +33,7 @@ public class ReadStatusController implements ReadStatusApi {
 
   @RequestMapping(value = "{id}", method = RequestMethod.PATCH)
   public ResponseEntity<ReadStatusDto> updateReadStatus(@PathVariable UUID id,
-      @RequestBody UpdateReadStatusRequest updateReadStatusRequest
-  ) {
+      @RequestBody UpdateReadStatusRequest updateReadStatusRequest) {
     return ResponseEntity.status(HttpStatus.OK)
         .body(readStatusService.updateReadStatus(id, updateReadStatusRequest));
   }

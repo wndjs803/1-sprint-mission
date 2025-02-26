@@ -2,7 +2,6 @@ package com.sprint.mission.discodeit.service;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -15,6 +14,7 @@ import com.sprint.mission.discodeit.entity.ReadStatus;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.global.error.ErrorCode;
 import com.sprint.mission.discodeit.global.error.execption.readStatus.ReadStatusNotFoundException;
+import com.sprint.mission.discodeit.global.error.execption.user.UserNotFoundException;
 import com.sprint.mission.discodeit.mapper.ReadStatusMapper;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.repository.ReadStatusRepository;
@@ -53,8 +53,8 @@ class ReadStatusServiceTest {
 
   @BeforeEach
   void setUp() {
-//        jcfSetUp();
-    fileSetUp();
+    jcfSetUp();
+//    fileSetUp();
     readStatusValidator = new ReadStatusValidator(readStatusRepository);
     userValidator = new UserValidator(userRepository);
     channelValidator = new ChannelValidator(channelRepository);
@@ -185,8 +185,8 @@ class ReadStatusServiceTest {
 
       // when & then
       assertThatThrownBy(() -> readStatusService.findAllReadStatusesByUserId(randomId))
-          .isInstanceOf(ReadStatusNotFoundException.class)
-          .hasMessage(ErrorCode.READSTATUS_NOT_FOUND.format("userId: " + randomId));
+          .isInstanceOf(UserNotFoundException.class)
+          .hasMessage(ErrorCode.USER_NOT_FOUND.format("id: " + randomId));
     }
   }
 
@@ -209,7 +209,7 @@ class ReadStatusServiceTest {
           request);
 
       // then
-      assertNotEquals(now, readStatus.getLastReadAt());
+      assertEquals(now, updatedReadStatus.lastReadAt());
     }
   }
 

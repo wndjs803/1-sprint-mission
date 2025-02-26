@@ -22,7 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/messages")
+@RequestMapping("api/messages")
 public class MessageController implements MessageApi {
 
   private final MessageService messageService;
@@ -31,7 +31,7 @@ public class MessageController implements MessageApi {
       MediaType.MULTIPART_FORM_DATA_VALUE})
   public ResponseEntity<MessageDto> createMessage(
       @RequestPart(value = "messageCreateRequest") CreateMessageRequest createMessageRequest,
-      @RequestPart(value = "attachments") List<MultipartFile> multipartFileList) {
+      @RequestPart(value = "attachments", required = false) List<MultipartFile> multipartFileList) {
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(messageService.createMessage(createMessageRequest, multipartFileList));
   }
@@ -50,7 +50,8 @@ public class MessageController implements MessageApi {
   }
 
   @RequestMapping(value = "", method = RequestMethod.GET)
-  public ResponseEntity<List<MessageDto>> findMessagesByChannel(@RequestParam UUID channelId) {
+  public ResponseEntity<List<MessageDto>> findMessagesByChannel(
+      @RequestParam("channelId") UUID channelId) {
     return ResponseEntity.status(HttpStatus.OK)
         .body(messageService.findAllMessagesByChannelId(channelId));
   }

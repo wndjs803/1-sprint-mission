@@ -31,8 +31,8 @@ public class UserController implements UserApi {
   private final UserService userService;
   private final UserStatusService userStatusService;
 
-  @RequestMapping(value = "", method = RequestMethod.POST, consumes = {
-      MediaType.MULTIPART_FORM_DATA_VALUE})
+  @RequestMapping(value = "", method = RequestMethod.POST,
+      consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
   public ResponseEntity<UserDto> createUser(
       @RequestPart("userCreateRequest") CreateUserRequest createUserRequest,
       @RequestPart(value = "profile", required = false) MultipartFile profileImage) {
@@ -40,8 +40,8 @@ public class UserController implements UserApi {
         .body(userService.createUser(createUserRequest, profileImage));
   }
 
-  @RequestMapping(value = "/{id}", method = RequestMethod.PATCH, consumes = {
-      MediaType.MULTIPART_FORM_DATA_VALUE})
+  @RequestMapping(value = "/{id}", method = RequestMethod.PATCH,
+      consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
   public ResponseEntity<UserDto> updateUser(
       @PathVariable UUID id,
       @RequestPart(value = "userUpdateRequest") UpdateUserRequest updateUserRequest,
@@ -62,7 +62,7 @@ public class UserController implements UserApi {
         .body(userService.findAllUsers());
   }
 
-  @RequestMapping(value = "/{id}/status", method = RequestMethod.PATCH)
+  @RequestMapping(value = "/{id}/userStatus", method = RequestMethod.PATCH)
   public ResponseEntity<UserStatusDto> updateUserStatusByUserId(
       @PathVariable UUID id,
       @RequestBody UpdateUserStatusByUserIdRequest updateUserStatusByUserIdRequest) {
