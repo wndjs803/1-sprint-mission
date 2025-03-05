@@ -1,12 +1,12 @@
 package com.sprint.mission.discodeit.entity;
 
-import java.io.Serializable;
+import com.sprint.mission.discodeit.entity.base.BaseUpdatableEntity;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class User extends BaseEntity implements Serializable {
+public class User extends BaseUpdatableEntity {
 
   private String name;
   private String nickname;
@@ -55,16 +55,5 @@ public class User extends BaseEntity implements Serializable {
     this.updateName(name);
     this.updateEmail(email);
     this.updatePassword(password);
-  }
-
-  @Override
-  public String toString() {
-    return "User{" +
-        "name='" + name + '\'' +
-        ", nickname='" + nickname + '\'' +
-        ", email='" + email + '\'' +
-        ", password='" + password + '\'' +
-        ", profileImage=" + profileImage +
-        '}';
   }
 }

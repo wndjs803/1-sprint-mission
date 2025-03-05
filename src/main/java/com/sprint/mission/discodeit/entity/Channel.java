@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.entity;
 
+import com.sprint.mission.discodeit.entity.base.BaseUpdatableEntity;
 import com.sprint.mission.discodeit.global.error.execption.user.UserNotNullException;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +9,7 @@ import lombok.Getter;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class Channel extends BaseEntity {
+public class Channel extends BaseUpdatableEntity {
 
   private String name;
   private String description;
@@ -65,13 +66,5 @@ public class Channel extends BaseEntity {
 
   public boolean isUserInChannel(User user) {
     return this.channelUserList.contains(user);
-  }
-
-  @Override
-  public String toString() {
-    return "Channel{" +
-        "name='" + name + '\'' +
-        ", channelUserList=" + channelUserList +
-        '}';
   }
 }

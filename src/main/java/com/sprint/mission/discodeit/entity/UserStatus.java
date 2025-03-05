@@ -1,12 +1,13 @@
 package com.sprint.mission.discodeit.entity;
 
+import com.sprint.mission.discodeit.entity.base.BaseUpdatableEntity;
 import com.sprint.mission.discodeit.global.error.ErrorCode;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import lombok.Getter;
 
 @Getter
-public class UserStatus extends BaseEntity {
+public class UserStatus extends BaseUpdatableEntity {
 
   private final User user;
   private Instant loginAt;
