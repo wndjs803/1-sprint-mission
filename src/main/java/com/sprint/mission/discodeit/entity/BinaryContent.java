@@ -9,14 +9,16 @@ import lombok.Getter;
 public class BinaryContent extends BaseEntity {
 
   private String fileName;
+  private Long size;
   private String contentType;
   private final byte[] content;
 
   public static final BinaryContent EMPTY = new BinaryContent(
-      "temFileName", "Text", new byte[0]);
+      "tempFileName", "Text", new byte[0]);
 
   private BinaryContent(String fileName, String contentType, byte[] content) {
     this.fileName = fileName;
+    this.size = (long) content.length;
     this.contentType = contentType;
     this.content = content;
   }
