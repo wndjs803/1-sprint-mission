@@ -71,7 +71,7 @@ class ChannelServiceTest {
     channelMapper = new ChannelMapper();
     channelService = new BasicChannelService(channelRepository, readStatusRepository,
         messageRepository,
-        channelValidator, userValidator, readStatusValidator, channelMapper, randomStringGenerator);
+        channelValidator, userValidator, readStatusValidator, channelMapper);
   }
 
   @AfterEach

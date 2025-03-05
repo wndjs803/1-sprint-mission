@@ -40,7 +40,6 @@ public class BasicChannelService implements ChannelService {
   private final ReadStatusValidator readStatusValidator;
 
   private final ChannelMapper channelMapper;
-  private final RandomStringGenerator randomStringGenerator;
 
   @Override
   public ChannelDto createPublicChannel(CreatePublicChannelRequest createPublicChannelRequest) {
@@ -53,7 +52,7 @@ public class BasicChannelService implements ChannelService {
   @Override
   public ChannelDto createPrivateChannel(CreatePrivateChannelRequest createPrivateChannelRequest) {
     // 요구 사항에 name, description 속성 생략 -> 임의 랜던값 지정
-    String name = randomStringGenerator.generateRandomString();
+    String name = RandomStringGenerator.generateRandomString();
     String description = "description";
 
     Channel channel = channelMapper.toEntity(name, description, ChannelType.PRIVATE);

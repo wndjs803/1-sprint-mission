@@ -13,7 +13,7 @@ public class Channel extends BaseUpdatableEntity {
 
   private String name;
   private String description;
-  private final List<User> channelUserList = new ArrayList<>();
+  private final List<User> channelUserList = new ArrayList<>(); // 추후 제거 후 리팩토링
   private final ChannelType channelType;
 
   private Channel(String name, String description, ChannelType channelType) {
