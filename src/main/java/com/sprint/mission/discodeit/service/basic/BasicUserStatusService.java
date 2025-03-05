@@ -10,6 +10,7 @@ import com.sprint.mission.discodeit.repository.UserStatusRepository;
 import com.sprint.mission.discodeit.service.UserStatusService;
 import com.sprint.mission.discodeit.validator.UserStatusValidator;
 import com.sprint.mission.discodeit.validator.UserValidator;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -49,7 +50,7 @@ public class BasicUserStatusService implements UserStatusService {
         userStatusValidator.validateUserStatusExistsById(
             updateUserStatusByIdRequest.userStatusId());
 
-//        userStatus.updateUserStatusInfo(updateUserStatusByIdRequest);
+    userStatus.updateUserStatusInfo(Instant.now());
 
     return userStatusRepository.saveUserStatus(userStatus);
   }

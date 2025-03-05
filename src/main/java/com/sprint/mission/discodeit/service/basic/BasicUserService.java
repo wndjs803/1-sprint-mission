@@ -72,7 +72,7 @@ public class BasicUserService implements UserService {
       profileId = foundUser.getProfileImage().getId();
     }
 
-    return userMapper.toFindUserResponse(foundUser, profileId, userStatus.isOnline());
+    return userMapper.toFindUserResponse(foundUser, profileId, userStatus.isRecentLogin());
   }
 
   @Override

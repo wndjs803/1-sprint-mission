@@ -1,7 +1,6 @@
 package com.sprint.mission.discodeit.entity;
 
 import com.sprint.mission.discodeit.entity.base.BaseEntity;
-import java.util.UUID;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
@@ -9,7 +8,6 @@ import lombok.Getter;
 @EqualsAndHashCode(callSuper = true)
 public class BinaryContent extends BaseEntity {
 
-  private final UUID id;
   private String fileName;
   private String contentType;
   private final byte[] content;
@@ -18,7 +16,6 @@ public class BinaryContent extends BaseEntity {
       "temFileName", "Text", new byte[0]);
 
   private BinaryContent(String fileName, String contentType, byte[] content) {
-    this.id = UUID.randomUUID();
     this.fileName = fileName;
     this.contentType = contentType;
     this.content = content;

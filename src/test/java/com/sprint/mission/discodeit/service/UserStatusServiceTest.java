@@ -115,7 +115,7 @@ class UserStatusServiceTest {
       // then
       assertEquals(userStatus.getId(), foundedUserStatus.getId());
       assertEquals(user, foundedUserStatus.getUser());
-      assertFalse(foundedUserStatus.isOnline());
+      assertFalse(foundedUserStatus.isRecentLogin());
     }
   }
 
@@ -154,7 +154,7 @@ class UserStatusServiceTest {
       UserStatus userStatus = createUserStatus(user);
 
       UpdateUserStatusByIdRequest updateUserStatusByIdRequest =
-          new UpdateUserStatusByIdRequest(userStatus.getId(), true);
+          new UpdateUserStatusByIdRequest(userStatus.getId());
 
       // when
       UserStatus updatedUserStatus = userStatusService.updateUserStatusById(
@@ -162,7 +162,7 @@ class UserStatusServiceTest {
 
       // then
       assertEquals(userStatus.getId(), updatedUserStatus.getId());
-      assertTrue(updatedUserStatus.isOnline());
+      assertTrue(updatedUserStatus.isRecentLogin());
     }
 
     @Test

@@ -11,7 +11,6 @@ public class UserStatus extends BaseUpdatableEntity {
 
   private final User user;
   private Instant loginAt;
-  private boolean isOnline = false;
 
   private static final long LOGIN_EXPIRATION_MINUTES = 5;
 
@@ -28,26 +27,19 @@ public class UserStatus extends BaseUpdatableEntity {
     return new UserStatus(user);
   }
 
-  public boolean isOnline() {
-    return this.isOnline;
-  }
-
   public void updateLoginAt(Instant newLastActiveAt) {
     this.loginAt = newLastActiveAt;
     this.updateUpdatedAt();
   }
 
   public boolean isRecentLogin() {
+    if (this.getCreatedAt() == this.loginAt) {
+      return false;
+    }
     return ChronoUnit.MINUTES.between(Instant.now(), this.loginAt) < LOGIN_EXPIRATION_MINUTES;
-  }
-
-  public void updateOnline() {
-    this.isOnline = isRecentLogin();
-    this.updateUpdatedAt();
   }
 
   public void updateUserStatusInfo(Instant newLastActiveAt) {
     this.updateLoginAt(newLastActiveAt);
-    this.updateOnline();
   }
 }

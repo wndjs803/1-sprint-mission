@@ -10,6 +10,6 @@ public class UserStatusMapper {
   public UserStatusDto toUserStatusDto(UserStatus userStatus) {
     return new UserStatusDto(userStatus.getId(), userStatus.getCreatedAt(),
         userStatus.getUpdatedAt(),
-        userStatus.getUser().getId(), userStatus.getLoginAt(), userStatus.isOnline());
+        userStatus.getUser().getId(), userStatus.getLoginAt(), userStatus.isRecentLogin());
   }
 }
