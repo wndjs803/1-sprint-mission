@@ -9,30 +9,24 @@ import lombok.Getter;
 public class User extends BaseUpdatableEntity {
 
   private String name;
-  private String nickname;
   private String email;
   private String password;
   private BinaryContent profileImage = BinaryContent.EMPTY;
+  private UserStatus userStatus;
 
-  private User(String name, String nickname, String email, String password) {
+  private User(String name, String email, String password) {
     super();
     this.name = name;
-    this.nickname = nickname;
     this.email = email;
     this.password = password;
   }
 
-  public static User of(String name, String nickname, String email, String password) {
-    return new User(name, nickname, email, password);
+  public static User of(String name, String email, String password) {
+    return new User(name, email, password);
   }
 
   public void updateName(String name) {
     this.name = name;
-    this.updateUpdatedAt();
-  }
-
-  public void updateNickname(String nickname) {
-    this.nickname = nickname;
     this.updateUpdatedAt();
   }
 

@@ -94,7 +94,7 @@ class MessageServiceTest {
   }
 
   private User createUser(int num) {
-    User user = User.of("test" + num, "nickname" + num, "email" + num, "password" + num);
+    User user = User.of("test" + num, "email" + num, "password" + num);
     return userRepository.saveUser(user);
   }
 
