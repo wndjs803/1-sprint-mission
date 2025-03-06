@@ -64,8 +64,6 @@ public class BasicChannelService implements ChannelService {
           // 하지만 이 동작 하나만을 위해 readStatusService를 추가하는 것이 정말 맞는 것일까?
           User user = userValidator.validateUserExistsByUserId(userId);
           readStatusRepository.saveReadStatus(ReadStatus.of(user, channel, Instant.now()));
-
-          channel.addChannelUser(user);
         }
     );
 
@@ -92,9 +90,10 @@ public class BasicChannelService implements ChannelService {
     List<UUID> channelUsersIdList = new ArrayList<>();
 
     if (channel.isPrivate()) {
-      channelUsersIdList = channel.getChannelUserList().stream()
-          .map(user -> user.getId())
-          .toList();
+//      channelUsersIdList = channel.getChannelUserList().stream()
+//          .map(user -> user.getId())
+//          .toList();
+      // 추후 리팩토링
     }
 
     return channelMapper.toFindChannelResponse(channel, lastMessageAt, channelUsersIdList);
@@ -134,37 +133,35 @@ public class BasicChannelService implements ChannelService {
     messageRepository.findAllMessagesByChannel(foundChannel)
         .forEach(message -> messageRepository.removeMessage(message.getId()));
 
-    // ReadStatus 삭제
-    foundChannel.getChannelUserList()
-        .forEach(user -> {
-          // user 검증
-          userValidator.validateUserExistsByUserId(user.getId());
-          ReadStatus readStatus = readStatusValidator.validateReadStatusExistsByUserId(
-              user.getId());
-          readStatusRepository.removeReadStatus(readStatus.getId());
-        });
+    // ReadStatus 삭제 -> 추후 리팩토링
+//    foundChannel.getChannelUserList()
+//        .forEach(user -> {
+//          // user 검증
+//          userValidator.validateUserExistsByUserId(user.getId());
+//          ReadStatus readStatus = readStatusValidator.validateReadStatusExistsByUserId(
+//              user.getId());
+//          readStatusRepository.removeReadStatus(readStatus.getId());
+//        });
 
     channelRepository.removeChannel(channelId);
   }
 
   // inviteUsers, leaveUsers 는 남는 시간에 수정
-  @Override
-  public Channel inviteUsers(UUID channelId, List<User> invitedUsers) {
-    Channel foundChannel = channelValidator.validateChannelExistsByChannelId(channelId);
-
-    invitedUsers.forEach(user -> foundChannel.addChannelUser(user));
-
-    return channelRepository.saveChannel(foundChannel);
-  }
-
-  @Override
-  public Channel leaveUsers(UUID channelId, List<User> leaveUsers) {
-    Channel foundChannel = channelValidator.validateChannelExistsByChannelId(channelId);
-
-    leaveUsers.forEach(user -> foundChannel.removeUserFromChannel(user));
-
-    return channelRepository.saveChannel(foundChannel);
-  }
-
-
+//  @Override
+//  public Channel inviteUsers(UUID channelId, List<User> invitedUsers) {
+//    Channel foundChannel = channelValidator.validateChannelExistsByChannelId(channelId);
+//
+//    invitedUsers.forEach(user -> foundChannel.addChannelUser(user));
+//
+//    return channelRepository.saveChannel(foundChannel);
+//  }
+//
+//  @Override
+//  public Channel leaveUsers(UUID channelId, List<User> leaveUsers) {
+//    Channel foundChannel = channelValidator.validateChannelExistsByChannelId(channelId);
+//
+//    leaveUsers.forEach(user -> foundChannel.removeUserFromChannel(user));
+//
+//    return channelRepository.saveChannel(foundChannel);
+//  }
 }

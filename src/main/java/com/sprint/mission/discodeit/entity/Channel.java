@@ -1,20 +1,32 @@
 package com.sprint.mission.discodeit.entity;
 
 import com.sprint.mission.discodeit.entity.base.BaseUpdatableEntity;
-import com.sprint.mission.discodeit.global.error.execption.user.UserNotNullException;
-import java.util.ArrayList;
-import java.util.List;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Entity
+@Table(name = "channels")
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(callSuper = true)
 public class Channel extends BaseUpdatableEntity {
 
+  @Column(length = 100)
   private String name;
+
+  @Column(length = 500)
   private String description;
-  private final List<User> channelUserList = new ArrayList<>(); // 추후 제거 후 리팩토링
-  private final ChannelType channelType;
+
+  @Column(name = "type", nullable = false, length = 10)
+  @Enumerated(EnumType.STRING)
+  private ChannelType channelType;
 
   private Channel(String name, String description, ChannelType channelType) {
     super();
@@ -42,29 +54,11 @@ public class Channel extends BaseUpdatableEntity {
     this.updateDescription(description);
   }
 
-  public void addChannelUser(User user) {
-    if (user == null) {
-      throw new UserNotNullException();
-    }
-    this.channelUserList.add(user);
-  }
-
-  public void removeUserFromChannel(User user) {
-    if (user == null) {
-      throw new UserNotNullException();
-    }
-    this.channelUserList.remove(user);
-  }
-
   public boolean isPrivate() {
     return this.channelType == ChannelType.PRIVATE;
   }
 
   public boolean isPublic() {
     return this.channelType == ChannelType.PUBLIC;
-  }
-
-  public boolean isUserInChannel(User user) {
-    return this.channelUserList.contains(user);
   }
 }

@@ -52,7 +52,7 @@ public class BasicMessageService implements MessageService {
             BinaryContent binaryContent = BinaryContent.of(multipartFile.getOriginalFilename(),
                 multipartFile.getContentType(), multipartFileConverter.toByteArray(multipartFile));
             binaryContentRepository.saveBinaryContent(binaryContent);
-            message.addBinaryContent(binaryContent);
+//            message.addBinaryContent(binaryContent); 추후 리팩토링
           }
       );
     }
@@ -97,9 +97,9 @@ public class BasicMessageService implements MessageService {
   public void deleteMessage(UUID messageId) {
     Message foundMessage = findMessageById(messageId);
 
-    foundMessage.getBinaryContentList()
-        .forEach(
-            binaryContent -> binaryContentRepository.removeBinaryContent(binaryContent.getId()));
+//    foundMessage.getBinaryContentList()
+//        .forEach(
+//            binaryContent -> binaryContentRepository.removeBinaryContent(binaryContent.getId()));
 
     messageRepository.removeMessage(messageId);
   }
@@ -110,8 +110,9 @@ public class BasicMessageService implements MessageService {
   }
 
   private List<UUID> getAttachmentIds(Message message) {
-    return message.getBinaryContentList().stream()
-        .map(binaryContent -> binaryContent.getId())
-        .toList();
+//    return message.getBinaryContentList().stream()
+//        .map(binaryContent -> binaryContent.getId())
+//        .toList();
+    return null;
   }
 }

@@ -1,17 +1,42 @@
 package com.sprint.mission.discodeit.entity;
 
 import com.sprint.mission.discodeit.entity.base.BaseUpdatableEntity;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Entity
+@Table(name = "users")
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(callSuper = true)
 public class User extends BaseUpdatableEntity {
 
+  @Column(name = "username", nullable = false, unique = true, length = 50)
   private String name;
+
+  @Column(nullable = false, unique = true, length = 100)
   private String email;
+
+  @Column(nullable = false, length = 60)
   private String password;
+
+  @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST,
+      CascadeType.REMOVE}, orphanRemoval = true)
+  @JoinColumn(name = "profile_id") // table의 'profile_id' 컬럼
   private BinaryContent profileImage = BinaryContent.EMPTY;
+
+  @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST,
+      CascadeType.REMOVE}, orphanRemoval = true)
+  // UserStatus의 'user'필드
   private UserStatus userStatus;
 
   private User(String name, String email, String password) {

@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.entity.base;
 
 import com.sprint.mission.discodeit.global.util.TimeUtil;
+import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import java.time.Instant;
 import lombok.EqualsAndHashCode;
@@ -14,6 +15,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public abstract class BaseUpdatableEntity extends BaseEntity {
 
   @LastModifiedDate
+  @Column(name = "updated_at")
   private Instant updatedAt;
 
   public BaseUpdatableEntity() {
