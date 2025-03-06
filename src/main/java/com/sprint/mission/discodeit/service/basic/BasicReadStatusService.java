@@ -45,8 +45,8 @@ public class BasicReadStatusService implements ReadStatusService {
 
   @Override
   public List<ReadStatusDto> findAllReadStatusesByUserId(UUID userId) {
-    userValidator.validateUserExistsByUserId(userId);
-    return readStatusRepository.findAllReadStatusByUserId(userId).stream()
+    User user = userValidator.validateUserExistsByUserId(userId);
+    return readStatusRepository.findAllReadStatusByUser(user).stream()
         .map(readStatus -> readStatusMapper.toReadStatusDto(readStatus))
         .toList();
   }

@@ -16,7 +16,6 @@ import com.sprint.mission.discodeit.service.MessageService;
 import com.sprint.mission.discodeit.validator.ChannelValidator;
 import com.sprint.mission.discodeit.validator.UserValidator;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -105,7 +104,7 @@ public class BasicMessageService implements MessageService {
   }
 
   private Message findMessageById(UUID messageId) {
-    return Optional.ofNullable(messageRepository.findMessageById(messageId))
+    return messageRepository.findMessageById(messageId)
         .orElseThrow(() -> new MessageNotFoundException("id: " + messageId));
   }
 

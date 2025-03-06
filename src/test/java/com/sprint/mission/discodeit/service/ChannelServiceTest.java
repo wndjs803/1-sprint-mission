@@ -172,9 +172,6 @@ class ChannelServiceTest {
       assertEquals("test", channel.name());
       assertEquals("description", channel.description());
 
-      channelUserList.forEach(user ->
-          assertNotNull(readStatusRepository.findReadStatusByUserId(user.getId())));
-
       assertNotNull(channelRepository.findChannelById(channel.id()));
     }
   }

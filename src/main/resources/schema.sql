@@ -37,7 +37,7 @@ ALTER TABLE users
 ADD CONSTRAINT fk_binary_contents
 FOREIGN KEY (profile_id)
 REFERENCES binary_contents(id)
-ON DELETE CASCADE;
+ON DELETE SET NULL;
 
 CREATE TABLE channels
 (

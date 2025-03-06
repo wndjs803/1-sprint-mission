@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "message_attachments")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MessageAttachments {
+public class MessageAttachment {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)

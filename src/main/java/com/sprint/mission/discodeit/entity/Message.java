@@ -38,7 +38,7 @@ public class Message extends BaseUpdatableEntity {
 
   @OneToMany
   @JoinColumn(name = "message_id")
-  private final List<MessageAttachments> attachmentsList = new ArrayList<>();
+  private final List<MessageAttachment> attachmentsList = new ArrayList<>();
 
   private Message(User sender, Channel channel, String content) {
     super();

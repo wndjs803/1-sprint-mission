@@ -2,19 +2,18 @@ package com.sprint.mission.discodeit.repository.jcf;
 
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.User;
-import com.sprint.mission.discodeit.global.config.JCFRepositoryCondition;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Repository;
 
-@Repository
+//@Repository
 @NoArgsConstructor
-@JCFRepositoryCondition
+//@JCFRepositoryCondition
 public class JCFChannelRepository implements ChannelRepository {
 
   private final Map<UUID, Channel> channelData = new HashMap<>();
@@ -26,8 +25,8 @@ public class JCFChannelRepository implements ChannelRepository {
   }
 
   @Override
-  public Channel findChannelById(UUID channelId) {
-    return channelData.get(channelId);
+  public Optional<Channel> findChannelById(UUID channelId) {
+    return Optional.ofNullable(channelData.get(channelId));
   }
 
   @Override

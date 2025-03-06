@@ -29,8 +29,7 @@ public class User extends BaseUpdatableEntity {
   @Column(nullable = false, length = 60)
   private String password;
 
-  @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST,
-      CascadeType.REMOVE}, orphanRemoval = true)
+  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
   @JoinColumn(name = "profile_id") // table의 'profile_id' 컬럼
   private BinaryContent profileImage;
 
