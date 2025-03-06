@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +29,7 @@ public class BasicReadStatusService implements ReadStatusService {
   private final ReadStatusMapper readStatusMapper;
 
   @Override
+  @Transactional
   public ReadStatusDto createReadStatus(CreateReadStatusRequest createReadStatusRequest) {
     User user = userValidator.validateUserExistsByUserId(createReadStatusRequest.userId());
     Channel channel = channelValidator.validateChannelExistsByChannelId(
@@ -44,6 +46,7 @@ public class BasicReadStatusService implements ReadStatusService {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public List<ReadStatusDto> findAllReadStatusesByUserId(UUID userId) {
     User user = userValidator.validateUserExistsByUserId(userId);
     return readStatusRepository.findAllReadStatusByUser(user).stream()
@@ -52,6 +55,7 @@ public class BasicReadStatusService implements ReadStatusService {
   }
 
   @Override
+  @Transactional
   public ReadStatusDto updateReadStatus(UUID readStatusId,
       UpdateReadStatusRequest updateReadStatusRequest) {
     ReadStatus readStatus = readStatusValidator.validateReadStatusExistsById(readStatusId);

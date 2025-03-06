@@ -49,6 +49,7 @@ public class BasicChannelService implements ChannelService {
   }
 
   @Override
+  @Transactional
   public ChannelDto createPrivateChannel(CreatePrivateChannelRequest createPrivateChannelRequest) {
     Channel channel = channelRepository.saveChannel(
         channelMapper.toEntity(null, null, ChannelType.PRIVATE)
