@@ -118,6 +118,7 @@ ON DELETE CASCADE;
 
 CREATE TABLE message_attachments
 (
+    id UUID PRIMARY KEY,
     message_id UUID,
     attachment_id UUID
 );

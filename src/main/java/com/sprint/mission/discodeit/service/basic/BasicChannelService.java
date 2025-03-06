@@ -50,7 +50,9 @@ public class BasicChannelService implements ChannelService {
 
   @Override
   public ChannelDto createPrivateChannel(CreatePrivateChannelRequest createPrivateChannelRequest) {
-    Channel channel = channelMapper.toEntity(null, null, ChannelType.PRIVATE);
+    Channel channel = channelRepository.saveChannel(
+        channelMapper.toEntity(null, null, ChannelType.PRIVATE)
+    );
 
     // 유저 초대 및 ReadStatus 생성
     createPrivateChannelRequest.participantIds().forEach(
@@ -62,7 +64,7 @@ public class BasicChannelService implements ChannelService {
         }
     );
 
-    return channelMapper.toChannelDto(channelRepository.saveChannel(channel));
+    return channelMapper.toChannelDto(channel);
   }
 
   @Override

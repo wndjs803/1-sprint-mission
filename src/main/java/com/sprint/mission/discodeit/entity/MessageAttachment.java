@@ -1,6 +1,5 @@
 package com.sprint.mission.discodeit.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -24,11 +23,20 @@ public class MessageAttachment {
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "message_id")
   private Message message;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "attachment_id")
   private BinaryContent attachment;
+
+  private MessageAttachment(Message message, BinaryContent attachment) {
+    this.message = message;
+    this.attachment = attachment;
+  }
+
+  public static MessageAttachment of(Message message, BinaryContent attachment) {
+    return new MessageAttachment(message, attachment);
+  }
 }

@@ -1,7 +1,6 @@
 package com.sprint.mission.discodeit.entity;
 
 import com.sprint.mission.discodeit.entity.base.BaseUpdatableEntity;
-import com.sprint.mission.discodeit.global.error.execption.bianryContent.BinaryContentNotNullException;
 import com.sprint.mission.discodeit.global.error.execption.channel.ChannelNotNullException;
 import com.sprint.mission.discodeit.global.error.execption.user.UserNotNullException;
 import jakarta.persistence.CascadeType;
@@ -29,14 +28,14 @@ public class Message extends BaseUpdatableEntity {
   @JoinColumn(name = "author_id")
   private User sender;
 
-  @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "channel_id", nullable = false)
   private Channel channel;
 
   @Column(columnDefinition = "TEXT")
   private String content;
 
-  @OneToMany
+  @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
   @JoinColumn(name = "message_id")
   private final List<MessageAttachment> attachmentsList = new ArrayList<>();
 
@@ -66,19 +65,19 @@ public class Message extends BaseUpdatableEntity {
     return !(this.sender.getId().equals(senderId));
   }
 
-  public void addBinaryContent(BinaryContent binaryContent) {
-    if (binaryContent == null) {
-      throw new BinaryContentNotNullException();
+  public void addAttachment(MessageAttachment attachment) {
+    if (attachment == null) {
+      throw new IllegalArgumentException(); // custom exception
     }
-//    this.binaryContentList.add(binaryContent);
+    this.attachmentsList.add(attachment);
     this.updateUpdatedAt();
   }
 
-  public void deleteBinaryContent(BinaryContent binaryContent) {
-    if (binaryContent == null) {
-      throw new BinaryContentNotNullException();
+  public void deleteAttachment(MessageAttachment attachment) {
+    if (attachment == null) {
+      throw new IllegalArgumentException();
     }
-//    this.binaryContentList.remove(binaryContent);
+    this.attachmentsList.remove(attachment);
     this.updateUpdatedAt();
   }
 }
