@@ -20,7 +20,6 @@ public abstract class BaseUpdatableEntity extends BaseEntity {
 
   public BaseUpdatableEntity() {
     super();
-    this.updatedAt = super.getCreatedAt();
   }
 
   public void updateUpdatedAt() {

@@ -1,6 +1,5 @@
 package com.sprint.mission.discodeit.entity.base;
 
-import com.sprint.mission.discodeit.global.util.TimeUtil;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
@@ -22,15 +21,13 @@ public abstract class BaseEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
-  private final UUID id;
+  private UUID id;
 
   @CreatedDate
   @Column(name = "created_at", nullable = false)
-  private final Instant createdAt;
+  private Instant createdAt;
 
   public BaseEntity() {
-    this.id = UUID.randomUUID();
-    this.createdAt = TimeUtil.getCurrentTime();
   }
 
 }

@@ -64,7 +64,7 @@ class AuthServiceTest {
     // then
     assertEquals(loginResponse.id(), user.getId());
 
-    UserStatus foundUserStatus = userStatusRepository.findUserStatusById(userStatus.getId());
+    UserStatus foundUserStatus = userStatusRepository.findUserStatusById(userStatus.getId()).get();
     assertTrue(foundUserStatus.isRecentLogin());
   }
 

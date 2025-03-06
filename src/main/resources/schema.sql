@@ -1,3 +1,17 @@
+drop table if exists read_statuses cascade;
+
+drop table if exists user_statuses cascade;
+
+drop table if exists message_attachments cascade;
+
+drop table if exists messages cascade;
+
+drop table if exists users cascade;
+
+drop table if exists binary_contents cascade;
+
+drop table if exists channels cascade;
+
 CREATE TABLE binary_contents
 (
     id UUID PRIMARY KEY,

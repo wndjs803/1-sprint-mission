@@ -20,6 +20,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -38,6 +39,7 @@ public class BasicUserService implements UserService {
   private final MultipartFileConverter multipartFileConverter;
 
   @Override
+  @Transactional
   public UserDto createUser(CreateUserRequest createUserRequest, MultipartFile profileImageFile) {
 
     // name 중복 여부
@@ -49,11 +51,10 @@ public class BasicUserService implements UserService {
 
     // 이미지는 선택적으로 등록
     updateProfileImage(user, profileImageFile);
+    User savedUser = userRepository.saveUser(user);
 
     // UserStatus 생성(추후 service layer로 교체)
-    userStatusRepository.saveUserStatus(UserStatus.of(user));
-
-    User savedUser = userRepository.saveUser(user);
+    userStatusRepository.saveUserStatus(UserStatus.of(savedUser));
 
     UUID profileId = null;
     if (savedUser.getProfileImage() != null) {
@@ -63,6 +64,7 @@ public class BasicUserService implements UserService {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public FindUserResponse findUserByIdOrThrow(UUID userId) {
     User foundUser = userValidator.validateUserExistsByUserId(userId);
     UserStatus userStatus = userStatusValidator.validateUserStatusExistsByUser(foundUser);
@@ -76,6 +78,7 @@ public class BasicUserService implements UserService {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public List<FindUserResponse> findAllUsers() {
     return userRepository.findAllUsers().stream()
         .map(user -> findUserByIdOrThrow(user.getId()))
@@ -83,6 +86,7 @@ public class BasicUserService implements UserService {
   }
 
   @Override
+  @Transactional
   public UserDto updateUser(UUID userId, UpdateUserRequest updateUserRequest,
       MultipartFile profileImageFile) {
     User foundUser = userValidator.validateUserExistsByUserId(userId);
@@ -101,28 +105,19 @@ public class BasicUserService implements UserService {
   }
 
   @Override
+  @Transactional
   public void deleteUser(UUID userId) {
     // 유저 존재 여부 확인
-    User foundUser = userValidator.validateUserExistsByUserId(userId);
+    userValidator.validateUserExistsByUserId(userId);
 
-    // UserStatus 삭제
-    UserStatus userStatus = userStatusValidator.validateUserStatusExistsByUser(foundUser);
-    // service?
-    userStatusRepository.removeUserStatus(userStatus.getId());
-
-    // BinaryContent 삭제
-    // BinaryContent 존재 여부 확인 -> validator or Service
-    // binaryContentService deleteBinaryContent로 검증 및 삭제까지 가능
-    binaryContentRepository.removeBinaryContent(foundUser.getProfileImage().getId());
-
-    // 참여한 채널에서도 유저 삭제
+    // cascade 옵션으로 userStatus, binaryContent 자동 삭제
 
     // 유저 삭제
     userRepository.removeUser(userId);
   }
 
   private void updateProfileImage(User user, MultipartFile profileImageFile) {
-    if (profileImageFile != null) {
+    if (!profileImageFile.isEmpty()) {
       BinaryContent binaryContent = binaryContentRepository.saveBinaryContent(
           BinaryContent.of(profileImageFile.getOriginalFilename(),
               profileImageFile.getContentType(),

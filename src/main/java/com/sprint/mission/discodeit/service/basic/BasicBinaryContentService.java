@@ -8,7 +8,6 @@ import com.sprint.mission.discodeit.mapper.BinaryContentMapper;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.service.BinaryContentService;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -39,7 +38,7 @@ public class BasicBinaryContentService implements BinaryContentService {
   @Override
   public BinaryContentDto findBinaryContentById(UUID binaryContentId) {
     BinaryContent binaryContent =
-        Optional.ofNullable(binaryContentRepository.findBinaryContentById(binaryContentId))
+        binaryContentRepository.findBinaryContentById(binaryContentId)
             .orElseThrow(() -> new BinaryContentNofFoundException("id: " + binaryContentId));
 
     return binaryContentMapper.toBinaryContentDto(binaryContent);

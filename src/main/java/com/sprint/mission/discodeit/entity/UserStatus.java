@@ -2,6 +2,7 @@ package com.sprint.mission.discodeit.entity;
 
 import com.sprint.mission.discodeit.entity.base.BaseUpdatableEntity;
 import com.sprint.mission.discodeit.global.error.ErrorCode;
+import com.sprint.mission.discodeit.global.util.TimeUtil;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -34,7 +35,7 @@ public class UserStatus extends BaseUpdatableEntity {
   private UserStatus(User user) {
     super();
     this.user = user;
-    this.loginAt = this.getCreatedAt();
+    this.loginAt = TimeUtil.getCurrentTime();
   }
 
   public static UserStatus of(User user) {
@@ -50,7 +51,7 @@ public class UserStatus extends BaseUpdatableEntity {
   }
 
   public boolean isRecentLogin() {
-    if (this.getCreatedAt() == this.loginAt) {
+    if (this.getUpdatedAt() == null) {
       return false;
     }
     return ChronoUnit.MINUTES.between(Instant.now(), this.loginAt) < LOGIN_EXPIRATION_MINUTES;
