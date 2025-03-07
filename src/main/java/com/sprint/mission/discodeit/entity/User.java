@@ -49,16 +49,25 @@ public class User extends BaseUpdatableEntity {
   }
 
   public void updateName(String name) {
+    if (name == null) {
+      return;
+    }
     this.name = name;
     this.updateUpdatedAt();
   }
 
   public void updateEmail(String email) {
+    if (email == null) {
+      return;
+    }
     this.email = email;
     this.updateUpdatedAt();
   }
 
   public void updatePassword(String password) {
+    if (password == null) {
+      return;
+    }
     this.password = password;
     this.updateUpdatedAt();
   }

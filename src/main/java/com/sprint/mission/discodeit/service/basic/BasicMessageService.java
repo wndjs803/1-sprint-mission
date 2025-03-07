@@ -57,7 +57,7 @@ public class BasicMessageService implements MessageService {
         messageMapper.toEntity(sender, foundChannel, createMessageRequest.content())
     );
 
-    if (!multipartFileList.isEmpty()) {
+    if (multipartFileList != null) {
       multipartFileList
           .forEach(multipartFile -> {
             BinaryContent binaryContent = BinaryContent.of(multipartFile.getOriginalFilename(),
@@ -74,15 +74,6 @@ public class BasicMessageService implements MessageService {
     }
 
     return messageMapper.toMessageDto(message);
-  }
-
-  // 요구 사항에 없기에 시간 남으면 수정
-  @Override
-  public MessageDto findMessageByIdOrThrow(UUID messageId) {
-    Message message = findMessageById(messageId);
-
-    return messageMapper.toMessageDto(message);
-
   }
 
   @Override

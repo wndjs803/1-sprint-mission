@@ -102,7 +102,7 @@ public class BasicUserService implements UserService {
   }
 
   private void updateProfileImage(User user, MultipartFile profileImageFile) {
-    if (!profileImageFile.isEmpty()) {
+    if (profileImageFile != null) {
       BinaryContent binaryContent = binaryContentRepository.saveBinaryContent(
           BinaryContent.of(profileImageFile.getOriginalFilename(), profileImageFile.getSize(),
               profileImageFile.getContentType()));

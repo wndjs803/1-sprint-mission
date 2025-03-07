@@ -11,10 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface MessageService {
 
-  public MessageDto createMessage(CreateMessageRequest createMessageRequest,
+  MessageDto createMessage(CreateMessageRequest createMessageRequest,
       List<MultipartFile> multipartFileList);
-
-  MessageDto findMessageByIdOrThrow(UUID messageId);
 
   PageResponse<MessageDto> findAllMessagesByChannelId(UUID channelId, Pageable pageable);
 
