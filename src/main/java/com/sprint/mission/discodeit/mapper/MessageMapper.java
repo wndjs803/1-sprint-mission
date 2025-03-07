@@ -25,7 +25,8 @@ public class MessageMapper {
     UserDto userDto = userMapper.toUserDto(message.getSender());
     List<BinaryContentDto> attachments = message.getAttachmentsList().stream()
         .map(messageAttachment ->
-            binaryContentMapper.toBinaryContentDto(messageAttachment.getAttachment()))
+            binaryContentMapper.toBinaryContentDto(
+                messageAttachment.getAttachment())) // n + 1 문제 발생
         .toList();
 
     return new MessageDto(message.getId(), message.getCreatedAt(), message.getUpdatedAt(),

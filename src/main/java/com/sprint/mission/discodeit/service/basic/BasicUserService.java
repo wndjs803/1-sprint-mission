@@ -40,7 +40,6 @@ public class BasicUserService implements UserService {
   @Override
   @Transactional
   public UserDto createUser(CreateUserRequest createUserRequest, MultipartFile profileImageFile) {
-
     // name 중복 여부
     userValidator.validateDuplicateByName(createUserRequest.username());
     // email 중복 여부

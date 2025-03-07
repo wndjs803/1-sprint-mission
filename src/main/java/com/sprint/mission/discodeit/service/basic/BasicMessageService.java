@@ -67,9 +67,10 @@ public class BasicMessageService implements MessageService {
             binaryContentStorage.put(savedContent.getId(),
                 multipartFileConverter.toByteArray(multipartFile));
 
-            messageAttachmentRepository.save(
+            MessageAttachment messageAttachment = messageAttachmentRepository.save(
                 MessageAttachment.of(message, savedContent)
             );
+            message.addAttachment(messageAttachment);
           });
     }
 
