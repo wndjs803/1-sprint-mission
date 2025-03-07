@@ -19,8 +19,10 @@ public class UserMapper {
   }
 
   public UserDto toUserDto(User user) {
-    BinaryContentDto binaryContentDto =
-        binaryContentMapper.toBinaryContentDto(user.getProfileImage());
+    BinaryContentDto binaryContentDto = null;
+    if (user.getProfileImage() != null) {
+      binaryContentDto = binaryContentMapper.toBinaryContentDto(user.getProfileImage());
+    }
     return new UserDto(user.getId(), user.getName(), user.getEmail(), binaryContentDto,
         user.getUserStatus().isRecentLogin());
   }

@@ -5,6 +5,8 @@ import com.sprint.mission.discodeit.entity.Message;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface MessageRepository {
 
@@ -14,7 +16,7 @@ public interface MessageRepository {
 
   List<Message> findAllMessages();
 
-  List<Message> findAllMessagesByChannel(Channel channel);
+  Page<Message> findAllMessagesByChannel(Channel channel, Pageable pageable);
 
   Optional<Message> findLastMessage();
 
