@@ -17,7 +17,6 @@ import com.sprint.mission.discodeit.repository.jpa.MessageAttachmentJpaRepositor
 import com.sprint.mission.discodeit.service.MessageService;
 import com.sprint.mission.discodeit.validator.ChannelValidator;
 import com.sprint.mission.discodeit.validator.UserValidator;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -51,24 +50,19 @@ public class BasicMessageService implements MessageService {
         messageMapper.toEntity(sender, foundChannel, createMessageRequest.content())
     );
 
-    List<UUID> attachmentIds = new ArrayList<>();
-
     if (!multipartFileList.isEmpty()) {
-      attachmentIds = multipartFileList.stream()
-          .map(multipartFile -> {
-            // binaryContentService의 create와 똑같이 동작
+      multipartFileList
+          .forEach(multipartFile -> {
             BinaryContent binaryContent = BinaryContent.of(multipartFile.getOriginalFilename(),
                 multipartFile.getContentType(), multipartFileConverter.toByteArray(multipartFile));
             BinaryContent savedContent = binaryContentRepository.saveBinaryContent(binaryContent);
             messageAttachmentRepository.save(
                 MessageAttachment.of(message, savedContent)
             );
-            return savedContent.getId();
-          })
-          .toList();
+          });
     }
 
-    return messageMapper.toMessageDto(message, attachmentIds);
+    return messageMapper.toMessageDto(message);
   }
 
   // 요구 사항에 없기에 시간 남으면 수정
@@ -76,9 +70,7 @@ public class BasicMessageService implements MessageService {
   public MessageDto findMessageByIdOrThrow(UUID messageId) {
     Message message = findMessageById(messageId);
 
-    List<UUID> attachmentIds = getAttachmentIds(message);
-
-    return messageMapper.toMessageDto(message, attachmentIds);
+    return messageMapper.toMessageDto(message);
 
   }
 
@@ -87,7 +79,7 @@ public class BasicMessageService implements MessageService {
   public List<MessageDto> findAllMessagesByChannelId(UUID channelId) {
     Channel channel = channelValidator.validateChannelExistsByChannelId(channelId);
     return messageRepository.findAllMessagesByChannel(channel).stream()
-        .map(message -> messageMapper.toMessageDto(message, getAttachmentIds(message)))
+        .map(message -> messageMapper.toMessageDto(message))
         .toList();
   }
 
@@ -98,19 +90,13 @@ public class BasicMessageService implements MessageService {
 
     foundMessage.updateContent(updateMessageRequest.newContent());
 
-    List<UUID> attachmentIds = getAttachmentIds(foundMessage);
-
-    return messageMapper.toMessageDto(foundMessage, attachmentIds);
+    return messageMapper.toMessageDto(foundMessage);
   }
 
   @Override
   @Transactional
   public void deleteMessage(UUID messageId) {
-    Message foundMessage = findMessageById(messageId);
-
-//    foundMessage.getBinaryContentList()
-//        .forEach(
-//            binaryContent -> binaryContentRepository.removeBinaryContent(binaryContent.getId()));
+    findMessageById(messageId);
 
     messageRepository.removeMessage(messageId);
   }
@@ -118,11 +104,5 @@ public class BasicMessageService implements MessageService {
   private Message findMessageById(UUID messageId) {
     return messageRepository.findMessageById(messageId)
         .orElseThrow(() -> new MessageNotFoundException("id: " + messageId));
-  }
-
-  private List<UUID> getAttachmentIds(Message message) {
-    return message.getAttachmentsList().stream()
-        .map(attachment -> attachment.getAttachment().getId())
-        .toList();
   }
 }

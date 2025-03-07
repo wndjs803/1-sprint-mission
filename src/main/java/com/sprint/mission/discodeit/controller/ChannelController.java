@@ -5,7 +5,6 @@ import com.sprint.mission.discodeit.dto.channel.ChannelDto;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePrivateChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePublicChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.UpdateChannelRequest;
-import com.sprint.mission.discodeit.dto.channel.response.FindChannelResponse;
 import com.sprint.mission.discodeit.service.ChannelService;
 import java.util.List;
 import java.util.UUID;
@@ -55,7 +54,7 @@ public class ChannelController implements ChannelApi {
   }
 
   @RequestMapping(value = "", method = RequestMethod.GET)
-  public ResponseEntity<List<FindChannelResponse>> findUserAccessibleChannels(
+  public ResponseEntity<List<ChannelDto>> findUserAccessibleChannels(
       @RequestParam("userId") UUID userId) {
     return ResponseEntity.status(HttpStatus.OK)
         .body(channelService.findAllChannelsByUserId(userId));

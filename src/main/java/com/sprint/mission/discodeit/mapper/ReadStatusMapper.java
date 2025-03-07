@@ -8,8 +8,7 @@ import org.springframework.stereotype.Component;
 public class ReadStatusMapper {
 
   public ReadStatusDto toReadStatusDto(ReadStatus readStatus) {
-    return new ReadStatusDto(readStatus.getId(), readStatus.getCreatedAt(),
-        readStatus.getUpdatedAt(),
-        readStatus.getUser().getId(), readStatus.getChannel().getId(), readStatus.getLastReadAt());
+    return new ReadStatusDto(readStatus.getId(), readStatus.getUser().getId(),
+        readStatus.getChannel().getId(), readStatus.getLastReadAt());
   }
 }

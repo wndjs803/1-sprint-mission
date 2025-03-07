@@ -4,7 +4,6 @@ import com.sprint.mission.discodeit.controller.api.UserApi;
 import com.sprint.mission.discodeit.dto.user.UserDto;
 import com.sprint.mission.discodeit.dto.user.request.CreateUserRequest;
 import com.sprint.mission.discodeit.dto.user.request.UpdateUserRequest;
-import com.sprint.mission.discodeit.dto.user.response.FindUserResponse;
 import com.sprint.mission.discodeit.dto.userStatus.UserStatusDto;
 import com.sprint.mission.discodeit.dto.userStatus.request.UpdateUserStatusByUserIdRequest;
 import com.sprint.mission.discodeit.service.UserService;
@@ -57,7 +56,7 @@ public class UserController implements UserApi {
   }
 
   @RequestMapping(value = "", method = RequestMethod.GET)
-  public ResponseEntity<List<FindUserResponse>> findAllUsers() {
+  public ResponseEntity<List<UserDto>> findAllUsers() {
     return ResponseEntity.status(HttpStatus.OK)
         .body(userService.findAllUsers());
   }

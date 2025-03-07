@@ -3,7 +3,6 @@ package com.sprint.mission.discodeit.service.basic;
 import com.sprint.mission.discodeit.dto.user.UserDto;
 import com.sprint.mission.discodeit.dto.user.request.CreateUserRequest;
 import com.sprint.mission.discodeit.dto.user.request.UpdateUserRequest;
-import com.sprint.mission.discodeit.dto.user.response.FindUserResponse;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
@@ -56,16 +55,12 @@ public class BasicUserService implements UserService {
     // UserStatus 생성(추후 service layer로 교체)
     userStatusRepository.saveUserStatus(UserStatus.of(savedUser));
 
-    UUID profileId = null;
-    if (savedUser.getProfileImage() != null) {
-      profileId = savedUser.getProfileImage().getId();
-    }
-    return userMapper.toUserDto(savedUser, profileId);
+    return userMapper.toUserDto(savedUser);
   }
 
   @Override
   @Transactional(readOnly = true)
-  public FindUserResponse findUserByIdOrThrow(UUID userId) {
+  public UserDto findUserByIdOrThrow(UUID userId) {
     User foundUser = userValidator.validateUserExistsByUserId(userId);
     UserStatus userStatus = userStatusValidator.validateUserStatusExistsByUser(foundUser);
 
@@ -74,12 +69,12 @@ public class BasicUserService implements UserService {
       profileId = foundUser.getProfileImage().getId();
     }
 
-    return userMapper.toFindUserResponse(foundUser, profileId, userStatus.isRecentLogin());
+    return userMapper.toUserDto(foundUser);
   }
 
   @Override
   @Transactional(readOnly = true)
-  public List<FindUserResponse> findAllUsers() {
+  public List<UserDto> findAllUsers() {
     return userRepository.findAllUsers().stream()
         .map(user -> findUserByIdOrThrow(user.getId()))
         .collect(Collectors.toList());
@@ -96,12 +91,7 @@ public class BasicUserService implements UserService {
 
     updateProfileImage(foundUser, profileImageFile);
 
-    UUID profileId = null;
-    if (foundUser.getProfileImage() != null) {
-      profileId = foundUser.getProfileImage().getId();
-    }
-
-    return userMapper.toUserDto(foundUser, profileId);
+    return userMapper.toUserDto(foundUser);
   }
 
   @Override
