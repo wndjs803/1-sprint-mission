@@ -51,7 +51,7 @@ public class UserStatus extends BaseUpdatableEntity {
   }
 
   public boolean isRecentLogin() {
-    if (this.getUpdatedAt() == null) {
+    if (this.getUpdatedAt().equals(this.getCreatedAt())) {
       return false;
     }
     return ChronoUnit.MINUTES.between(Instant.now(), this.loginAt) < LOGIN_EXPIRATION_MINUTES;

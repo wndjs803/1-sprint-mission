@@ -53,7 +53,8 @@ public class BasicUserService implements UserService {
     User savedUser = userRepository.saveUser(user);
 
     // UserStatus 생성(추후 service layer로 교체)
-    userStatusRepository.saveUserStatus(UserStatus.of(savedUser));
+    UserStatus savedUserStatus = userStatusRepository.saveUserStatus(UserStatus.of(savedUser));
+    savedUser.updateUserStatus(savedUserStatus);
 
     return userMapper.toUserDto(savedUser);
   }

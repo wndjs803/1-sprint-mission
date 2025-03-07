@@ -68,6 +68,10 @@ public class User extends BaseUpdatableEntity {
     this.updateUpdatedAt();
   }
 
+  public void updateUserStatus(UserStatus userStatus) {
+    this.userStatus = userStatus;
+  }
+
   public void updateUserInfo(String name, String email, String password) {
     this.updateName(name);
     this.updateEmail(email);
