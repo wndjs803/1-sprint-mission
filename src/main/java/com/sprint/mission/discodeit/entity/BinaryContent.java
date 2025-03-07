@@ -25,20 +25,16 @@ public class BinaryContent extends BaseEntity {
   @Column(name = "content_type", nullable = false, length = 100)
   private String contentType;
 
-  @Column(name = "bytes", nullable = false)
-  private byte[] content;
+//  @Column(name = "bytes", nullable = false)
+//  private byte[] content;
 
-  public static final BinaryContent EMPTY = new BinaryContent(
-      "tempFileName", "Text", new byte[0]);
-
-  private BinaryContent(String fileName, String contentType, byte[] content) {
+  private BinaryContent(String fileName, long size, String contentType) {
     this.fileName = fileName;
-    this.size = (long) content.length;
+    this.size = size;
     this.contentType = contentType;
-    this.content = content;
   }
 
-  public static BinaryContent of(String fileName, String contentType, byte[] content) {
-    return new BinaryContent(fileName, contentType, content);
+  public static BinaryContent of(String fileName, long size, String contentType) {
+    return new BinaryContent(fileName, size, contentType);
   }
 }

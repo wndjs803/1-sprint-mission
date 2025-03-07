@@ -12,7 +12,7 @@ import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.repository.UserStatusRepository;
 import com.sprint.mission.discodeit.service.UserService;
-import com.sprint.mission.discodeit.validator.UserStatusValidator;
+import com.sprint.mission.discodeit.storage.BinaryContentStorage;
 import com.sprint.mission.discodeit.validator.UserValidator;
 import java.util.List;
 import java.util.UUID;
@@ -33,9 +33,9 @@ public class BasicUserService implements UserService {
   private final UserMapper userMapper;
 
   private final UserValidator userValidator;
-  private final UserStatusValidator userStatusValidator;
 
   private final MultipartFileConverter multipartFileConverter;
+  private final BinaryContentStorage binaryContentStorage;
 
   @Override
   @Transactional
@@ -62,12 +62,6 @@ public class BasicUserService implements UserService {
   @Transactional(readOnly = true)
   public UserDto findUserByIdOrThrow(UUID userId) {
     User foundUser = userValidator.validateUserExistsByUserId(userId);
-    UserStatus userStatus = userStatusValidator.validateUserStatusExistsByUser(foundUser);
-
-    UUID profileId = null;
-    if (foundUser.getProfileImage() != null) {
-      profileId = foundUser.getProfileImage().getId();
-    }
 
     return userMapper.toUserDto(foundUser);
   }
@@ -109,9 +103,11 @@ public class BasicUserService implements UserService {
   private void updateProfileImage(User user, MultipartFile profileImageFile) {
     if (!profileImageFile.isEmpty()) {
       BinaryContent binaryContent = binaryContentRepository.saveBinaryContent(
-          BinaryContent.of(profileImageFile.getOriginalFilename(),
-              profileImageFile.getContentType(),
-              multipartFileConverter.toByteArray(profileImageFile)));
+          BinaryContent.of(profileImageFile.getOriginalFilename(), profileImageFile.getSize(),
+              profileImageFile.getContentType()));
+
+      binaryContentStorage.put(binaryContent.getId(),
+          multipartFileConverter.toByteArray(profileImageFile));
 
       user.updateProfileImage(binaryContent);
     }

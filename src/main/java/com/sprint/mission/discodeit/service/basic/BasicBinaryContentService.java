@@ -7,6 +7,7 @@ import com.sprint.mission.discodeit.global.util.MultipartFileConverter;
 import com.sprint.mission.discodeit.mapper.BinaryContentMapper;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.service.BinaryContentService;
+import com.sprint.mission.discodeit.storage.BinaryContentStorage;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -18,16 +19,21 @@ import org.springframework.web.multipart.MultipartFile;
 public class BasicBinaryContentService implements BinaryContentService {
 
   private final BinaryContentRepository binaryContentRepository;
-  private final MultipartFileConverter multipartFileConverter;
   private final BinaryContentMapper binaryContentMapper;
+  private final MultipartFileConverter multipartFileConverter;
+  private final BinaryContentStorage binaryContentStorage;
 
   @Override
   public BinaryContent createBinaryContent(MultipartFile multipartFile) {
-    byte[] converterByteArray = multipartFileConverter.toByteArray(multipartFile);
     BinaryContent binaryContent = BinaryContent.of(multipartFile.getOriginalFilename(),
-        multipartFile.getContentType(), converterByteArray);
+        multipartFile.getSize(), multipartFile.getContentType());
 
-    return binaryContentRepository.saveBinaryContent(binaryContent);
+    BinaryContent savedContent = binaryContentRepository.saveBinaryContent(binaryContent);
+
+    binaryContentStorage.put(savedContent.getId(),
+        multipartFileConverter.toByteArray(multipartFile));
+
+    return savedContent;
   }
 
   @Override

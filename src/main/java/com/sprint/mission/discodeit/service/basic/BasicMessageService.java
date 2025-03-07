@@ -15,6 +15,7 @@ import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.repository.MessageRepository;
 import com.sprint.mission.discodeit.repository.jpa.MessageAttachmentJpaRepository;
 import com.sprint.mission.discodeit.service.MessageService;
+import com.sprint.mission.discodeit.storage.BinaryContentStorage;
 import com.sprint.mission.discodeit.validator.ChannelValidator;
 import com.sprint.mission.discodeit.validator.UserValidator;
 import java.util.List;
@@ -35,9 +36,10 @@ public class BasicMessageService implements MessageService {
   private final UserValidator userValidator;
   private final ChannelValidator channelValidator;
 
-  private final MultipartFileConverter multipartFileConverter;
-
   private final MessageMapper messageMapper;
+
+  private final MultipartFileConverter multipartFileConverter;
+  private final BinaryContentStorage binaryContentStorage;
 
   @Override
   @Transactional
@@ -54,8 +56,12 @@ public class BasicMessageService implements MessageService {
       multipartFileList
           .forEach(multipartFile -> {
             BinaryContent binaryContent = BinaryContent.of(multipartFile.getOriginalFilename(),
-                multipartFile.getContentType(), multipartFileConverter.toByteArray(multipartFile));
+                multipartFile.getSize(), multipartFile.getContentType());
             BinaryContent savedContent = binaryContentRepository.saveBinaryContent(binaryContent);
+
+            binaryContentStorage.put(savedContent.getId(),
+                multipartFileConverter.toByteArray(multipartFile));
+
             messageAttachmentRepository.save(
                 MessageAttachment.of(message, savedContent)
             );
