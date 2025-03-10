@@ -8,6 +8,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -36,8 +37,12 @@ public class Message extends BaseUpdatableEntity {
   private String content;
 
   @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-  @JoinColumn(name = "message_id")
-  private final List<MessageAttachment> attachmentsList = new ArrayList<>();
+  @JoinTable(
+      name = "message_attachments",
+      joinColumns = @JoinColumn(name = "message_id"),
+      inverseJoinColumns = @JoinColumn(name = "attachment_id")
+  )
+  private List<BinaryContent> attachmentsList = new ArrayList<>();
 
   private Message(User sender, Channel channel, String content) {
     super();
@@ -65,7 +70,7 @@ public class Message extends BaseUpdatableEntity {
     return !(this.sender.getId().equals(senderId));
   }
 
-  public void addAttachment(MessageAttachment attachment) {
+  public void addAttachment(BinaryContent attachment) {
     if (attachment == null) {
       throw new IllegalArgumentException(); // custom exception
     }
@@ -73,7 +78,7 @@ public class Message extends BaseUpdatableEntity {
     this.updateUpdatedAt();
   }
 
-  public void deleteAttachment(MessageAttachment attachment) {
+  public void deleteAttachment(BinaryContent attachment) {
     if (attachment == null) {
       throw new IllegalArgumentException();
     }

@@ -7,7 +7,6 @@ import com.sprint.mission.discodeit.dto.response.PageResponse;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
-import com.sprint.mission.discodeit.entity.MessageAttachment;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.global.error.execption.message.MessageNotFoundException;
 import com.sprint.mission.discodeit.global.util.MultipartFileConverter;
@@ -15,7 +14,6 @@ import com.sprint.mission.discodeit.mapper.MessageMapper;
 import com.sprint.mission.discodeit.mapper.PageResponseMapper;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.repository.MessageRepository;
-import com.sprint.mission.discodeit.repository.jpa.MessageAttachmentJpaRepository;
 import com.sprint.mission.discodeit.service.MessageService;
 import com.sprint.mission.discodeit.storage.BinaryContentStorage;
 import com.sprint.mission.discodeit.validator.ChannelValidator;
@@ -37,7 +35,6 @@ public class BasicMessageService implements MessageService {
 
   private final MessageRepository messageRepository;
   private final BinaryContentRepository binaryContentRepository;
-  private final MessageAttachmentJpaRepository messageAttachmentRepository;
 
   private final UserValidator userValidator;
   private final ChannelValidator channelValidator;
@@ -69,10 +66,7 @@ public class BasicMessageService implements MessageService {
             binaryContentStorage.put(savedContent.getId(),
                 multipartFileConverter.toByteArray(multipartFile));
 
-            MessageAttachment messageAttachment = messageAttachmentRepository.save(
-                MessageAttachment.of(message, savedContent)
-            );
-            message.addAttachment(messageAttachment);
+            message.addAttachment(savedContent);
           });
     }
 
