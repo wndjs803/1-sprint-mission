@@ -15,6 +15,7 @@ import com.sprint.mission.discodeit.service.UserService;
 import com.sprint.mission.discodeit.storage.BinaryContentStorage;
 import com.sprint.mission.discodeit.validator.UserValidator;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -101,15 +102,13 @@ public class BasicUserService implements UserService {
   }
 
   private void updateProfileImage(User user, MultipartFile profileImageFile) {
-    if (profileImageFile != null) {
-      BinaryContent binaryContent = binaryContentRepository.saveBinaryContent(
-          BinaryContent.of(profileImageFile.getOriginalFilename(), profileImageFile.getSize(),
-              profileImageFile.getContentType()));
+    Optional.ofNullable(profileImageFile)
+        .ifPresent(file -> {
+          BinaryContent binaryContent = binaryContentRepository.saveBinaryContent(
+              BinaryContent.of(file.getOriginalFilename(), file.getSize(), file.getContentType()));
 
-      binaryContentStorage.put(binaryContent.getId(),
-          multipartFileConverter.toByteArray(profileImageFile));
-
-      user.updateProfileImage(binaryContent);
-    }
+          binaryContentStorage.put(binaryContent.getId(), multipartFileConverter.toByteArray(file));
+          user.updateProfileImage(binaryContent);
+        });
   }
 }

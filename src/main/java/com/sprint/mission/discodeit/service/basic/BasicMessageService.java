@@ -19,7 +19,9 @@ import com.sprint.mission.discodeit.storage.BinaryContentStorage;
 import com.sprint.mission.discodeit.validator.ChannelValidator;
 import com.sprint.mission.discodeit.validator.UserValidator;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -56,19 +58,19 @@ public class BasicMessageService implements MessageService {
         Message.of(sender, foundChannel, createMessageRequest.content())
     );
 
-    if (multipartFileList != null) {
-      multipartFileList
-          .forEach(multipartFile -> {
-            BinaryContent binaryContent = BinaryContent.of(multipartFile.getOriginalFilename(),
-                multipartFile.getSize(), multipartFile.getContentType());
-            BinaryContent savedContent = binaryContentRepository.saveBinaryContent(binaryContent);
+    Optional.ofNullable(multipartFileList)
+        .orElse(Collections.emptyList())
+        .forEach(multipartFile -> {
+          BinaryContent savedContent = binaryContentRepository.saveBinaryContent(
+              BinaryContent.of(multipartFile.getOriginalFilename(),
+                  multipartFile.getSize(),
+                  multipartFile.getContentType())
+          );
 
-            binaryContentStorage.put(savedContent.getId(),
-                multipartFileConverter.toByteArray(multipartFile));
-
-            message.addAttachment(savedContent);
-          });
-    }
+          binaryContentStorage.put(savedContent.getId(),
+              multipartFileConverter.toByteArray(multipartFile));
+          message.addAttachment(savedContent);
+        });
 
     return messageMapper.toMessageDto(message);
   }

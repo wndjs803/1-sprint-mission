@@ -8,9 +8,8 @@ import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.repository.MessageRepository;
 import com.sprint.mission.discodeit.repository.ReadStatusRepository;
 import java.time.Instant;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -33,26 +32,16 @@ public class ChannelMapper {
   }
 
   private List<UserDto> getChannelUserList(Channel channel) {
-    List<UserDto> channelUserList = new ArrayList<>();
-
-    if (channel.isPrivate()) {
-      channelUserList = readStatusRepository.findAllReadStatusByChannel(channel).stream()
-          .map(readStatus -> userMapper.toUserDto(readStatus.getUser()))
-          .toList();
-    }
-
-    return channelUserList;
+    return channel.isPrivate()
+        ? readStatusRepository.findAllReadStatusByChannel(channel).stream()
+        .map(readStatus -> userMapper.toUserDto(readStatus.getUser()))
+        .toList()
+        : Collections.emptyList();
   }
 
   private Instant getLastMessageAt() {
-    Optional<Message> foundMessage = messageRepository.findLastMessage();
-
-    // 채널에 메세지가 하나도 없을 때 시간 정보를 null로 해서 보내도 될까? -> 일단 null 로 기본값 지정
-    Instant lastMessageAt = null;
-    if (foundMessage.isPresent()) {
-      lastMessageAt = foundMessage.get().getCreatedAt();
-    }
-
-    return lastMessageAt;
+    return messageRepository.findLastMessage()
+        .map(Message::getCreatedAt)
+        .orElse(null);
   }
 }
