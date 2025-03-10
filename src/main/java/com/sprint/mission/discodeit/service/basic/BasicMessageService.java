@@ -56,7 +56,7 @@ public class BasicMessageService implements MessageService {
     Channel foundChannel = channelValidator.validateChannelExistsByChannelId(
         createMessageRequest.channelId());
     Message message = messageRepository.saveMessage(
-        messageMapper.toEntity(sender, foundChannel, createMessageRequest.content())
+        Message.of(sender, foundChannel, createMessageRequest.content())
     );
 
     if (multipartFileList != null) {

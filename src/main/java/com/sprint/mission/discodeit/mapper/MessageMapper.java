@@ -1,35 +1,27 @@
 package com.sprint.mission.discodeit.mapper;
 
-import com.sprint.mission.discodeit.dto.binaryContent.BinaryContentDto;
 import com.sprint.mission.discodeit.dto.message.MessageDto;
-import com.sprint.mission.discodeit.dto.user.UserDto;
-import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
-import com.sprint.mission.discodeit.entity.User;
-import java.util.List;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-@Component
-@RequiredArgsConstructor
-public class MessageMapper {
+@Mapper(componentModel = "spring", uses = {BinaryContentMapper.class, UserMapper.class})
+public interface MessageMapper {
 
-  private final BinaryContentMapper binaryContentMapper;
-  private final UserMapper userMapper;
+//  public MessageDto toMessageDto(Message message) {
+//    UserDto userDto = userMapper.toUserDto(message.getSender());
+//    List<BinaryContentDto> attachments = message.getAttachmentsList().stream()
+//        .map(messageAttachment ->
+//            binaryContentMapper.toBinaryContentDto(
+//                messageAttachment.getAttachment())) // n + 1 문제 발생
+//        .toList();
+//
+//    return new MessageDto(message.getId(), message.getCreatedAt(), message.getUpdatedAt(),
+//        message.getContent(), message.getChannel().getId(), userDto, attachments);
+//  }
 
-  public Message toEntity(User sender, Channel channel, String content) {
-    return Message.of(sender, channel, content);
-  }
-
-  public MessageDto toMessageDto(Message message) {
-    UserDto userDto = userMapper.toUserDto(message.getSender());
-    List<BinaryContentDto> attachments = message.getAttachmentsList().stream()
-        .map(messageAttachment ->
-            binaryContentMapper.toBinaryContentDto(
-                messageAttachment.getAttachment())) // n + 1 문제 발생
-        .toList();
-
-    return new MessageDto(message.getId(), message.getCreatedAt(), message.getUpdatedAt(),
-        message.getContent(), message.getChannel().getId(), userDto, attachments);
-  }
+  @Mapping(target = "author", source = "sender")
+  @Mapping(target = "channelId", expression = "java(message.getChannel().getId())")
+  @Mapping(target = "attachments", source = "attachmentsList")
+  MessageDto toMessageDto(Message message);
 }
