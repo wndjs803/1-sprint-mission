@@ -9,6 +9,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +18,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "users")
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(callSuper = true)
 public class User extends BaseUpdatableEntity {
@@ -37,7 +41,7 @@ public class User extends BaseUpdatableEntity {
   // UserStatus의 'user'필드
   private UserStatus userStatus;
 
-  private User(String name, String email, String password) {
+  public User(String name, String email, String password) {
     super();
     this.name = name;
     this.email = email;
