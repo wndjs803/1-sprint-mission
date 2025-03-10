@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,13 +25,13 @@ public class BinaryContentController implements BinaryContentApi {
   private final BinaryContentStorage binaryContentStorage;
 
   @Override
-  @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+  @GetMapping(value = "/{id}")
   public ResponseEntity<BinaryContentDto> findBinaryContent(@PathVariable UUID id) {
     return ResponseEntity.status(HttpStatus.OK)
         .body(binaryContentService.findBinaryContentById(id));
   }
 
-  @RequestMapping(value = "", method = RequestMethod.GET)
+  @GetMapping(value = "")
   public ResponseEntity<List<BinaryContentDto>> findBinaryContents(
       @RequestParam("binaryContentIds") List<UUID> binaryContentIdList) {
     return ResponseEntity.status(HttpStatus.OK)
