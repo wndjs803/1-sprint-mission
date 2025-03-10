@@ -6,6 +6,7 @@ import com.sprint.mission.discodeit.dto.message.request.CreateMessageRequest;
 import com.sprint.mission.discodeit.dto.message.request.UpdateMessageRequest;
 import com.sprint.mission.discodeit.dto.response.PageResponse;
 import com.sprint.mission.discodeit.service.MessageService;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -56,9 +57,10 @@ public class MessageController implements MessageApi {
   @RequestMapping(value = "", method = RequestMethod.GET)
   public ResponseEntity<PageResponse<MessageDto>> findMessagesByChannel(
       @RequestParam("channelId") UUID channelId,
+      @RequestParam(value = "cursor", required = false) Instant cursor,
       @PageableDefault(size = 50, sort = {
           "createdAt"}, direction = Direction.DESC) Pageable pageable) {
     return ResponseEntity.status(HttpStatus.OK)
-        .body(messageService.findAllMessagesByChannelId(channelId, pageable));
+        .body(messageService.findAllMessagesByChannelId(channelId, cursor, pageable));
   }
 }

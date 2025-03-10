@@ -3,6 +3,7 @@ package com.sprint.mission.discodeit.repository.jcf;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.repository.MessageRepository;
+import java.time.Instant;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +36,12 @@ public class JCFMessageRepository implements MessageRepository {
 //    return messageData.values().stream()
 //        .filter(message -> message.getChannel() == channel)
 //        .toList();
+    return null;
+  }
+
+  @Override
+  public Page<Message> findAllMessagesByChannel(Channel channel, Instant cursor,
+      Pageable pageable) {
     return null;
   }
 

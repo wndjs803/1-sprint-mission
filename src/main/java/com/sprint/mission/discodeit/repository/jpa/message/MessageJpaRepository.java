@@ -2,6 +2,7 @@ package com.sprint.mission.discodeit.repository.jpa.message;
 
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
@@ -12,6 +13,7 @@ public interface MessageJpaRepository extends JpaRepository<Message, UUID> {
 
   Page<Message> findAllByChannel(Channel channel, Pageable pageable);
 
-  Optional<Message> findFirstByOrderByCreatedAtDesc();
+  Page<Message> findAllByChannelAndCreatedAt(Channel channel, Instant createdAt, Pageable pageable);
 
+  Optional<Message> findFirstByOrderByCreatedAtDesc();
 }

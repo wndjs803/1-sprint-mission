@@ -3,6 +3,7 @@ package com.sprint.mission.discodeit.repository.jpa.message;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.repository.MessageRepository;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,12 @@ public class MessageRepositoryImpl implements MessageRepository {
   @Override
   public Page<Message> findAllMessagesByChannel(Channel channel, Pageable pageable) {
     return messageRepository.findAllByChannel(channel, pageable);
+  }
+
+  @Override
+  public Page<Message> findAllMessagesByChannel(Channel channel, Instant cursor,
+      Pageable pageable) {
+    return messageRepository.findAllByChannelAndCreatedAt(channel, cursor, pageable);
   }
 
   @Override

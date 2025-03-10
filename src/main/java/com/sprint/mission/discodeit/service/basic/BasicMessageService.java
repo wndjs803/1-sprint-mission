@@ -20,10 +20,12 @@ import com.sprint.mission.discodeit.service.MessageService;
 import com.sprint.mission.discodeit.storage.BinaryContentStorage;
 import com.sprint.mission.discodeit.validator.ChannelValidator;
 import com.sprint.mission.discodeit.validator.UserValidator;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +43,7 @@ public class BasicMessageService implements MessageService {
   private final ChannelValidator channelValidator;
 
   private final MessageMapper messageMapper;
-  private final PageResponseMapper pageResponseMapper;
+  private final PageResponseMapper<MessageDto> pageResponseMapper;
 
   private final MultipartFileConverter multipartFileConverter;
   private final BinaryContentStorage binaryContentStorage;
@@ -79,10 +81,20 @@ public class BasicMessageService implements MessageService {
 
   @Override
   @Transactional(readOnly = true)
-  public PageResponse<MessageDto> findAllMessagesByChannelId(UUID channelId, Pageable pageable) {
+  public PageResponse<MessageDto> findAllMessagesByChannelId(UUID channelId, Instant cursor,
+      Pageable pageable) {
     Channel channel = channelValidator.validateChannelExistsByChannelId(channelId);
-    Page<Message> messagePage = messageRepository.findAllMessagesByChannel(channel, pageable);
-    return pageResponseMapper.fromsPage(messagePage);
+    Page<Message> messagePage =
+        cursor == null ? messageRepository.findAllMessagesByChannel(channel, pageable)
+            : messageRepository.findAllMessagesByChannel(channel, cursor, pageable);
+    List<MessageDto> messageDtoList = messagePage.getContent().stream()
+        .map(message -> messageMapper.toMessageDto(message))
+        .toList();
+
+    Page<MessageDto> messageDtoPage = new PageImpl<MessageDto>(messageDtoList, pageable,
+        messagePage.getTotalElements());
+
+    return pageResponseMapper.fromPage(messageDtoPage);
   }
 
   @Override
