@@ -15,8 +15,11 @@ public class PageResponseMapper<T> {
   }
 
   public PageResponse<T> fromPage(Page<T> page) {
-    return new PageResponse<>(page.getContent(),
-        page.getContent().get(page.getContent().size() - 1),
-        page.getSize(), page.hasNext(), page.getTotalElements());
+    Object nextCursor = null;
+    if (page.hasContent()) {
+      nextCursor = page.getContent().get(page.getContent().size() - 1);
+    }
+    return new PageResponse<>(page.getContent(), nextCursor, page.getSize(), page.hasNext(),
+        page.getTotalElements());
   }
 }
