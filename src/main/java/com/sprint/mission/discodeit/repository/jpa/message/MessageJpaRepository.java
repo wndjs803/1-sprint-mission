@@ -7,13 +7,15 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MessageJpaRepository extends JpaRepository<Message, UUID> {
 
   Page<Message> findAllByChannel(Channel channel, Pageable pageable);
 
-  Page<Message> findAllByChannelAndCreatedAt(Channel channel, Instant createdAt, Pageable pageable);
+  Slice<Message> findAllByChannelAndCreatedAtAfter(Channel channel, Instant createdAt,
+      Pageable pageable);
 
   Optional<Message> findFirstByOrderByCreatedAtDesc();
 }

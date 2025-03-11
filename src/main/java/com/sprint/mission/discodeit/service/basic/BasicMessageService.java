@@ -24,9 +24,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -80,17 +80,17 @@ public class BasicMessageService implements MessageService {
   public PageResponse<MessageDto> findAllMessagesByChannelId(UUID channelId, Instant cursor,
       Pageable pageable) {
     Channel channel = channelValidator.validateChannelExistsByChannelId(channelId);
-    Page<Message> messagePage =
-        cursor == null ? messageRepository.findAllMessagesByChannel(channel, pageable)
-            : messageRepository.findAllMessagesByChannel(channel, cursor, pageable);
-    List<MessageDto> messageDtoList = messagePage.getContent().stream()
+    Slice<Message> messageSlice =
+        cursor == null ? messageRepository.findSlicedMessagesByChannel(channel, pageable)
+            : messageRepository.findSlicedMessagesByChannel(channel, cursor, pageable);
+    List<MessageDto> messageDtoList = messageSlice.getContent().stream()
         .map(message -> messageMapper.toMessageDto(message))
         .toList();
 
-    Page<MessageDto> messageDtoPage = new PageImpl<MessageDto>(messageDtoList, pageable,
-        messagePage.getTotalElements());
+    Slice<MessageDto> messageDtoPage = new SliceImpl<>(messageDtoList, pageable,
+        messageSlice.hasNext());
 
-    return pageResponseMapper.fromPage(messageDtoPage);
+    return pageResponseMapper.fromSlice(messageDtoPage);
   }
 
   @Override

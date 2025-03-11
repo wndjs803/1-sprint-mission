@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 public interface MessageRepository {
 
@@ -14,9 +15,11 @@ public interface MessageRepository {
 
   Optional<Message> findMessageById(UUID messageId);
 
-  Page<Message> findAllMessagesByChannel(Channel channel, Pageable pageable);
+  Page<Message> findPagedMessagesByChannel(Channel channel, Pageable pageable);
 
-  Page<Message> findAllMessagesByChannel(Channel channel, Instant cursor, Pageable pageable);
+  Slice<Message> findSlicedMessagesByChannel(Channel channel, Pageable pageable);
+
+  Slice<Message> findSlicedMessagesByChannel(Channel channel, Instant cursor, Pageable pageable);
 
   Optional<Message> findLastMessage();
 

@@ -9,6 +9,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -28,14 +29,19 @@ public class MessageRepositoryImpl implements MessageRepository {
   }
 
   @Override
-  public Page<Message> findAllMessagesByChannel(Channel channel, Pageable pageable) {
+  public Page<Message> findPagedMessagesByChannel(Channel channel, Pageable pageable) {
     return messageRepository.findAllByChannel(channel, pageable);
   }
 
   @Override
-  public Page<Message> findAllMessagesByChannel(Channel channel, Instant cursor,
+  public Slice<Message> findSlicedMessagesByChannel(Channel channel, Pageable pageable) {
+    return messageRepository.findAllByChannel(channel, pageable);
+  }
+
+  @Override
+  public Slice<Message> findSlicedMessagesByChannel(Channel channel, Instant cursor,
       Pageable pageable) {
-    return messageRepository.findAllByChannelAndCreatedAt(channel, cursor, pageable);
+    return messageRepository.findAllByChannelAndCreatedAtAfter(channel, cursor, pageable);
   }
 
   @Override

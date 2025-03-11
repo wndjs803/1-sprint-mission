@@ -12,6 +12,7 @@ import java.util.UUID;
 import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 //@Repository
 @NoArgsConstructor
@@ -32,16 +33,21 @@ public class JCFMessageRepository implements MessageRepository {
   }
 
   @Override
-  public Page<Message> findAllMessagesByChannel(Channel channel, Pageable pageable) {
-//    return messageData.values().stream()
-//        .filter(message -> message.getChannel() == channel)
-//        .toList();
+  public Slice<Message> findSlicedMessagesByChannel(Channel channel, Pageable pageable) {
     return null;
   }
 
   @Override
-  public Page<Message> findAllMessagesByChannel(Channel channel, Instant cursor,
+  public Slice<Message> findSlicedMessagesByChannel(Channel channel, Instant cursor,
       Pageable pageable) {
+    return null;
+  }
+
+  @Override
+  public Page<Message> findPagedMessagesByChannel(Channel channel, Pageable pageable) {
+//    return messageData.values().stream()
+//        .filter(message -> message.getChannel() == channel)
+//        .toList();
     return null;
   }
 
