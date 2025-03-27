@@ -1,11 +1,15 @@
 package com.sprint.mission.discodeit.execption.readStatus;
 
 import com.sprint.mission.discodeit.execption.ErrorCode;
-import com.sprint.mission.discodeit.execption.EntityNotFoundException;
+import java.util.Map;
 
-public class ReadStatusNotFoundException extends EntityNotFoundException {
+public class ReadStatusNotFoundException extends ReadStatusException {
 
-  public ReadStatusNotFoundException(String value) {
-    super(ErrorCode.READSTATUS_NOT_FOUND.format(value), ErrorCode.READSTATUS_NOT_FOUND);
+  public ReadStatusNotFoundException() {
+    super(ErrorCode.READSTATUS_NOT_FOUND);
+  }
+
+  public ReadStatusNotFoundException(Map<String, Object> details) {
+    super(ErrorCode.READSTATUS_NOT_FOUND, details);
   }
 }

@@ -21,6 +21,7 @@ import com.sprint.mission.discodeit.validator.UserValidator;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -113,6 +114,6 @@ public class BasicMessageService implements MessageService {
 
   private Message findMessageById(UUID messageId) {
     return messageRepository.findMessageById(messageId)
-        .orElseThrow(() -> new MessageNotFoundException("id: " + messageId));
+        .orElseThrow(() -> new MessageNotFoundException(Map.of("messageId", messageId)));
   }
 }

@@ -17,6 +17,7 @@ import com.sprint.mission.discodeit.validator.ChannelValidator;
 import com.sprint.mission.discodeit.validator.UserValidator;
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -97,7 +98,7 @@ public class BasicChannelService implements ChannelService {
     Channel foundChannel = channelValidator.validateChannelExistsByChannelId(channelId);
 
     if (foundChannel.isPrivate()) {
-      throw new CannotUpdatePrivateChannelException("id: " + foundChannel.getId());
+      throw new CannotUpdatePrivateChannelException(Map.of("channelId", foundChannel.getId()));
     }
 
     foundChannel.updateChannelInfo(updateChannelRequest.newName(),

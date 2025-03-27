@@ -1,11 +1,15 @@
 package com.sprint.mission.discodeit.execption.message;
 
 import com.sprint.mission.discodeit.execption.ErrorCode;
-import com.sprint.mission.discodeit.execption.EntityNotFoundException;
+import java.util.Map;
 
-public class MessageNotFoundException extends EntityNotFoundException {
+public class MessageNotFoundException extends MessageException {
 
-  public MessageNotFoundException(String value) {
-    super(ErrorCode.MESSAGE_NOT_FOUND.format(value), ErrorCode.MESSAGE_NOT_FOUND);
+  public MessageNotFoundException() {
+    super(ErrorCode.MESSAGE_NOT_FOUND);
+  }
+
+  public MessageNotFoundException(Map<String, Object> details) {
+    super(ErrorCode.MESSAGE_NOT_FOUND, details);
   }
 }

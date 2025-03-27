@@ -1,11 +1,15 @@
 package com.sprint.mission.discodeit.execption.userStatus;
 
 import com.sprint.mission.discodeit.execption.ErrorCode;
-import com.sprint.mission.discodeit.execption.InvalidValueException;
+import java.util.Map;
 
-public class UserStatusAlreadyExistException extends InvalidValueException {
+public class UserStatusAlreadyExistException extends UserStatusException {
 
-  public UserStatusAlreadyExistException(String value) {
-    super(ErrorCode.USERSTATUS_ALREADY_EXIST.format(value), ErrorCode.USERSTATUS_ALREADY_EXIST);
+  public UserStatusAlreadyExistException() {
+    super(ErrorCode.USERSTATUS_ALREADY_EXIST);
+  }
+
+  public UserStatusAlreadyExistException(Map<String, Object> details) {
+    super(ErrorCode.USERSTATUS_ALREADY_EXIST, details);
   }
 }

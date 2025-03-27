@@ -1,11 +1,15 @@
 package com.sprint.mission.discodeit.execption.channel;
 
 import com.sprint.mission.discodeit.execption.ErrorCode;
-import com.sprint.mission.discodeit.execption.InvalidValueException;
+import java.util.Map;
 
-public class ChannelNotNullException extends InvalidValueException {
+public class ChannelNotNullException extends ChannelException {
 
   public ChannelNotNullException() {
-    super(ErrorCode.CHANNEL_NOT_NULL.getMessage(), ErrorCode.CHANNEL_NOT_NULL);
+    super(ErrorCode.CHANNEL_NOT_NULL);
+  }
+
+  public ChannelNotNullException(Map<String, Object> details) {
+    super(ErrorCode.CHANNEL_NOT_NULL, details);
   }
 }

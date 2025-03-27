@@ -1,11 +1,15 @@
 package com.sprint.mission.discodeit.execption.user;
 
 import com.sprint.mission.discodeit.execption.ErrorCode;
-import com.sprint.mission.discodeit.execption.EntityNotFoundException;
+import java.util.Map;
 
-public class UserNotFoundException extends EntityNotFoundException {
+public class UserNotFoundException extends UserException {
 
-  public UserNotFoundException(String value) {
-    super(ErrorCode.USER_NOT_FOUND.format(value), ErrorCode.USER_NOT_FOUND);
+  public UserNotFoundException() {
+    super(ErrorCode.USER_NOT_FOUND);
+  }
+
+  public UserNotFoundException(Map<String, Object> details) {
+    super(ErrorCode.USER_NOT_FOUND, details);
   }
 }

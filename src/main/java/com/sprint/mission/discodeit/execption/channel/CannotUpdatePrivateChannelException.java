@@ -1,12 +1,15 @@
 package com.sprint.mission.discodeit.execption.channel;
 
 import com.sprint.mission.discodeit.execption.ErrorCode;
-import com.sprint.mission.discodeit.execption.InvalidValueException;
+import java.util.Map;
 
-public class CannotUpdatePrivateChannelException extends InvalidValueException {
+public class CannotUpdatePrivateChannelException extends ChannelException {
 
-  public CannotUpdatePrivateChannelException(String value) {
-    super(ErrorCode.CANNOT_UPDATE_PRIVATE_CHANNEL.format(value),
-        ErrorCode.CANNOT_UPDATE_PRIVATE_CHANNEL);
+  public CannotUpdatePrivateChannelException() {
+    super(ErrorCode.CANNOT_UPDATE_PRIVATE_CHANNEL);
+  }
+
+  public CannotUpdatePrivateChannelException(Map<String, Object> details) {
+    super(ErrorCode.CANNOT_UPDATE_PRIVATE_CHANNEL, details);
   }
 }

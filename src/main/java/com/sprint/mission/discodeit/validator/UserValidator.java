@@ -4,6 +4,7 @@ import com.sprint.mission.discodeit.execption.user.UserAlreadyExistException;
 import com.sprint.mission.discodeit.execption.user.UserNotFoundException;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.UserRepository;
+import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -16,25 +17,24 @@ public class UserValidator {
 
   public User validateUserExistsByUserId(UUID userId) {
     return userRepository.findUserById(userId)
-        .orElseThrow(() -> new UserNotFoundException("id: " + userId));
+        .orElseThrow(() -> new UserNotFoundException(Map.of("userId", userId)));
   }
 
   public void validateDuplicateByName(String name) {
     if (userRepository.findUserByName(name).isPresent()) {
-      throw new UserAlreadyExistException("name: " + name);
+      throw new UserAlreadyExistException(Map.of("name", name));
     }
 
   }
 
   public void validateDuplicateUserByEmail(String email) {
     if (userRepository.findUserByEmail(email).isPresent()) {
-      throw new UserAlreadyExistException("email: " + email);
+      throw new UserAlreadyExistException(Map.of("email", email));
     }
   }
 
   public User validateUserExistsByNameAndPassword(String name, String password) {
     return userRepository.findUserByNameAndPassword(name, password)
-        .orElseThrow(() -> new UserNotFoundException("name: " + name + " password: " + password));
+        .orElseThrow(() -> new UserNotFoundException(Map.of("name", name, "password", password)));
   }
-
 }
