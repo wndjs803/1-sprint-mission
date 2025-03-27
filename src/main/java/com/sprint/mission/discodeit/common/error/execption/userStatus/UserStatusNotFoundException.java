@@ -5,7 +5,7 @@ import com.sprint.mission.discodeit.common.error.execption.EntityNotFoundExcepti
 
 public class UserStatusNotFoundException extends EntityNotFoundException {
 
-    public UserStatusNotFoundException(String value) {
-        super(ErrorCode.USERSTATUS_NOT_FOUND.format(value), ErrorCode.USERSTATUS_NOT_FOUND);
-    }
+  public UserStatusNotFoundException(String value) {
+    super(ErrorCode.USERSTATUS_NOT_FOUND.format(value), ErrorCode.USERSTATUS_NOT_FOUND);
+  }
 }

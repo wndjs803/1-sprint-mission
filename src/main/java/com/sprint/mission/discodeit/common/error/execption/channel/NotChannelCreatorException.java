@@ -5,7 +5,7 @@ import com.sprint.mission.discodeit.common.error.execption.InvalidValueException
 
 public class NotChannelCreatorException extends InvalidValueException {
 
-    public NotChannelCreatorException(String value) {
-        super(ErrorCode.NOT_CHANNEL_CREATOR.format(value), ErrorCode.NOT_CHANNEL_CREATOR);
-    }
+  public NotChannelCreatorException(String value) {
+    super(ErrorCode.NOT_CHANNEL_CREATOR.format(value), ErrorCode.NOT_CHANNEL_CREATOR);
+  }
 }

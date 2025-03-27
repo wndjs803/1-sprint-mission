@@ -1,7 +1,7 @@
 package com.sprint.mission.discodeit.validator;
 
-import com.sprint.mission.discodeit.entity.ReadStatus;
 import com.sprint.mission.discodeit.common.error.execption.readStatus.ReadStatusNotFoundException;
+import com.sprint.mission.discodeit.entity.ReadStatus;
 import com.sprint.mission.discodeit.repository.ReadStatusRepository;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;

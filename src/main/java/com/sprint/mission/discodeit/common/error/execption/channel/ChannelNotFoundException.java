@@ -5,7 +5,7 @@ import com.sprint.mission.discodeit.common.error.execption.EntityNotFoundExcepti
 
 public class ChannelNotFoundException extends EntityNotFoundException {
 
-    public ChannelNotFoundException(String value) {
-        super(ErrorCode.CHANNEL_NOT_FOUND.format(value), ErrorCode.CHANNEL_NOT_FOUND);
-    }
+  public ChannelNotFoundException(String value) {
+    super(ErrorCode.CHANNEL_NOT_FOUND.format(value), ErrorCode.CHANNEL_NOT_FOUND);
+  }
 }

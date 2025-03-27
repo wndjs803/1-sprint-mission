@@ -5,7 +5,7 @@ import com.sprint.mission.discodeit.common.error.execption.EntityNotFoundExcepti
 
 public class MessageNotFoundException extends EntityNotFoundException {
 
-    public MessageNotFoundException(String value) {
-        super(ErrorCode.MESSAGE_NOT_FOUND.format(value), ErrorCode.MESSAGE_NOT_FOUND);
-    }
+  public MessageNotFoundException(String value) {
+    super(ErrorCode.MESSAGE_NOT_FOUND.format(value), ErrorCode.MESSAGE_NOT_FOUND);
+  }
 }

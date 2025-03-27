@@ -5,7 +5,7 @@ import com.sprint.mission.discodeit.common.error.execption.EntityNotFoundExcepti
 
 public class ReadStatusNotFoundException extends EntityNotFoundException {
 
-    public ReadStatusNotFoundException(String value) {
-        super(ErrorCode.READSTATUS_NOT_FOUND.format(value), ErrorCode.READSTATUS_NOT_FOUND);
-    }
+  public ReadStatusNotFoundException(String value) {
+    super(ErrorCode.READSTATUS_NOT_FOUND.format(value), ErrorCode.READSTATUS_NOT_FOUND);
+  }
 }

@@ -5,7 +5,7 @@ import com.sprint.mission.discodeit.common.error.execption.InvalidValueException
 
 public class BinaryContentNotNullException extends InvalidValueException {
 
-    public BinaryContentNotNullException() {
-        super(ErrorCode.BINARYCONTENT_NOT_NULL.getMessage(), ErrorCode.BINARYCONTENT_NOT_NULL);
-    }
+  public BinaryContentNotNullException() {
+    super(ErrorCode.BINARYCONTENT_NOT_NULL.getMessage(), ErrorCode.BINARYCONTENT_NOT_NULL);
+  }
 }
