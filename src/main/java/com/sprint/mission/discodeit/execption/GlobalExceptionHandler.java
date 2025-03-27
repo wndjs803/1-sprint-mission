@@ -10,8 +10,14 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(DiscodeitException.class)
   public ResponseEntity<ErrorResponse> handleBusinessException(DiscodeitException exception) {
-    ErrorResponse errorResponse = new ErrorResponse(exception.getErrorCode().getCode(),
-        exception.getMessage());
+    ErrorResponse errorResponse = new ErrorResponse(
+        exception.getTimestamp(),
+        exception.getErrorCode().getCode(),
+        exception.getErrorCode().getMessage(),
+        exception.getDetails(),
+        exception.getClass().getSimpleName(),
+        exception.getErrorCode().getStatus()
+    );
     return ResponseEntity.status(HttpStatusCode.valueOf(exception.getErrorCode().getStatus()))
         .body(errorResponse);
   }
