@@ -1,16 +1,18 @@
 package com.sprint.mission.discodeit.validator;
 
+import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.execption.user.UserAlreadyExistException;
 import com.sprint.mission.discodeit.execption.user.UserNotFoundException;
-import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class UserValidator {
 
   private final UserRepository userRepository;
@@ -35,6 +37,9 @@ public class UserValidator {
 
   public User validateUserExistsByNameAndPassword(String name, String password) {
     return userRepository.findUserByNameAndPassword(name, password)
-        .orElseThrow(() -> new UserNotFoundException(Map.of("name", name, "password", password)));
+        .orElseThrow(() -> {
+          log.error("userNotFound");
+          return new UserNotFoundException(Map.of("name", name, "password", password));
+        });
   }
 }
