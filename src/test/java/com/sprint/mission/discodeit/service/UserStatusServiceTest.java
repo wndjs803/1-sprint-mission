@@ -11,7 +11,7 @@ import com.sprint.mission.discodeit.dto.userStatus.request.UpdateUserStatusByIdR
 import com.sprint.mission.discodeit.dto.userStatus.request.UpdateUserStatusByUserIdRequest;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
-import com.sprint.mission.discodeit.global.util.TimeUtil;
+import com.sprint.mission.discodeit.common.util.TimeUtil;
 import com.sprint.mission.discodeit.mapper.UserStatusMapper;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.repository.UserStatusRepository;

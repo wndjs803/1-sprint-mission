@@ -2,8 +2,8 @@ package com.sprint.mission.discodeit.validator;
 
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
-import com.sprint.mission.discodeit.global.error.execption.userStatus.UserStatusAlreadyExistException;
-import com.sprint.mission.discodeit.global.error.execption.userStatus.UserStatusNotFoundException;
+import com.sprint.mission.discodeit.common.error.execption.userStatus.UserStatusAlreadyExistException;
+import com.sprint.mission.discodeit.common.error.execption.userStatus.UserStatusNotFoundException;
 import com.sprint.mission.discodeit.repository.UserStatusRepository;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
