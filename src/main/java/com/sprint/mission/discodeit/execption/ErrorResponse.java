@@ -1,4 +1,4 @@
-package com.sprint.mission.discodeit.common.error;
+package com.sprint.mission.discodeit.execption;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

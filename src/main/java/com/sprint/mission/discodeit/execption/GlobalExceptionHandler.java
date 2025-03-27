@@ -1,6 +1,5 @@
-package com.sprint.mission.discodeit.common.error;
+package com.sprint.mission.discodeit.execption;
 
-import com.sprint.mission.discodeit.common.error.execption.BusinessException;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

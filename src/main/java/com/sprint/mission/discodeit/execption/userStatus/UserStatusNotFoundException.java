@@ -1,7 +1,7 @@
-package com.sprint.mission.discodeit.common.error.execption.userStatus;
+package com.sprint.mission.discodeit.execption.userStatus;
 
-import com.sprint.mission.discodeit.common.error.ErrorCode;
-import com.sprint.mission.discodeit.common.error.execption.EntityNotFoundException;
+import com.sprint.mission.discodeit.execption.ErrorCode;
+import com.sprint.mission.discodeit.execption.EntityNotFoundException;
 
 public class UserStatusNotFoundException extends EntityNotFoundException {
 

@@ -5,9 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import com.sprint.mission.discodeit.common.error.ErrorCode;
-import com.sprint.mission.discodeit.common.error.execption.readStatus.ReadStatusNotFoundException;
-import com.sprint.mission.discodeit.common.error.execption.user.UserNotFoundException;
+import com.sprint.mission.discodeit.execption.ErrorCode;
+import com.sprint.mission.discodeit.execption.readStatus.ReadStatusNotFoundException;
+import com.sprint.mission.discodeit.execption.user.UserNotFoundException;
 import com.sprint.mission.discodeit.dto.readStatus.ReadStatusDto;
 import com.sprint.mission.discodeit.dto.readStatus.request.CreateReadStatusRequest;
 import com.sprint.mission.discodeit.dto.readStatus.request.UpdateReadStatusRequest;

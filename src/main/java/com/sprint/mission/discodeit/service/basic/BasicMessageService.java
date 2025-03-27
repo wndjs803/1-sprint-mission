@@ -1,6 +1,6 @@
 package com.sprint.mission.discodeit.service.basic;
 
-import com.sprint.mission.discodeit.common.error.execption.message.MessageNotFoundException;
+import com.sprint.mission.discodeit.execption.message.MessageNotFoundException;
 import com.sprint.mission.discodeit.common.util.MultipartFileConverter;
 import com.sprint.mission.discodeit.dto.message.MessageDto;
 import com.sprint.mission.discodeit.dto.message.request.CreateMessageRequest;

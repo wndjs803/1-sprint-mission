@@ -1,6 +1,4 @@
-package com.sprint.mission.discodeit.common.error.execption;
-
-import com.sprint.mission.discodeit.common.error.ErrorCode;
+package com.sprint.mission.discodeit.execption;
 
 public class EntityNotFoundException extends BusinessException {
 

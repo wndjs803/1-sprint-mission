@@ -1,7 +1,7 @@
-package com.sprint.mission.discodeit.common.error.execption.message;
+package com.sprint.mission.discodeit.execption.message;
 
-import com.sprint.mission.discodeit.common.error.ErrorCode;
-import com.sprint.mission.discodeit.common.error.execption.InvalidValueException;
+import com.sprint.mission.discodeit.execption.ErrorCode;
+import com.sprint.mission.discodeit.execption.InvalidValueException;
 
 public class NotMessageCreatorException extends InvalidValueException {
 

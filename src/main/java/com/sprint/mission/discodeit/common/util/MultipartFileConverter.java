@@ -1,6 +1,6 @@
 package com.sprint.mission.discodeit.common.util;
 
-import com.sprint.mission.discodeit.common.error.ErrorCode;
+import com.sprint.mission.discodeit.execption.ErrorCode;
 import java.io.IOException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;

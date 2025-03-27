@@ -1,6 +1,6 @@
 package com.sprint.mission.discodeit.entity;
 
-import com.sprint.mission.discodeit.common.error.ErrorCode;
+import com.sprint.mission.discodeit.execption.ErrorCode;
 import com.sprint.mission.discodeit.common.util.TimeUtil;
 import com.sprint.mission.discodeit.entity.base.BaseUpdatableEntity;
 import jakarta.persistence.CascadeType;

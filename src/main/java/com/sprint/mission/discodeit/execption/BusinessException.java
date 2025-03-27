@@ -1,6 +1,5 @@
-package com.sprint.mission.discodeit.common.error.execption;
+package com.sprint.mission.discodeit.execption;
 
-import com.sprint.mission.discodeit.common.error.ErrorCode;
 import lombok.Getter;
 
 @Getter

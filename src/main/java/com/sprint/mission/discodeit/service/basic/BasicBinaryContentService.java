@@ -1,6 +1,6 @@
 package com.sprint.mission.discodeit.service.basic;
 
-import com.sprint.mission.discodeit.common.error.execption.bianryContent.BinaryContentNofFoundException;
+import com.sprint.mission.discodeit.execption.bianryContent.BinaryContentNofFoundException;
 import com.sprint.mission.discodeit.common.util.MultipartFileConverter;
 import com.sprint.mission.discodeit.dto.binaryContent.BinaryContentDto;
 import com.sprint.mission.discodeit.entity.BinaryContent;

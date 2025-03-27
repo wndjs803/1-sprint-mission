@@ -6,10 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
-import com.sprint.mission.discodeit.common.error.ErrorCode;
-import com.sprint.mission.discodeit.common.error.execption.channel.CannotUpdatePrivateChannelException;
-import com.sprint.mission.discodeit.common.error.execption.channel.ChannelNotFoundException;
-import com.sprint.mission.discodeit.common.error.execption.channel.NotChannelCreatorException;
+import com.sprint.mission.discodeit.execption.ErrorCode;
+import com.sprint.mission.discodeit.execption.channel.CannotUpdatePrivateChannelException;
+import com.sprint.mission.discodeit.execption.channel.ChannelNotFoundException;
+import com.sprint.mission.discodeit.execption.channel.NotChannelCreatorException;
 import com.sprint.mission.discodeit.common.util.RandomStringGenerator;
 import com.sprint.mission.discodeit.dto.channel.ChannelDto;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePrivateChannelRequest;

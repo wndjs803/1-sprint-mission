@@ -1,7 +1,7 @@
 package com.sprint.mission.discodeit.entity;
 
-import com.sprint.mission.discodeit.common.error.execption.channel.ChannelNotNullException;
-import com.sprint.mission.discodeit.common.error.execption.user.UserNotNullException;
+import com.sprint.mission.discodeit.execption.channel.ChannelNotNullException;
+import com.sprint.mission.discodeit.execption.user.UserNotNullException;
 import com.sprint.mission.discodeit.entity.base.BaseUpdatableEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

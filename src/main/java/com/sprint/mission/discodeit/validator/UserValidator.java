@@ -1,7 +1,7 @@
 package com.sprint.mission.discodeit.validator;
 
-import com.sprint.mission.discodeit.common.error.execption.user.UserAlreadyExistException;
-import com.sprint.mission.discodeit.common.error.execption.user.UserNotFoundException;
+import com.sprint.mission.discodeit.execption.user.UserAlreadyExistException;
+import com.sprint.mission.discodeit.execption.user.UserNotFoundException;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import java.util.UUID;

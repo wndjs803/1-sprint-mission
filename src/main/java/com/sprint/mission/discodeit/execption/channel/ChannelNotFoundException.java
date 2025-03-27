@@ -1,7 +1,7 @@
-package com.sprint.mission.discodeit.common.error.execption.channel;
+package com.sprint.mission.discodeit.execption.channel;
 
-import com.sprint.mission.discodeit.common.error.ErrorCode;
-import com.sprint.mission.discodeit.common.error.execption.EntityNotFoundException;
+import com.sprint.mission.discodeit.execption.ErrorCode;
+import com.sprint.mission.discodeit.execption.EntityNotFoundException;
 
 public class ChannelNotFoundException extends EntityNotFoundException {
 

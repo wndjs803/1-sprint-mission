@@ -4,9 +4,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import com.sprint.mission.discodeit.common.error.ErrorCode;
-import com.sprint.mission.discodeit.common.error.execption.message.MessageNotFoundException;
-import com.sprint.mission.discodeit.common.error.execption.message.NotMessageCreatorException;
+import com.sprint.mission.discodeit.execption.ErrorCode;
+import com.sprint.mission.discodeit.execption.message.MessageNotFoundException;
+import com.sprint.mission.discodeit.execption.message.NotMessageCreatorException;
 import com.sprint.mission.discodeit.common.util.MultipartFileConverter;
 import com.sprint.mission.discodeit.dto.message.MessageDto;
 import com.sprint.mission.discodeit.dto.message.request.CreateMessageRequest;

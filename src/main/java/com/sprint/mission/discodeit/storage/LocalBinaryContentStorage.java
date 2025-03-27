@@ -1,6 +1,6 @@
 package com.sprint.mission.discodeit.storage;
 
-import com.sprint.mission.discodeit.common.error.ErrorCode;
+import com.sprint.mission.discodeit.execption.ErrorCode;
 import com.sprint.mission.discodeit.dto.binaryContent.BinaryContentDto;
 import jakarta.annotation.PreDestroy;
 import java.io.File;

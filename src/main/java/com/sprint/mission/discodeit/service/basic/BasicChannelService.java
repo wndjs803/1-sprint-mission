@@ -1,6 +1,6 @@
 package com.sprint.mission.discodeit.service.basic;
 
-import com.sprint.mission.discodeit.common.error.execption.channel.CannotUpdatePrivateChannelException;
+import com.sprint.mission.discodeit.execption.channel.CannotUpdatePrivateChannelException;
 import com.sprint.mission.discodeit.dto.channel.ChannelDto;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePrivateChannelRequest;
 import com.sprint.mission.discodeit.dto.channel.request.CreatePublicChannelRequest;

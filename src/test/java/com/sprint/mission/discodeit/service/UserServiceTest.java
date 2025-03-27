@@ -3,9 +3,9 @@ package com.sprint.mission.discodeit.service;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.sprint.mission.discodeit.common.error.ErrorCode;
-import com.sprint.mission.discodeit.common.error.execption.user.UserAlreadyExistException;
-import com.sprint.mission.discodeit.common.error.execption.user.UserNotFoundException;
+import com.sprint.mission.discodeit.execption.ErrorCode;
+import com.sprint.mission.discodeit.execption.user.UserAlreadyExistException;
+import com.sprint.mission.discodeit.execption.user.UserNotFoundException;
 import com.sprint.mission.discodeit.common.util.MultipartFileConverter;
 import com.sprint.mission.discodeit.dto.user.UserDto;
 import com.sprint.mission.discodeit.dto.user.request.CreateUserRequest;
