@@ -173,4 +173,37 @@ public class UserRepositoryTest {
       assertFalse(isExist);
     }
   }
+
+  @Nested
+  class FindUserByNameTest {
+
+    @Test
+    void Name으로_유저_조회_성공() {
+      // given
+      int num = 0;
+      saveUser(num);
+
+      // when
+      Optional<User> userOptional = userRepository.findUserByName("name" + num);
+
+      // then
+      assertTrue(userOptional.isPresent());
+
+      User user = userOptional.get();
+      assertEquals("name" + num, user.getName());
+    }
+
+    @Test
+    void Name으로_유저_조회_실패() {
+      // given
+      int num = 0;
+      saveUser(num);
+
+      // when
+      Optional<User> userOptional = userRepository.findUserByName("name" + 1);
+
+      // then
+      assertTrue(userOptional.isEmpty());
+    }
+  }
 }
