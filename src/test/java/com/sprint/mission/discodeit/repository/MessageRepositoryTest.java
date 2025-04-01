@@ -59,6 +59,26 @@ public class MessageRepositoryTest {
   }
 
   @Nested
+  class SaveMessageTest {
+
+    @Test
+    void 메세지_저장_성공() {
+      // given
+      User user = saveUser(0);
+      Channel channel = saveChannel(0);
+      Message message = Message.of(user, channel, "content");
+
+      // when
+      Message savedMessage = messageRepository.saveMessage(message);
+
+      // then
+      assertEquals(user, savedMessage.getSender());
+      assertEquals(channel, savedMessage.getChannel());
+      assertEquals("content", savedMessage.getContent());
+    }
+  }
+
+  @Nested
   class FindPagedMessagesByChannelTest {
 
     @Test
