@@ -237,4 +237,38 @@ public class UserRepositoryTest {
       assertTrue(userOptional.isEmpty());
     }
   }
+
+  @Nested
+  class FindUserByNameAndPasswordTest {
+
+    @Test
+    void Name_Password로_유저_조회_성공() {
+      // given
+      saveUser(0);
+
+      // when
+      Optional<User> userOptional =
+          userRepository.findUserByNameAndPassword("name" + 0, "password" + 0);
+
+      // then
+      assertTrue(userOptional.isPresent());
+
+      User user = userOptional.get();
+      assertEquals("name" + 0, user.getName());
+      assertEquals("password" + 0, user.getPassword());
+    }
+
+    @Test
+    void Name_Password로_유저_조회_실패() {
+      // given
+      saveUser(0);
+
+      // when
+      Optional<User> userOptional =
+          userRepository.findUserByNameAndPassword(null, "password" + 0);
+
+      // then
+      assertTrue(userOptional.isEmpty());
+    }
+  }
 }
