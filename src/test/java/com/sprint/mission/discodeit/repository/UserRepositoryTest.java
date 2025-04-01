@@ -6,8 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.repository.jpa.user.UserJpaRepository;
 import com.sprint.mission.discodeit.repository.jpa.user.UserRepositoryImpl;
+import com.sprint.mission.discodeit.repository.jpa.userStatus.UserStatusRepositoryImpl;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Nested;
@@ -19,7 +22,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @DataJpaTest
 @ActiveProfiles("test")
-@Import(UserRepositoryImpl.class)
+@Import({UserRepositoryImpl.class, UserStatusRepositoryImpl.class})
 public class UserRepositoryTest {
 
   @Autowired
@@ -28,8 +31,12 @@ public class UserRepositoryTest {
   @Autowired
   UserRepositoryImpl userRepository;
 
-  private UUID saveUser() {
-    User user = User.of("name2", "email2", "password2");
+  @Autowired
+  UserStatusRepositoryImpl userStatusRepository;
+
+  private UUID saveUser(int num) {
+    User user = User.of("name" + num, "email" + num,
+        "password" + num);
     return userRepository.saveUser(user).getId();
   }
 
@@ -58,7 +65,8 @@ public class UserRepositoryTest {
     @Test
     void 유저_아이디로_조회_성공() {
       // given
-      UUID userId = saveUser();
+      int num = 1;
+      UUID userId = saveUser(num);
 
       // when
       Optional<User> userOptional = userRepository.findUserById(userId);
@@ -67,7 +75,7 @@ public class UserRepositoryTest {
       assertTrue(userOptional.isPresent());
 
       User user = userOptional.get();
-      assertEquals("name2", user.getName());
+      assertEquals("name" + num, user.getName());
     }
 
     @Test
@@ -80,6 +88,31 @@ public class UserRepositoryTest {
 
       // then
       assertFalse(userOptional.isPresent());
+    }
+  }
+
+  @Nested
+  class FindAllUsersTest {
+
+    @Test
+    void 유저_목록_조회_성공() {
+      // given
+      int size = 10;
+      saveUsers(size);
+
+      // when
+      List<User> userList = userRepository.findAllUsers();
+
+      // then
+      assertEquals(size, userList.size());
+    }
+
+    private void saveUsers(int size) {
+      for (int i = 0; i < size; i++) { // userStatus와 fetch join이기 때문에 추가적으로 같이 저장
+        User user = User.of("name" + i, "email" + i,
+            "password" + i);
+        userStatusRepository.saveUserStatus(UserStatus.of(userRepository.saveUser(user)));
+      }
     }
   }
 }
