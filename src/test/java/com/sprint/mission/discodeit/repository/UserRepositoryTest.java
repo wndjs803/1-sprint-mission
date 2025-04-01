@@ -206,4 +206,35 @@ public class UserRepositoryTest {
       assertTrue(userOptional.isEmpty());
     }
   }
+
+  @Nested
+  class FindUserByEmailTest {
+
+    @Test
+    void Email로_유저_조회_성공() {
+      // given
+      saveUser(0);
+
+      // when
+      Optional<User> userOptional = userRepository.findUserByEmail("email" + 0);
+
+      // then
+      assertTrue(userOptional.isPresent());
+
+      User user = userOptional.get();
+      assertEquals("email" + 0, user.getEmail());
+    }
+
+    @Test
+    void Email로_유저_조회_실패() {
+      // given
+      saveUser(0);
+
+      // when
+      Optional<User> userOptional = userRepository.findUserByEmail("email" + 1);
+
+      // then
+      assertTrue(userOptional.isEmpty());
+    }
+  }
 }
