@@ -1,11 +1,15 @@
 package com.sprint.mission.discodeit.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.jpa.user.UserJpaRepository;
 import com.sprint.mission.discodeit.repository.jpa.user.UserRepositoryImpl;
+import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +27,11 @@ public class UserRepositoryTest {
 
   @Autowired
   UserRepositoryImpl userRepository;
+
+  private UUID saveUser() {
+    User user = User.of("name2", "email2", "password2");
+    return userRepository.saveUser(user).getId();
+  }
 
   @Nested
   class SaveUserTest {
@@ -43,4 +52,34 @@ public class UserRepositoryTest {
     }
   }
 
+  @Nested
+  class FindUserByIdTest {
+
+    @Test
+    void 유저_아이디로_조회_성공() {
+      // given
+      UUID userId = saveUser();
+
+      // when
+      Optional<User> userOptional = userRepository.findUserById(userId);
+
+      // then
+      assertTrue(userOptional.isPresent());
+
+      User user = userOptional.get();
+      assertEquals("name2", user.getName());
+    }
+
+    @Test
+    void 존재하지_않는_유저_아이디로_조회_() {
+      // given
+      UUID userId = UUID.randomUUID();
+
+      // when
+      Optional<User> userOptional = userRepository.findUserById(userId);
+
+      // then
+      assertFalse(userOptional.isPresent());
+    }
+  }
 }
