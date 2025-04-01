@@ -115,4 +115,34 @@ public class UserRepositoryTest {
       }
     }
   }
+
+  @Nested
+  class RemoveUserTest {
+
+    @Test
+    void 유저_삭제_성공() {
+      // given
+      UUID userId = saveUser(0);
+
+      // when
+      userRepository.removeUser(userId);
+
+      // then
+      Optional<User> userOptional = userRepository.findUserById(userId);
+      assertTrue(userOptional.isEmpty());
+    }
+
+    @Test
+    void 존재하지_않는_유저_아이디로_삭제() {
+      // given
+      UUID userId = saveUser(0);
+
+      // when
+      userRepository.removeUser(UUID.randomUUID());
+
+      // then
+      Optional<User> userOptional = userRepository.findUserById(userId);
+      assertTrue(userOptional.isPresent());
+    }
+  }
 }
