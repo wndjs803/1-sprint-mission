@@ -2,6 +2,7 @@ package com.sprint.mission.discodeit.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.ChannelType;
@@ -10,6 +11,8 @@ import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.jpa.channel.ChannelRepositoryImpl;
 import com.sprint.mission.discodeit.repository.jpa.message.MessageRepositoryImpl;
 import com.sprint.mission.discodeit.repository.jpa.user.UserRepositoryImpl;
+import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,9 +52,9 @@ public class MessageRepositoryTest {
     return channelRepository.saveChannel(channel);
   }
 
-  private void saveMessage(User user, Channel channel, int num) {
+  private Message saveMessage(User user, Channel channel, int num) {
     Message message = Message.of(user, channel, "content" + num);
-    messageRepository.saveMessage(message);
+    return messageRepository.saveMessage(message);
   }
 
   private Pageable getPageable() {
@@ -75,6 +78,45 @@ public class MessageRepositoryTest {
       assertEquals(user, savedMessage.getSender());
       assertEquals(channel, savedMessage.getChannel());
       assertEquals("content", savedMessage.getContent());
+    }
+  }
+
+  @Nested
+  class FindMessageByIdTest {
+
+    @Test
+    void 메세지_조회_성공() {
+      // given
+      int num = 0;
+      User user = saveUser(num);
+      Channel channel = saveChannel(num);
+      UUID messageId = saveMessage(user, channel, num).getId();
+
+      // when
+      Optional<Message> messageOptional = messageRepository.findMessageById(messageId);
+
+      // then
+      assertTrue(messageOptional.isPresent());
+
+      Message message = messageOptional.get();
+      assertEquals(user, message.getSender());
+      assertEquals(channel, message.getChannel());
+      assertEquals("content" + num, message.getContent());
+    }
+
+    @Test
+    void 메세지_조회_실패() {
+      // given
+      int num = 0;
+      User user = saveUser(num);
+      Channel channel = saveChannel(num);
+      UUID messageId = saveMessage(user, channel, num).getId();
+
+      // when
+      Optional<Message> messageOptional = messageRepository.findMessageById(UUID.randomUUID());
+
+      // then
+      assertTrue(messageOptional.isEmpty());
     }
   }
 
