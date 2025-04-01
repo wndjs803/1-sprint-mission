@@ -36,11 +36,11 @@ dependencies {
 
     implementation 'org.mapstruct:mapstruct:1.6.3'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    // https://mvnrepository.com/artifact/org.assertj/assertj-core
+    testImplementation 'com.h2database:h2'
     testImplementation 'org.assertj:assertj-core:3.24.2'
-    // https://mvnrepository.com/artifact/org.mockito/mockito-core
     testImplementation 'org.mockito:mockito-core:4.8.0'
 }
 
