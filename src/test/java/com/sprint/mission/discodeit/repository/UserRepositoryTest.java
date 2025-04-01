@@ -145,4 +145,32 @@ public class UserRepositoryTest {
       assertTrue(userOptional.isPresent());
     }
   }
+
+  @Nested
+  class ExistsUserTest {
+
+    @Test
+    void 유저_존재_여부_확인_성공() {
+      // given
+      UUID userId = saveUser(0);
+
+      // when
+      boolean isExist = userRepository.existsUser(userId);
+
+      // then
+      assertTrue(isExist);
+    }
+
+    @Test
+    void 유저_존재_여부_확인_실패() {
+      // given
+      UUID userId = saveUser(0);
+
+      // when
+      boolean isExist = userRepository.existsUser(UUID.randomUUID());
+
+      // then
+      assertFalse(isExist);
+    }
+  }
 }
