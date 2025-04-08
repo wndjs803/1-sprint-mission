@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.sprint.mission.discodeit.common.config.JpaAuditingConfiguration;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.repository.jpa.user.UserJpaRepository;
@@ -22,7 +23,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @DataJpaTest
 @ActiveProfiles("test")
-@Import({UserRepositoryImpl.class, UserStatusRepositoryImpl.class})
+@Import({UserRepositoryImpl.class, UserStatusRepositoryImpl.class, JpaAuditingConfiguration.class})
 public class UserRepositoryTest {
 
   @Autowired

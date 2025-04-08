@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.sprint.mission.discodeit.common.config.JpaAuditingConfiguration;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.ChannelType;
 import com.sprint.mission.discodeit.entity.Message;
@@ -27,7 +28,8 @@ import org.springframework.test.context.ActiveProfiles;
 
 @DataJpaTest
 @ActiveProfiles("test")
-@Import({UserRepositoryImpl.class, MessageRepositoryImpl.class, ChannelRepositoryImpl.class})
+@Import({UserRepositoryImpl.class, MessageRepositoryImpl.class, ChannelRepositoryImpl.class,
+    JpaAuditingConfiguration.class})
 public class MessageRepositoryTest {
 
   @Autowired
