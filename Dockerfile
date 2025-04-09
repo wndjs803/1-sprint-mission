@@ -12,9 +12,10 @@ WORKDIR /app
 
 ARG PROJECT_NAME
 ARG PROJECT_VERSION
+ARG JVM_OPTS
 
 COPY --from=builder /app/build/libs/*.jar ${PROJECT_NAME}-${PROJECT_VERSION}.jar
-
+COPY .env /app
 EXPOSE 80
 
-CMD java $JVM_OPTS -jar ${PROJECT_NAME}-${PROJECT_VERSION}.jar --spring.profiles.active=prod
+CMD java ${JVM_OPTS} -jar ${PROJECT_NAME}-${PROJECT_VERSION}.jar --spring.profiles.active=prod

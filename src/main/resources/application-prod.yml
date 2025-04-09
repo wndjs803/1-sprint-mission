@@ -1,12 +1,3 @@
-# application.yaml
-discodeit:
-  repository:
-    type: jcf   # jcf | file
-  storage:
-    type: local
-    local:
-      root-path: data/binary
-
 server:
   port: 80
 
