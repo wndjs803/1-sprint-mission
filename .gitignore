@@ -39,3 +39,4 @@ data/
 /.logs
 
 .env
+discodeit.env
