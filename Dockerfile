@@ -1,21 +1,28 @@
-# (1) Builder Stage
-FROM gradle:7.6.0-jdk17 AS builder
-WORKDIR /app
-COPY . /app
-RUN chmod +x gradlew
-RUN ./gradlew build --no-daemon
+FROM amazoncorretto:17 AS builder
 
-
-# (2) Runtime Stage
-FROM amazoncorretto:17.0.7-alpine
 WORKDIR /app
 
-ARG PROJECT_NAME
-ARG PROJECT_VERSION
-ARG JVM_OPTS
+COPY gradle ./gradle
+COPY gradlew ./gradlew
 
-COPY --from=builder /app/build/libs/*.jar ${PROJECT_NAME}-${PROJECT_VERSION}.jar
-COPY .env /app
+COPY build.gradle settings.gradle ./
+
+RUN ./gradlew dependencies
+
+COPY src ./src
+RUN ./gradlew build -x test
+
+
+FROM amazoncorretto:17-alpine3.21
+
+WORKDIR /app
+
+ENV PROJECT_NAME=discodeit \
+    PROJECT_VERSION=1.2-M8 \
+    JVM_OPTS=""
+
+COPY --from=builder /app/build/libs/${PROJECT_NAME}-${PROJECT_VERSION}.jar ./
+
 EXPOSE 80
 
-CMD java ${JVM_OPTS} -jar ${PROJECT_NAME}-${PROJECT_VERSION}.jar
+ENTRYPOINT ["sh", "-c", "java ${JVM_OPTS} -jar ${PROJECT_NAME}-${PROJECT_VERSION}.jar"]
