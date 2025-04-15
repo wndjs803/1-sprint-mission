@@ -10,6 +10,8 @@ import org.mapstruct.Mapping;
 public interface UserMapper {
 
   @Mapping(target = "name", source = "username")
+  @Mapping(target = "profileImage", ignore = true)
+  @Mapping(target = "userStatus", ignore = true)
   User toEntity(CreateUserRequest createUserRequest);
 
   @Mapping(target = "username", source = "name")
