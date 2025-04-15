@@ -5,18 +5,12 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        PROJECT_NAME: ${PROJECT_NAME}
-        PROJECT_VERSION: ${PROJECT_VERSION}
-        JVM_OPTS: ${JVM_OPTS}
     ports:
       - "8081:80"
     depends_on:
       - db
     env_file:
       - .env
-    environment:
-      SPRING_PROFILES_ACTIVE: prod
     volumes:
       - app-binary:/app/data
 
