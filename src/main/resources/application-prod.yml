@@ -24,3 +24,12 @@ spring:
 logging:
   level:
     root: info
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: [ "health" ]
+  endpoint:
+    health:
+      show-details: "NEVER"
