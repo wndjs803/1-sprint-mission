@@ -1,4 +1,4 @@
-package com.sprint.mission.discodeit.common.config;
+package com.sprint.mission.discodeit.config;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -9,11 +9,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class BinaryContentStorageConfig {
 
-  @Value("${discodeit.storage.local.root-path}")
-  private String rootPath;
+    @Value("${discodeit.storage.local.root-path}")
+    private String rootPath;
 
-  @Bean
-  public Path storageRootPath() {
-    return Paths.get(System.getProperty("user.dir"), rootPath);
-  }
+    @Bean
+    public Path storageRootPath() {
+        return Paths.get(System.getProperty("user.dir"), rootPath);
+    }
 }

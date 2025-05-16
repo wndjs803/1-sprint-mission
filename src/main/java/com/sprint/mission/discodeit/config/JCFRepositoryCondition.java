@@ -1,4 +1,4 @@
-package com.sprint.mission.discodeit.common.config;
+package com.sprint.mission.discodeit.config;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
