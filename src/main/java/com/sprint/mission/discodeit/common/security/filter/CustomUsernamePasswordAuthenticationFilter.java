@@ -19,7 +19,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
 
 public class CustomUsernamePasswordAuthenticationFilter extends
     UsernamePasswordAuthenticationFilter {
@@ -65,6 +69,15 @@ public class CustomUsernamePasswordAuthenticationFilter extends
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType("application/json");
         objectMapper.writeValue(response.getWriter(), userDto);
+
+        // 1. SecurityContext 생성
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        context.setAuthentication(authResult);
+        SecurityContextHolder.setContext(context);
+
+        // 2. 세션 저장을 위한 SecurityContextRepository 사용
+        SecurityContextRepository contextRepository = new HttpSessionSecurityContextRepository();
+        contextRepository.saveContext(context, request, response);
     }
 
     @Override
