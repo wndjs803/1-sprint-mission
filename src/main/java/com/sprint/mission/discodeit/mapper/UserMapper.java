@@ -9,13 +9,14 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring", uses = {BinaryContentMapper.class})
 public interface UserMapper {
 
-  @Mapping(target = "name", source = "username")
-  @Mapping(target = "profileImage", ignore = true)
-  @Mapping(target = "userStatus", ignore = true)
-  User toEntity(CreateUserRequest createUserRequest);
+    @Mapping(target = "name", source = "createUserRequest.username")
+    @Mapping(target = "profileImage", ignore = true)
+    @Mapping(target = "userStatus", ignore = true)
+    @Mapping(target = "password", source = "hashedPassword")
+    User toEntity(CreateUserRequest createUserRequest, String hashedPassword);
 
-  @Mapping(target = "username", source = "name")
-  @Mapping(target = "profile", source = "profileImage")
-  @Mapping(target = "online", expression = "java(user.getUserStatus().isRecentLogin())")
-  UserDto toUserDto(User user);
+    @Mapping(target = "username", source = "name")
+    @Mapping(target = "profile", source = "profileImage")
+    @Mapping(target = "online", expression = "java(user.getUserStatus().isRecentLogin())")
+    UserDto toUserDto(User user);
 }
