@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.config;
 
 import com.sprint.mission.discodeit.common.security.filter.CustomUsernamePasswordAuthenticationFilter;
+import com.sprint.mission.discodeit.mapper.UserMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,10 +22,10 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
-        AuthenticationManager authenticationManager) throws Exception {
+        AuthenticationManager authenticationManager, UserMapper userMapper) throws Exception {
 
         CustomUsernamePasswordAuthenticationFilter loginFilter =
-            customUsernamePasswordAuthenticationFilter(authenticationManager);
+            customUsernamePasswordAuthenticationFilter(authenticationManager, userMapper);
         http
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
@@ -37,7 +38,8 @@ public class SecurityConfig {
                     "/index.html",
                     "/assets/**",
                     "/api/auth/**",
-                    "/api/users"
+                    "/api/users",
+                    "api/**"
                 ).permitAll()
                 .requestMatchers("/**").authenticated()
             )
@@ -70,8 +72,8 @@ public class SecurityConfig {
 
     @Bean
     public CustomUsernamePasswordAuthenticationFilter customUsernamePasswordAuthenticationFilter(
-        AuthenticationManager authenticationManager) {
-        return new CustomUsernamePasswordAuthenticationFilter(authenticationManager);
+        AuthenticationManager authenticationManager, UserMapper userMapper) {
+        return new CustomUsernamePasswordAuthenticationFilter(authenticationManager, userMapper);
     }
 
 }
