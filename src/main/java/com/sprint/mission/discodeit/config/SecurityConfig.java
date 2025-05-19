@@ -21,7 +21,9 @@ public class SecurityConfig {
                     "/",
                     "/error",
                     "/index.html",
-                    "/assets/**"
+                    "/assets/**",
+                    "/api/auth/**",
+                    "/api/users"
                 ).permitAll()
                 .requestMatchers("/**").authenticated()
             )
