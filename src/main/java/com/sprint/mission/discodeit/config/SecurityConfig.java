@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.config;
 
+import com.sprint.mission.discodeit.common.security.filter.CustomLogoutFilter;
 import com.sprint.mission.discodeit.common.security.filter.CustomUsernamePasswordAuthenticationFilter;
 import com.sprint.mission.discodeit.mapper.UserMapper;
 import org.springframework.context.annotation.Bean;
@@ -46,7 +47,8 @@ public class SecurityConfig {
             .httpBasic(Customizer.withDefaults())
             .formLogin(AbstractHttpConfigurer::disable)
             .logout(AbstractHttpConfigurer::disable)
-            .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class);
+            .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilterAfter(new CustomLogoutFilter(), loginFilter.getClass());
         return http.build();
     }
 
