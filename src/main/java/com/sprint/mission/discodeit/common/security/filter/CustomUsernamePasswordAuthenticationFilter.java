@@ -5,9 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sprint.mission.discodeit.dto.user.UserDto;
 import com.sprint.mission.discodeit.entity.CustomUserDetails;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.execption.ErrorCode;
 import com.sprint.mission.discodeit.execption.ErrorResponse;
 import com.sprint.mission.discodeit.mapper.UserMapper;
+import com.sprint.mission.discodeit.repository.UserStatusRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,10 +32,12 @@ public class CustomUsernamePasswordAuthenticationFilter extends
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final UserMapper userMapper;
+    private final UserStatusRepository userStatusRepository;
 
     public CustomUsernamePasswordAuthenticationFilter(AuthenticationManager authenticationManager,
-        UserMapper userMapper) {
+        UserMapper userMapper, UserStatusRepository userStatusRepository) {
         this.userMapper = userMapper;
+        this.userStatusRepository = userStatusRepository;
         super.setAuthenticationManager(authenticationManager);
         setFilterProcessesUrl("/api/auth/login"); // 요청 경로 지정
     }
@@ -78,6 +82,10 @@ public class CustomUsernamePasswordAuthenticationFilter extends
         // 2. 세션 저장을 위한 SecurityContextRepository 사용
         SecurityContextRepository contextRepository = new HttpSessionSecurityContextRepository();
         contextRepository.saveContext(context, request, response);
+
+        UserStatus userStatus = user.getUserStatus();
+        userStatus.updateLoginAt(Instant.now());
+        userStatusRepository.saveUserStatus(userStatus);
     }
 
     @Override

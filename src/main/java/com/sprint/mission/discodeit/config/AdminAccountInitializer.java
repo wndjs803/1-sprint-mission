@@ -3,6 +3,7 @@ package com.sprint.mission.discodeit.config;
 import com.sprint.mission.discodeit.entity.Role;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.repository.UserRepository;
+import com.sprint.mission.discodeit.service.UserStatusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +15,7 @@ public class AdminAccountInitializer implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserStatusService userStatusService;
 
     @Override
     public void run(String... args) {
@@ -35,7 +37,9 @@ public class AdminAccountInitializer implements CommandLineRunner {
             passwordEncoder.encode(adminPassword)
         );
         admin.updateRole(Role.ROLE_ADMIN);
-        userRepository.saveUser(admin);
+        User savedUser = userRepository.saveUser(admin);
+
+        userStatusService.createUserStatus(savedUser.getId());
     }
 }
 

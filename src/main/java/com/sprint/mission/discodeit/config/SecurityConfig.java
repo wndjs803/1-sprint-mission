@@ -3,6 +3,7 @@ package com.sprint.mission.discodeit.config;
 import com.sprint.mission.discodeit.common.security.filter.CustomLogoutFilter;
 import com.sprint.mission.discodeit.common.security.filter.CustomUsernamePasswordAuthenticationFilter;
 import com.sprint.mission.discodeit.mapper.UserMapper;
+import com.sprint.mission.discodeit.repository.UserStatusRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,6 +13,8 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,10 +26,12 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
-        AuthenticationManager authenticationManager, UserMapper userMapper) throws Exception {
+        AuthenticationManager authenticationManager, UserMapper userMapper,
+        UserStatusRepository userStatusRepository) throws Exception {
 
         CustomUsernamePasswordAuthenticationFilter loginFilter =
-            customUsernamePasswordAuthenticationFilter(authenticationManager, userMapper);
+            customUsernamePasswordAuthenticationFilter(authenticationManager, userMapper,
+                userStatusRepository);
         http
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
@@ -74,8 +79,15 @@ public class SecurityConfig {
 
     @Bean
     public CustomUsernamePasswordAuthenticationFilter customUsernamePasswordAuthenticationFilter(
-        AuthenticationManager authenticationManager, UserMapper userMapper) {
-        return new CustomUsernamePasswordAuthenticationFilter(authenticationManager, userMapper);
+        AuthenticationManager authenticationManager, UserMapper userMapper,
+        UserStatusRepository userStatusRepository) {
+        return new CustomUsernamePasswordAuthenticationFilter(authenticationManager, userMapper,
+            userStatusRepository);
+    }
+
+    @Bean
+    public SessionRegistry sessionRegistry() {
+        return new SessionRegistryImpl();
     }
 
 }
