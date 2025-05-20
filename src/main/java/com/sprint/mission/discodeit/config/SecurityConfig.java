@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.session.SessionRegistry;
@@ -22,6 +23,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@EnableMethodSecurity // 메소드 레벨 security 활성화
 public class SecurityConfig {
 
     @Bean
@@ -44,10 +46,15 @@ public class SecurityConfig {
                     "/index.html",
                     "/assets/**",
                     "/api/auth/**",
-                    "/api/users",
-                    "api/**"
+                    "/api/users"
                 ).permitAll()
-                .requestMatchers("/**").authenticated()
+                .requestMatchers("api/auth/role").hasRole("ADMIN")
+                .anyRequest().hasRole("USER")
+            )
+            .sessionManagement(session -> session
+                .maximumSessions(1)
+                .maxSessionsPreventsLogin(false)
+                .sessionRegistry(sessionRegistry())
             )
             .httpBasic(Customizer.withDefaults())
             .formLogin(AbstractHttpConfigurer::disable)
