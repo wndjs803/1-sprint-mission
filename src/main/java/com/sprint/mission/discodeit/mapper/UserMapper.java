@@ -24,8 +24,8 @@ public interface UserMapper {
         user.updateRole(Role.ROLE_USER);
     }
 
-    @Mapping(target = "username", source = "name")
-    @Mapping(target = "profile", source = "profileImage")
-    @Mapping(target = "online", expression = "java(user.getUserStatus().isRecentLogin())")
-    UserDto toUserDto(User user);
+    @Mapping(target = "username", source = "user.name")
+    @Mapping(target = "profile", source = "user.profileImage")
+    @Mapping(target = "online", source = "online")
+    UserDto toUserDto(User user, boolean online);
 }

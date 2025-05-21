@@ -9,6 +9,7 @@ import com.sprint.mission.discodeit.service.AuthService;
 import com.sprint.mission.discodeit.validator.UserValidator;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.session.SessionInformation;
 import org.springframework.security.core.session.SessionRegistry;
@@ -26,7 +27,7 @@ public class BasicAuthService implements AuthService {
     @Override
     public UserDto getUserInfo(CustomUserDetails userDetails) {
         User user = userDetails.getUser();
-        return userMapper.toUserDto(user);
+        return userMapper.toUserDto(user, getOnline(user));
     }
 
     @Override
@@ -46,7 +47,19 @@ public class BasicAuthService implements AuthService {
             }
         }
 
-        return userMapper.toUserDto(user);
+        return userMapper.toUserDto(user, false);
+    }
+
+    private boolean getOnline(User user) {
+        boolean online = false;
+        List<Object> principals = sessionRegistry.getAllPrincipals();
+        for (Object principal : principals) {
+            if (Objects.equals(((UserDetails) principal).getUsername(), user.getName())) {
+                online = true;
+            }
+        }
+
+        return online;
     }
 
 //  @Override

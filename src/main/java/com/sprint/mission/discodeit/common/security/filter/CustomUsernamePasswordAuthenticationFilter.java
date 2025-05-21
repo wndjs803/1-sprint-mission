@@ -17,7 +17,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,7 +27,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 
 public class CustomUsernamePasswordAuthenticationFilter extends
@@ -35,13 +40,19 @@ public class CustomUsernamePasswordAuthenticationFilter extends
     private final UserMapper userMapper;
     private final UserStatusRepository userStatusRepository;
     private final HttpSessionSecurityContextRepository contextRepository;
+    private final RegisterSessionAuthenticationStrategy sessionAuthenticationStrategy;
+    private final SessionRegistry sessionRegistry;
 
     public CustomUsernamePasswordAuthenticationFilter(AuthenticationManager authenticationManager,
         UserMapper userMapper, UserStatusRepository userStatusRepository,
-        HttpSessionSecurityContextRepository httpSessionSecurityContextRepository) {
+        HttpSessionSecurityContextRepository httpSessionSecurityContextRepository,
+        RegisterSessionAuthenticationStrategy sessionAuthenticationStrategy,
+        SessionRegistry sessionRegistry) {
         this.userMapper = userMapper;
         this.userStatusRepository = userStatusRepository;
         this.contextRepository = httpSessionSecurityContextRepository;
+        this.sessionAuthenticationStrategy = sessionAuthenticationStrategy;
+        this.sessionRegistry = sessionRegistry;
         super.setAuthenticationManager(authenticationManager);
         setFilterProcessesUrl("/api/auth/login"); // 요청 경로 지정
     }
@@ -78,7 +89,15 @@ public class CustomUsernamePasswordAuthenticationFilter extends
         CustomUserDetails customUserDetails = (CustomUserDetails) authResult.getPrincipal(); // UserDetails 구현체
         User user = customUserDetails.getUser();
 
-        UserDto userDto = userMapper.toUserDto(user);
+        boolean online = false;
+        List<Object> principals = sessionRegistry.getAllPrincipals();
+        for (Object principal : principals) {
+            if (Objects.equals(((UserDetails) principal).getUsername(), user.getName())) {
+                online = true;
+            }
+        }
+
+        UserDto userDto = userMapper.toUserDto(user, online);
 
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType("application/json");
@@ -95,6 +114,8 @@ public class CustomUsernamePasswordAuthenticationFilter extends
         UserStatus userStatus = user.getUserStatus();
         userStatus.updateLoginAt(Instant.now());
         userStatusRepository.saveUserStatus(userStatus);
+
+        sessionAuthenticationStrategy.onAuthentication(authResult, request, response);
     }
 
     @Override
