@@ -24,7 +24,7 @@ public enum ErrorCode {
 
     // Message
     MESSAGE_NOT_FOUND(404, "MESSAGE-001", "메세지 찾을 수 없습니다."),
-    NOT_MESSAGE_CREATOR(400, "MESSAGE-002", "메세지 생성자가 아닙니다."),
+    NOT_MESSAGE_CREATOR(403, "MESSAGE-002", "메세지 생성자가 아닙니다."),
 
     // File
     DIRECTORY_INIT_FAIL(500, "FILE-001", "디렉토리 생성에 실패했습니다."),
@@ -36,6 +36,7 @@ public enum ErrorCode {
 
     // ReadStatus
     READSTATUS_NOT_FOUND(404, "READSTATUS-001", "readStatus를 찾을 수 없습니다."),
+    NOT_READSTATUS_OWNER(403, "READSTATUS-002", "readStatus를 생성자가 아닙니다."),
 
     // BinaryContent
     BINARYCONTENT_NOT_NULL(400, "BINARYCONTENT-001", "BinaryContent는 null일 수 없습니다."),

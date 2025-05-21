@@ -145,7 +145,7 @@ public class BasicMessageService implements MessageService {
     private void validateMessageSender(Message message, UserDetails userDetails) {
         if (!message.getSender().getName().equals(userDetails.getUsername())) {
             throw new NotMessageCreatorException(
-                Map.of("messageId", message.getId(), "userId", message.getSender().getId()));
+                Map.of("messageId", message.getId(), "username", userDetails.getUsername()));
         }
     }
 
@@ -156,7 +156,7 @@ public class BasicMessageService implements MessageService {
 
         if (!isSender && !isAdmin) {
             throw new NotMessageCreatorException(
-                Map.of("messageId", message.getId(), "userId", message.getSender().getId()));
+                Map.of("messageId", message.getId(), "username", userDetails.getUsername()));
         }
     }
 }
