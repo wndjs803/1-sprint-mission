@@ -27,6 +27,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
@@ -39,16 +40,18 @@ public class CustomUsernamePasswordAuthenticationFilter extends
     private final HttpSessionSecurityContextRepository contextRepository;
     private final RegisterSessionAuthenticationStrategy sessionAuthenticationStrategy;
     private final SessionRegistry sessionRegistry;
+    private final RememberMeServices rememberMeServices;
 
     public CustomUsernamePasswordAuthenticationFilter(AuthenticationManager authenticationManager,
         UserMapper userMapper,
         HttpSessionSecurityContextRepository httpSessionSecurityContextRepository,
         RegisterSessionAuthenticationStrategy sessionAuthenticationStrategy,
-        SessionRegistry sessionRegistry) {
+        SessionRegistry sessionRegistry, RememberMeServices rememberMeServices) {
         this.userMapper = userMapper;
         this.contextRepository = httpSessionSecurityContextRepository;
         this.sessionAuthenticationStrategy = sessionAuthenticationStrategy;
         this.sessionRegistry = sessionRegistry;
+        this.rememberMeServices = rememberMeServices;
         super.setAuthenticationManager(authenticationManager);
         setFilterProcessesUrl("/api/auth/login"); // 요청 경로 지정
     }
@@ -71,6 +74,8 @@ public class CustomUsernamePasswordAuthenticationFilter extends
                 new UsernamePasswordAuthenticationToken(username, password);
 
             super.setDetails(request, authRequest);
+
+            rememberMeServices.loginSuccess(request, response, authRequest);
 
             return super.getAuthenticationManager().authenticate(authRequest);
         } catch (IOException e) {

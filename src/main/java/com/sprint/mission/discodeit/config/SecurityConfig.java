@@ -4,6 +4,7 @@ import com.sprint.mission.discodeit.common.security.filter.CustomLogoutFilter;
 import com.sprint.mission.discodeit.common.security.filter.CustomUsernamePasswordAuthenticationFilter;
 import com.sprint.mission.discodeit.mapper.UserMapper;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,7 +21,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
@@ -36,7 +41,9 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
-        CustomUsernamePasswordAuthenticationFilter loginFilter) throws Exception {
+        CustomUsernamePasswordAuthenticationFilter loginFilter,
+        UserDetailsService userDetailsService, PersistentTokenRepository tokenRepository)
+        throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
@@ -53,12 +60,27 @@ public class SecurityConfig {
                 ).permitAll()
                 .requestMatchers("api/auth/role").hasRole("ADMIN")
                 .anyRequest().hasRole("USER")
-            )
+            );
+
+        // session
+        http
             .sessionManagement(session -> session
                 .maximumSessions(1)
                 .maxSessionsPreventsLogin(false)
                 .sessionRegistry(sessionRegistry())
-            )
+            );
+
+        // remember-me
+        http
+            .rememberMe(r -> r
+                .rememberMeParameter("remember-me")     // 체크박스 input name 속성값
+                .tokenValiditySeconds(1209600)       // 쿠키 유효 시간 (14일 = 60*60*24*14)
+                .key("mySuperSecretKey123!")
+                .userDetailsService(userDetailsService)
+                .tokenRepository(tokenRepository)
+            );
+
+        http
             .httpBasic(Customizer.withDefaults())
             .formLogin(AbstractHttpConfigurer::disable)
             .logout(AbstractHttpConfigurer::disable)
@@ -92,10 +114,10 @@ public class SecurityConfig {
         AuthenticationManager authenticationManager, UserMapper userMapper,
         HttpSessionSecurityContextRepository httpSessionSecurityContextRepository,
         RegisterSessionAuthenticationStrategy sessionAuthenticationStrategy,
-        SessionRegistry sessionRegistry) {
+        SessionRegistry sessionRegistry, RememberMeServices rememberMeServices) {
         return new CustomUsernamePasswordAuthenticationFilter(authenticationManager, userMapper,
             httpSessionSecurityContextRepository,
-            sessionAuthenticationStrategy, sessionRegistry);
+            sessionAuthenticationStrategy, sessionRegistry, rememberMeServices);
     }
 
     @Bean
@@ -121,5 +143,26 @@ public class SecurityConfig {
     @Bean
     public SessionRepository<MapSession> sessionRepository() {
         return new MapSessionRepository(new ConcurrentHashMap<>());
+    }
+
+
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository(DataSource dataSource) {
+        JdbcTokenRepositoryImpl repo = new JdbcTokenRepositoryImpl();
+        repo.setDataSource(dataSource);
+        // 최초 실행 시 true로 설정하면 테이블을 자동 생성해줌 (한 번만!)
+        repo.setCreateTableOnStartup(false);
+        return repo;
+    }
+
+    @Bean
+    public RememberMeServices rememberMeServices(UserDetailsService userDetailsService,
+        PersistentTokenRepository tokenRepository) {
+        PersistentTokenBasedRememberMeServices services =
+            new PersistentTokenBasedRememberMeServices("mySuperSecretKey123!", userDetailsService,
+                tokenRepository);
+        services.setParameter("remember-me"); // 쿼리 파라미터 또는 input name
+        services.setTokenValiditySeconds(60 * 60 * 24 * 14); // 14일
+        return services;
     }
 }
