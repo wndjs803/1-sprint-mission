@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -37,6 +38,7 @@ public class UserController implements UserApi {
             .body(userService.createUser(createUserRequest, profileImage));
     }
 
+    @PreAuthorize("#id == authentication.principal.user.id or hasRole('ROLE_ADMIN')")
     @PatchMapping(value = "/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<UserDto> updateUser(
         @PathVariable UUID id,
@@ -46,6 +48,7 @@ public class UserController implements UserApi {
             .body(userService.updateUser(id, updateUserRequest, profileImage));
     }
 
+    @PreAuthorize("#id == authentication.principal.user.id or hasRole('ROLE_ADMIN')")
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
         userService.deleteUser(id);

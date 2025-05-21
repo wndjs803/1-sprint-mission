@@ -10,6 +10,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,26 +25,28 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/readStatuses")
 public class ReadStatusController implements ReadStatusApi {
 
-  private final ReadStatusService readStatusService;
+    private final ReadStatusService readStatusService;
 
-  @PostMapping(value = "")
-  public ResponseEntity<ReadStatusDto> createReadStatus(
-      @RequestBody CreateReadStatusRequest createReadStatusRequest) {
-    return ResponseEntity.status(HttpStatus.CREATED)
-        .body(readStatusService.createReadStatus(createReadStatusRequest));
-  }
+    @PreAuthorize("#createReadStatusRequest.userId == authentication.principal.user.id")
+    @PostMapping(value = "")
+    public ResponseEntity<ReadStatusDto> createReadStatus(
+        @RequestBody CreateReadStatusRequest createReadStatusRequest) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .body(readStatusService.createReadStatus(createReadStatusRequest));
+    }
 
-  @PatchMapping(value = "{id}")
-  public ResponseEntity<ReadStatusDto> updateReadStatus(@PathVariable UUID id,
-      @RequestBody UpdateReadStatusRequest updateReadStatusRequest) {
-    return ResponseEntity.status(HttpStatus.OK)
-        .body(readStatusService.updateReadStatus(id, updateReadStatusRequest));
-  }
+    @PreAuthorize("#id == authentication.principal.user.id")
+    @PatchMapping(value = "{id}")
+    public ResponseEntity<ReadStatusDto> updateReadStatus(@PathVariable UUID id,
+        @RequestBody UpdateReadStatusRequest updateReadStatusRequest) {
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(readStatusService.updateReadStatus(id, updateReadStatusRequest));
+    }
 
-  @GetMapping
-  public ResponseEntity<List<ReadStatusDto>> findAllReadStatusByUserId(
-      @RequestParam("userId") UUID id) {
-    return ResponseEntity.status(HttpStatus.OK)
-        .body(readStatusService.findAllReadStatusesByUserId(id));
-  }
+    @GetMapping
+    public ResponseEntity<List<ReadStatusDto>> findAllReadStatusByUserId(
+        @RequestParam("userId") UUID id) {
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(readStatusService.findAllReadStatusesByUserId(id));
+    }
 }
