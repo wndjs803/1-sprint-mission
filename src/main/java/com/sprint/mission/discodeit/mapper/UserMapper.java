@@ -14,7 +14,6 @@ public interface UserMapper {
 
     @Mapping(target = "name", source = "createUserRequest.username")
     @Mapping(target = "profileImage", ignore = true)
-    @Mapping(target = "userStatus", ignore = true)
     @Mapping(target = "password", source = "hashedPassword")
     @Mapping(target = "role", ignore = true)
     User toEntity(CreateUserRequest createUserRequest, String hashedPassword);

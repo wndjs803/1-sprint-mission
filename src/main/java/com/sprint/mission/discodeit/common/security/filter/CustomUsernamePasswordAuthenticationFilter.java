@@ -5,11 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sprint.mission.discodeit.dto.user.UserDto;
 import com.sprint.mission.discodeit.entity.CustomUserDetails;
 import com.sprint.mission.discodeit.entity.User;
-import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.execption.ErrorCode;
 import com.sprint.mission.discodeit.execption.ErrorResponse;
 import com.sprint.mission.discodeit.mapper.UserMapper;
-import com.sprint.mission.discodeit.repository.UserStatusRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,18 +36,16 @@ public class CustomUsernamePasswordAuthenticationFilter extends
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final UserMapper userMapper;
-    private final UserStatusRepository userStatusRepository;
     private final HttpSessionSecurityContextRepository contextRepository;
     private final RegisterSessionAuthenticationStrategy sessionAuthenticationStrategy;
     private final SessionRegistry sessionRegistry;
 
     public CustomUsernamePasswordAuthenticationFilter(AuthenticationManager authenticationManager,
-        UserMapper userMapper, UserStatusRepository userStatusRepository,
+        UserMapper userMapper,
         HttpSessionSecurityContextRepository httpSessionSecurityContextRepository,
         RegisterSessionAuthenticationStrategy sessionAuthenticationStrategy,
         SessionRegistry sessionRegistry) {
         this.userMapper = userMapper;
-        this.userStatusRepository = userStatusRepository;
         this.contextRepository = httpSessionSecurityContextRepository;
         this.sessionAuthenticationStrategy = sessionAuthenticationStrategy;
         this.sessionRegistry = sessionRegistry;
@@ -110,10 +106,6 @@ public class CustomUsernamePasswordAuthenticationFilter extends
 
         // 2. 세션 저장을 위한 SecurityContextRepository 사용
         contextRepository.saveContext(context, request, response);
-
-        UserStatus userStatus = user.getUserStatus();
-        userStatus.updateLoginAt(Instant.now());
-        userStatusRepository.saveUserStatus(userStatus);
 
         sessionAuthenticationStrategy.onAuthentication(authResult, request, response);
     }

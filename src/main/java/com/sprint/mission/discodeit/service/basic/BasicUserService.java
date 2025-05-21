@@ -6,11 +6,9 @@ import com.sprint.mission.discodeit.dto.user.request.CreateUserRequest;
 import com.sprint.mission.discodeit.dto.user.request.UpdateUserRequest;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.User;
-import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.mapper.UserMapper;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
-import com.sprint.mission.discodeit.repository.UserStatusRepository;
 import com.sprint.mission.discodeit.service.UserService;
 import com.sprint.mission.discodeit.storage.BinaryContentStorage;
 import com.sprint.mission.discodeit.validator.UserValidator;
@@ -32,7 +30,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class BasicUserService implements UserService {
 
     private final UserRepository userRepository;
-    private final UserStatusRepository userStatusRepository;
     private final BinaryContentRepository binaryContentRepository;
 
     private final UserMapper userMapper;
@@ -59,10 +56,6 @@ public class BasicUserService implements UserService {
         // 이미지는 선택적으로 등록
         updateProfileImage(user, profileImageFile);
         User savedUser = userRepository.saveUser(user);
-
-        // UserStatus 생성(추후 service layer로 교체)
-        UserStatus savedUserStatus = userStatusRepository.saveUserStatus(UserStatus.of(savedUser));
-        savedUser.updateUserStatus(savedUserStatus);
 
         return userMapper.toUserDto(savedUser, getOnline(user));
     }

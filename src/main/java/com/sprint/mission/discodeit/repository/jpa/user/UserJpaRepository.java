@@ -15,7 +15,7 @@ public interface UserJpaRepository extends JpaRepository<User, UUID> {
 
     Optional<User> findUserByNameAndPassword(String name, String password);
 
-    @Query("select user from User user join fetch user.userStatus")
+    @Query("select user from User user")
     List<User> findAll();
 
     boolean existsByName(String name);

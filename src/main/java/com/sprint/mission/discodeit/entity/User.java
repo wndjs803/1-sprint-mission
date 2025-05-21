@@ -42,10 +42,6 @@ public class User extends BaseUpdatableEntity {
     @JoinColumn(name = "profile_id") // table의 'profile_id' 컬럼
     private BinaryContent profileImage;
 
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    // UserStatus의 'user'필드
-    private UserStatus userStatus;
-
     public User(String name, String email, String password) {
         super();
         this.name = name;
@@ -92,10 +88,6 @@ public class User extends BaseUpdatableEntity {
     public void updateProfileImage(BinaryContent profileImage) {
         this.profileImage = profileImage;
         this.updateUpdatedAt();
-    }
-
-    public void updateUserStatus(UserStatus userStatus) {
-        this.userStatus = userStatus;
     }
 
     public void updateUserInfo(String name, String email, String password) {

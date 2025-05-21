@@ -3,7 +3,6 @@ package com.sprint.mission.discodeit.config;
 import com.sprint.mission.discodeit.common.security.filter.CustomLogoutFilter;
 import com.sprint.mission.discodeit.common.security.filter.CustomUsernamePasswordAuthenticationFilter;
 import com.sprint.mission.discodeit.mapper.UserMapper;
-import com.sprint.mission.discodeit.repository.UserStatusRepository;
 import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -91,12 +90,11 @@ public class SecurityConfig {
     @Bean
     public CustomUsernamePasswordAuthenticationFilter customUsernamePasswordAuthenticationFilter(
         AuthenticationManager authenticationManager, UserMapper userMapper,
-        UserStatusRepository userStatusRepository,
         HttpSessionSecurityContextRepository httpSessionSecurityContextRepository,
         RegisterSessionAuthenticationStrategy sessionAuthenticationStrategy,
         SessionRegistry sessionRegistry) {
         return new CustomUsernamePasswordAuthenticationFilter(authenticationManager, userMapper,
-            userStatusRepository, httpSessionSecurityContextRepository,
+            httpSessionSecurityContextRepository,
             sessionAuthenticationStrategy, sessionRegistry);
     }
 

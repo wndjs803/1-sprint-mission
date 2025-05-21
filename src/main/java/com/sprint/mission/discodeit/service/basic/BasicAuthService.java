@@ -36,7 +36,7 @@ public class BasicAuthService implements AuthService {
         User user = userValidator.validateUserExistsByUserId(request.userId());
         user.updateRole(request.newRole());
 
-        if (user.getUserStatus().isRecentLogin()) {
+        if (getOnline(user)) {
             // 강제 로그아웃: 현재 세션 제거
             List<Object> principals = sessionRegistry.getAllPrincipals();
             for (Object principal : principals) {
@@ -61,18 +61,4 @@ public class BasicAuthService implements AuthService {
 
         return online;
     }
-
-//  @Override
-//  @Transactional
-//  public UserDto login(LoginRequest loginRequest) {
-//    User user = userValidator.validateUserExistsByNameAndPassword(loginRequest.username(),
-//        loginRequest.password());
-//
-//    // UserStatus 로그인 여부 변경
-//    UpdateUserStatusByUserIdRequest updateUserStatusByUserIdRequest =
-//        new UpdateUserStatusByUserIdRequest(TimeUtil.getCurrentTime());
-//    userStatusService.updateUserStatusByUserId(user.getId(), updateUserStatusByUserIdRequest);
-//
-//    return userMapper.toUserDto(user);
-//  }
 }
