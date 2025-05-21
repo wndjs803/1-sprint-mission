@@ -27,7 +27,6 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-import org.springframework.security.web.context.SecurityContextRepository;
 
 public class CustomUsernamePasswordAuthenticationFilter extends
     UsernamePasswordAuthenticationFilter {
@@ -35,11 +34,14 @@ public class CustomUsernamePasswordAuthenticationFilter extends
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final UserMapper userMapper;
     private final UserStatusRepository userStatusRepository;
+    private final HttpSessionSecurityContextRepository contextRepository;
 
     public CustomUsernamePasswordAuthenticationFilter(AuthenticationManager authenticationManager,
-        UserMapper userMapper, UserStatusRepository userStatusRepository) {
+        UserMapper userMapper, UserStatusRepository userStatusRepository,
+        HttpSessionSecurityContextRepository httpSessionSecurityContextRepository) {
         this.userMapper = userMapper;
         this.userStatusRepository = userStatusRepository;
+        this.contextRepository = httpSessionSecurityContextRepository;
         super.setAuthenticationManager(authenticationManager);
         setFilterProcessesUrl("/api/auth/login"); // 요청 경로 지정
     }
@@ -88,7 +90,6 @@ public class CustomUsernamePasswordAuthenticationFilter extends
         SecurityContextHolder.setContext(context);
 
         // 2. 세션 저장을 위한 SecurityContextRepository 사용
-        SecurityContextRepository contextRepository = new HttpSessionSecurityContextRepository();
         contextRepository.saveContext(context, request, response);
 
         UserStatus userStatus = user.getUserStatus();

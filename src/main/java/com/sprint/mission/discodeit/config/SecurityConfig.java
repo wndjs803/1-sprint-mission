@@ -21,6 +21,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 
 @Configuration
 @EnableMethodSecurity // 메소드 레벨 security 활성화
@@ -28,12 +29,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
-        AuthenticationManager authenticationManager, UserMapper userMapper,
-        UserStatusRepository userStatusRepository) throws Exception {
-
-        CustomUsernamePasswordAuthenticationFilter loginFilter =
-            customUsernamePasswordAuthenticationFilter(authenticationManager, userMapper,
-                userStatusRepository);
+        CustomUsernamePasswordAuthenticationFilter loginFilter) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
@@ -87,9 +83,10 @@ public class SecurityConfig {
     @Bean
     public CustomUsernamePasswordAuthenticationFilter customUsernamePasswordAuthenticationFilter(
         AuthenticationManager authenticationManager, UserMapper userMapper,
-        UserStatusRepository userStatusRepository) {
+        UserStatusRepository userStatusRepository,
+        HttpSessionSecurityContextRepository httpSessionSecurityContextRepository) {
         return new CustomUsernamePasswordAuthenticationFilter(authenticationManager, userMapper,
-            userStatusRepository);
+            userStatusRepository, httpSessionSecurityContextRepository);
     }
 
     @Bean
@@ -97,4 +94,8 @@ public class SecurityConfig {
         return new SessionRegistryImpl();
     }
 
+    @Bean
+    public HttpSessionSecurityContextRepository httpSessionSecurityContextRepository() {
+        return new HttpSessionSecurityContextRepository();
+    }
 }
