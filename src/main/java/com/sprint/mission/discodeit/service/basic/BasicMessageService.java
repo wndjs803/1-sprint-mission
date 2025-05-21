@@ -10,6 +10,7 @@ import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.execption.message.MessageNotFoundException;
+import com.sprint.mission.discodeit.execption.message.NotMessageCreatorException;
 import com.sprint.mission.discodeit.mapper.MessageMapper;
 import com.sprint.mission.discodeit.mapper.PageResponseMapper;
 import com.sprint.mission.discodeit.mapper.UserMapper;
@@ -103,8 +104,11 @@ public class BasicMessageService implements MessageService {
 
     @Override
     @Transactional
-    public MessageDto updateMessage(UUID messageId, UpdateMessageRequest updateMessageRequest) {
+    public MessageDto updateMessage(UUID messageId, UpdateMessageRequest updateMessageRequest,
+        UserDetails userDetails) {
         Message foundMessage = findMessageById(messageId);
+
+        validateMessageSender(foundMessage, userDetails);
 
         foundMessage.updateContent(updateMessageRequest.newContent());
 
@@ -114,8 +118,10 @@ public class BasicMessageService implements MessageService {
 
     @Override
     @Transactional
-    public void deleteMessage(UUID messageId) {
-        findMessageById(messageId);
+    public void deleteMessage(UUID messageId, UserDetails userDetails) {
+        Message foundMessage = findMessageById(messageId);
+
+        validateMessageAuthority(foundMessage, userDetails);
 
         messageRepository.removeMessage(messageId);
     }
@@ -134,5 +140,23 @@ public class BasicMessageService implements MessageService {
             }
         }
         return online;
+    }
+
+    private void validateMessageSender(Message message, UserDetails userDetails) {
+        if (!message.getSender().getName().equals(userDetails.getUsername())) {
+            throw new NotMessageCreatorException(
+                Map.of("messageId", message.getId(), "userId", message.getSender().getId()));
+        }
+    }
+
+    private void validateMessageAuthority(Message message, UserDetails userDetails) {
+        boolean isSender = message.getSender().getName().equals(userDetails.getUsername());
+        boolean isAdmin = userDetails.getAuthorities().stream()
+            .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
+
+        if (!isSender && !isAdmin) {
+            throw new NotMessageCreatorException(
+                Map.of("messageId", message.getId(), "userId", message.getSender().getId()));
+        }
     }
 }

@@ -17,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -41,21 +43,26 @@ public class MessageController implements MessageApi {
         @RequestPart(value = "messageCreateRequest") CreateMessageRequest createMessageRequest,
         @RequestPart(value = "attachments", required = false) List<MultipartFile> multipartFileList) {
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(messageService.createMessage(createMessageRequest, multipartFileList));
+            .body(
+                messageService.createMessage(createMessageRequest, multipartFileList));
     }
 
     @PreAuthorize("#id == authentication.principal.user.id")
     @PatchMapping(value = "/{id}")
-    public ResponseEntity<MessageDto> updateMessage(@PathVariable UUID id,
-        @RequestBody UpdateMessageRequest updateMessageRequest) {
+    public ResponseEntity<MessageDto> updateMessage(
+        @PathVariable UUID id,
+        @RequestBody UpdateMessageRequest updateMessageRequest,
+        @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.status(HttpStatus.OK)
-            .body(messageService.updateMessage(id, updateMessageRequest));
+            .body(messageService.updateMessage(id, updateMessageRequest, userDetails));
     }
 
-    @PreAuthorize("#id == authentication.principal.user.id or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping(value = "{id}")
-    public ResponseEntity<Void> deleteMessage(@PathVariable UUID id) {
-        messageService.deleteMessage(id);
+    public ResponseEntity<Void> deleteMessage(
+        @PathVariable UUID id,
+        @AuthenticationPrincipal UserDetails userDetails) {
+        messageService.deleteMessage(id, userDetails);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
