@@ -39,6 +39,9 @@ import org.springframework.session.config.annotation.web.http.EnableSpringHttpSe
 @EnableSpringHttpSession // HttpSession 을 Spring Session 으로 변환
 public class SecurityConfig {
 
+    private static final String KEY = "mySuperSecretKey123!"; // 추후 환경 변수 등으로 관리
+    private static final int REMEMBER_ME_COOKIE_EXPIRED_TIME = 60 * 60 * 24 * 21;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
         CustomUsernamePasswordAuthenticationFilter loginFilter,
@@ -73,9 +76,9 @@ public class SecurityConfig {
         // remember-me
         http
             .rememberMe(r -> r
-                .rememberMeParameter("remember-me")     // 체크박스 input name 속성값
-                .tokenValiditySeconds(1209600)       // 쿠키 유효 시간 (14일 = 60*60*24*14)
-                .key("mySuperSecretKey123!")
+                .rememberMeParameter("remember-me")
+                .tokenValiditySeconds(REMEMBER_ME_COOKIE_EXPIRED_TIME)
+                .key(KEY)
                 .userDetailsService(userDetailsService)
                 .tokenRepository(tokenRepository)
             );
@@ -85,7 +88,7 @@ public class SecurityConfig {
             .formLogin(AbstractHttpConfigurer::disable)
             .logout(AbstractHttpConfigurer::disable)
             .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class)
-            .addFilterAfter(new CustomLogoutFilter(), loginFilter.getClass());
+            .addFilterAfter(new CustomLogoutFilter(tokenRepository), loginFilter.getClass());
         return http.build();
     }
 
@@ -159,10 +162,10 @@ public class SecurityConfig {
     public RememberMeServices rememberMeServices(UserDetailsService userDetailsService,
         PersistentTokenRepository tokenRepository) {
         PersistentTokenBasedRememberMeServices services =
-            new PersistentTokenBasedRememberMeServices("mySuperSecretKey123!", userDetailsService,
+            new PersistentTokenBasedRememberMeServices(KEY, userDetailsService,
                 tokenRepository);
         services.setParameter("remember-me"); // 쿼리 파라미터 또는 input name
-        services.setTokenValiditySeconds(60 * 60 * 24 * 14); // 14일
+        services.setTokenValiditySeconds(REMEMBER_ME_COOKIE_EXPIRED_TIME);
         return services;
     }
 }
