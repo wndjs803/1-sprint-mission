@@ -83,12 +83,14 @@ public class SecurityConfig {
                 .tokenRepository(tokenRepository)
             );
 
+        // 기본 설정 및 커스텀 필터 추가
         http
             .httpBasic(Customizer.withDefaults())
             .formLogin(AbstractHttpConfigurer::disable)
             .logout(AbstractHttpConfigurer::disable)
             .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class)
             .addFilterAfter(new CustomLogoutFilter(tokenRepository), loginFilter.getClass());
+
         return http.build();
     }
 

@@ -35,7 +35,6 @@ public class CustomLogoutFilter extends OncePerRequestFilter {
             }
 
             // remember-me 토큰 삭제
-            // remember-me DB 토큰 삭제
             if (authentication != null && authentication.getName() != null) {
                 tokenRepository.removeUserTokens(authentication.getName());
             }
