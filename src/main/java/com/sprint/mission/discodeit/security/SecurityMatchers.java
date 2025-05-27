@@ -1,4 +1,4 @@
-package com.sprint.mission.discodeit.common.security;
+package com.sprint.mission.discodeit.security;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;

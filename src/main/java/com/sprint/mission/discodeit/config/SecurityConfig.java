@@ -1,9 +1,9 @@
 package com.sprint.mission.discodeit.config;
 
-import com.sprint.mission.discodeit.common.security.SecurityMatchers;
-import com.sprint.mission.discodeit.common.security.filter.CustomLogoutFilter;
-import com.sprint.mission.discodeit.common.security.filter.CustomUsernamePasswordAuthenticationFilter;
 import com.sprint.mission.discodeit.mapper.UserMapper;
+import com.sprint.mission.discodeit.security.SecurityMatchers;
+import com.sprint.mission.discodeit.security.filter.CustomLogoutFilter;
+import com.sprint.mission.discodeit.security.filter.CustomUsernamePasswordAuthenticationFilter;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;

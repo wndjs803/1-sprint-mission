@@ -1,6 +1,6 @@
-package com.sprint.mission.discodeit.common.security.filter;
+package com.sprint.mission.discodeit.security.filter;
 
-import com.sprint.mission.discodeit.common.security.SecurityMatchers;
+import com.sprint.mission.discodeit.security.SecurityMatchers;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;

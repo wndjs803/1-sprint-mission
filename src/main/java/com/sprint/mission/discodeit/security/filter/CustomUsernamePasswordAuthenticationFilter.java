@@ -1,10 +1,10 @@
-package com.sprint.mission.discodeit.common.security.filter;
+package com.sprint.mission.discodeit.security.filter;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sprint.mission.discodeit.common.security.handler.CustomLoginFailureHandler;
-import com.sprint.mission.discodeit.common.security.handler.CustomLoginSuccessHandler;
 import com.sprint.mission.discodeit.mapper.UserMapper;
+import com.sprint.mission.discodeit.security.handler.CustomLoginFailureHandler;
+import com.sprint.mission.discodeit.security.handler.CustomLoginSuccessHandler;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
