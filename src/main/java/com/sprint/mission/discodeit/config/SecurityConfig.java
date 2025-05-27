@@ -63,6 +63,7 @@ public class SecurityConfig {
                 ).permitAll()
                 .requestMatchers("api/auth/role").hasRole("ADMIN")
                 .anyRequest().hasRole("USER")
+                .anyRequest().authenticated()
             );
 
         // session
