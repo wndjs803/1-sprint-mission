@@ -36,7 +36,7 @@ public class AuthController implements AuthApi {
             throw new RuntimeException("Unauthorized"); // 임시 예외
         }
 
-        return ResponseEntity.ok(authService.getUserInfo(userDetails));
+        return ResponseEntity.ok(userDetails.getUserDto());
     }
 
     @PutMapping("/role")

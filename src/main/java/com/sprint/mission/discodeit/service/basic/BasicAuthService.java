@@ -2,7 +2,6 @@ package com.sprint.mission.discodeit.service.basic;
 
 import com.sprint.mission.discodeit.dto.user.UserDto;
 import com.sprint.mission.discodeit.dto.user.request.UserRoleUpdateRequest;
-import com.sprint.mission.discodeit.entity.CustomUserDetails;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.mapper.UserMapper;
 import com.sprint.mission.discodeit.service.AuthService;
@@ -23,12 +22,6 @@ public class BasicAuthService implements AuthService {
     private final UserValidator userValidator;
     private final UserMapper userMapper;
     private final SessionRegistry sessionRegistry;
-
-    @Override
-    public UserDto getUserInfo(CustomUserDetails userDetails) {
-        User user = userDetails.getUser();
-        return userMapper.toUserDto(user, getOnline(user));
-    }
 
     @Override
     @Transactional
