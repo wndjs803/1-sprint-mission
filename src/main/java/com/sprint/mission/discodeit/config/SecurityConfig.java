@@ -1,6 +1,8 @@
 package com.sprint.mission.discodeit.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sprint.mission.discodeit.mapper.UserMapper;
+import com.sprint.mission.discodeit.security.CustomSessionInformationExpiredStrategy;
 import com.sprint.mission.discodeit.security.SecurityMatchers;
 import com.sprint.mission.discodeit.security.filter.CustomLogoutFilter;
 import com.sprint.mission.discodeit.security.filter.CustomUsernamePasswordAuthenticationFilter;
@@ -8,6 +10,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyAuthoritiesMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
@@ -24,11 +28,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.session.ConcurrentSessionFilter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.session.MapSession;
 import org.springframework.session.MapSessionRepository;
@@ -46,7 +53,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
         CustomUsernamePasswordAuthenticationFilter loginFilter,
-        UserDetailsService userDetailsService, PersistentTokenRepository tokenRepository)
+        UserDetailsService userDetailsService, PersistentTokenRepository tokenRepository,
+        SessionRegistry sessionRegistry, ObjectMapper objectMapper)
         throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
@@ -64,7 +72,6 @@ public class SecurityConfig {
                 ).permitAll()
                 .requestMatchers("api/auth/role").hasRole("ADMIN")
                 .anyRequest().hasRole("USER")
-                .anyRequest().authenticated()
             );
 
         // session
@@ -92,7 +99,14 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.ignoringRequestMatchers(SecurityMatchers.LOGOUT))
             .logout(AbstractHttpConfigurer::disable)
             .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class)
-            .addFilterAfter(loginFilter, CustomLogoutFilter.class);
+            .addFilterAt(
+                CustomLogoutFilter.createDefault(),
+                LogoutFilter.class
+            )
+            .addFilter(
+                new ConcurrentSessionFilter(sessionRegistry,
+                    new CustomSessionInformationExpiredStrategy(objectMapper))
+            );
 
         return http.build();
     }
@@ -104,10 +118,11 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService,
-        PasswordEncoder passwordEncoder) {
+        PasswordEncoder passwordEncoder, RoleHierarchy roleHierarchy) {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder);
+        provider.setAuthoritiesMapper(new RoleHierarchyAuthoritiesMapper(roleHierarchy));
         return provider;
     }
 
@@ -172,5 +187,11 @@ public class SecurityConfig {
         services.setParameter("remember-me"); // 쿼리 파라미터 또는 input name
         services.setTokenValiditySeconds(REMEMBER_ME_COOKIE_EXPIRED_TIME);
         return services;
+    }
+
+    @Bean
+    public SessionAuthenticationStrategy sessionAuthenticationStrategy(
+        SessionRegistry sessionRegistry) {
+        return new RegisterSessionAuthenticationStrategy(sessionRegistry);
     }
 }

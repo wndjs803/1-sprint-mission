@@ -17,6 +17,7 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 
 public class CustomUsernamePasswordAuthenticationFilter extends
@@ -25,9 +26,9 @@ public class CustomUsernamePasswordAuthenticationFilter extends
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final UserMapper userMapper;
     private final HttpSessionSecurityContextRepository contextRepository;
-    private final RegisterSessionAuthenticationStrategy sessionAuthenticationStrategy;
     private final SessionRegistry sessionRegistry;
     private final RememberMeServices rememberMeServices;
+    private final SessionAuthenticationStrategy sessionAuthenticationStrategy;
 
     public CustomUsernamePasswordAuthenticationFilter(AuthenticationManager authenticationManager,
         UserMapper userMapper,
@@ -43,6 +44,7 @@ public class CustomUsernamePasswordAuthenticationFilter extends
         setAuthenticationSuccessHandler(new CustomLoginSuccessHandler(objectMapper));
         setAuthenticationFailureHandler(new CustomLoginFailureHandler(objectMapper));
         setSecurityContextRepository(new HttpSessionSecurityContextRepository());
+        setSessionAuthenticationStrategy(sessionAuthenticationStrategy);
         setFilterProcessesUrl("/api/auth/login"); // 요청 경로 지정
     }
 

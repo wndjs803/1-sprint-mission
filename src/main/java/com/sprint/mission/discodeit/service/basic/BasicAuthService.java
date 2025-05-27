@@ -2,6 +2,7 @@ package com.sprint.mission.discodeit.service.basic;
 
 import com.sprint.mission.discodeit.dto.user.UserDto;
 import com.sprint.mission.discodeit.dto.user.request.UserRoleUpdateRequest;
+import com.sprint.mission.discodeit.entity.CustomUserDetails;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.mapper.UserMapper;
 import com.sprint.mission.discodeit.service.AuthService;
@@ -31,13 +32,17 @@ public class BasicAuthService implements AuthService {
 
         if (getOnline(user)) {
             // 강제 로그아웃: 현재 세션 제거
-            List<Object> principals = sessionRegistry.getAllPrincipals();
-            for (Object principal : principals) {
-                if (principal instanceof UserDetails u && u.getUsername().equals(user.getName())) {
-                    sessionRegistry.getAllSessions(principal, false)
-                        .forEach(SessionInformation::expireNow);
-                }
-            }
+            sessionRegistry.getAllPrincipals().stream()
+                .filter(principal -> ((CustomUserDetails) principal).getUserDto().id()
+                    .equals(request.userId()))
+                .findFirst()
+                .ifPresent(principal -> {
+                        List<SessionInformation> activeSessions = sessionRegistry.getAllSessions(
+                            principal,
+                            false);
+                        activeSessions.forEach(SessionInformation::expireNow);
+                    }
+                );
         }
 
         return userMapper.toUserDto(user, false);
