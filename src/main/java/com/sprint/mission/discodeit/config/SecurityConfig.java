@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.config;
 
+import com.sprint.mission.discodeit.common.security.SecurityMatchers;
 import com.sprint.mission.discodeit.common.security.filter.CustomLogoutFilter;
 import com.sprint.mission.discodeit.common.security.filter.CustomUsernamePasswordAuthenticationFilter;
 import com.sprint.mission.discodeit.mapper.UserMapper;
@@ -88,9 +89,10 @@ public class SecurityConfig {
         http
             .httpBasic(Customizer.withDefaults())
             .formLogin(AbstractHttpConfigurer::disable)
+            .csrf(csrf -> csrf.ignoringRequestMatchers(SecurityMatchers.LOGOUT))
             .logout(AbstractHttpConfigurer::disable)
             .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class)
-            .addFilterAfter(new CustomLogoutFilter(tokenRepository), loginFilter.getClass());
+            .addFilterAfter(loginFilter, CustomLogoutFilter.class);
 
         return http.build();
     }
