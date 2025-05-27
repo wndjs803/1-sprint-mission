@@ -77,6 +77,7 @@ public class SecurityConfig {
         // session
         http
             .sessionManagement(session -> session
+                .sessionFixation().migrateSession()
                 .maximumSessions(1)
                 .maxSessionsPreventsLogin(false)
                 .sessionRegistry(sessionRegistry())
