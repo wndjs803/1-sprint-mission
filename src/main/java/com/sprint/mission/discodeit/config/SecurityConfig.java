@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sprint.mission.discodeit.mapper.UserMapper;
 import com.sprint.mission.discodeit.security.CustomSessionInformationExpiredStrategy;
 import com.sprint.mission.discodeit.security.SecurityMatchers;
-import com.sprint.mission.discodeit.security.filter.CustomLogoutFilter;
 import com.sprint.mission.discodeit.security.filter.CustomUsernamePasswordAuthenticationFilter;
+import com.sprint.mission.discodeit.security.handler.SessionRegistryLogoutHandler;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
@@ -28,7 +28,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
@@ -98,12 +98,13 @@ public class SecurityConfig {
             .httpBasic(Customizer.withDefaults())
             .formLogin(AbstractHttpConfigurer::disable)
             .csrf(csrf -> csrf.ignoringRequestMatchers(SecurityMatchers.LOGOUT))
-            .logout(AbstractHttpConfigurer::disable)
-            .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class)
-            .addFilterAt(
-                CustomLogoutFilter.createDefault(),
-                LogoutFilter.class
+            .logout(logout ->
+                logout
+                    .logoutRequestMatcher(SecurityMatchers.LOGOUT)
+                    .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler())
+                    .addLogoutHandler(new SessionRegistryLogoutHandler(sessionRegistry))
             )
+            .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class)
             .addFilter(
                 new ConcurrentSessionFilter(sessionRegistry,
                     new CustomSessionInformationExpiredStrategy(objectMapper))
