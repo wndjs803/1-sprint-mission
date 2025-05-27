@@ -35,6 +35,7 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.session.ConcurrentSessionFilter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.session.MapSession;
@@ -97,7 +98,10 @@ public class SecurityConfig {
         http
             .httpBasic(Customizer.withDefaults())
             .formLogin(AbstractHttpConfigurer::disable)
-            .csrf(csrf -> csrf.ignoringRequestMatchers(SecurityMatchers.LOGOUT))
+            .csrf(csrf -> csrf
+                .ignoringRequestMatchers(SecurityMatchers.LOGOUT)
+                .csrfTokenRepository(customCookieCsrfTokenRepository())
+            )
             .logout(logout ->
                 logout
                     .logoutRequestMatcher(SecurityMatchers.LOGOUT)
@@ -195,5 +199,13 @@ public class SecurityConfig {
     public SessionAuthenticationStrategy sessionAuthenticationStrategy(
         SessionRegistry sessionRegistry) {
         return new RegisterSessionAuthenticationStrategy(sessionRegistry);
+    }
+
+    @Bean
+    public CookieCsrfTokenRepository customCookieCsrfTokenRepository() {
+        CookieCsrfTokenRepository repository = CookieCsrfTokenRepository.withHttpOnlyFalse(); // HttpOnly false
+        repository.setCookieName("XSRF-TOKEN");           // 쿠키 이름
+        repository.setHeaderName("X-XSRF-TOKEN");         // 헤더 이름
+        return repository;
     }
 }
