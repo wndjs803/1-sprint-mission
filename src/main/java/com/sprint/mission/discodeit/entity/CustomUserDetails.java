@@ -3,6 +3,7 @@ package com.sprint.mission.discodeit.entity;
 import com.sprint.mission.discodeit.dto.user.UserDto;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -29,5 +30,21 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public String getUsername() {
         return userDto.username();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof CustomUserDetails that)) {
+            return false;
+        }
+        return userDto.username().equals(that.userDto.username());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userDto.username());
     }
 }
