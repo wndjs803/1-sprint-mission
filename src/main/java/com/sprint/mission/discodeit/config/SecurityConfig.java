@@ -4,7 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sprint.mission.discodeit.security.SecurityMatchers;
 import com.sprint.mission.discodeit.security.filter.CustomUsernamePasswordAuthenticationFilter;
 import com.sprint.mission.discodeit.security.filter.JwtAuthenticationFilter;
-import com.sprint.mission.discodeit.security.handler.SessionRegistryLogoutHandler;
+import com.sprint.mission.discodeit.security.filter.JwtExceptionHandlingFilter;
+import com.sprint.mission.discodeit.security.handler.JwtLogoutHandler;
 import com.sprint.mission.discodeit.security.jwt.JwtService;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.sql.DataSource;
@@ -30,6 +31,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
@@ -53,6 +55,8 @@ public class SecurityConfig {
     private static final int REMEMBER_ME_COOKIE_EXPIRED_TIME = 60 * 60 * 24 * 21;
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtExceptionHandlingFilter jwtExceptionHandlingFilter;
+    private final JwtLogoutHandler jwtLogoutHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
@@ -103,8 +107,9 @@ public class SecurityConfig {
                 logout
                     .logoutRequestMatcher(SecurityMatchers.LOGOUT)
                     .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler())
-                    .addLogoutHandler(new SessionRegistryLogoutHandler(sessionRegistry))
+                    .addLogoutHandler(jwtLogoutHandler)
             )
+            .addFilterBefore(jwtExceptionHandlingFilter, LogoutFilter.class)
             .addFilterBefore(jwtAuthenticationFilter, loginFilter.getClass())
             .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -136,9 +141,9 @@ public class SecurityConfig {
     public CustomUsernamePasswordAuthenticationFilter customUsernamePasswordAuthenticationFilter(
         AuthenticationManager authenticationManager,
         RegisterSessionAuthenticationStrategy sessionAuthenticationStrategy,
-        RememberMeServices rememberMeServices, JwtService jwtService) {
+        RememberMeServices rememberMeServices, JwtService jwtService, ObjectMapper objectMapper) {
         return new CustomUsernamePasswordAuthenticationFilter(authenticationManager,
-            sessionAuthenticationStrategy, rememberMeServices, jwtService);
+            sessionAuthenticationStrategy, rememberMeServices, jwtService, objectMapper);
     }
 
     @Bean

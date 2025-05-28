@@ -22,7 +22,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -37,7 +36,6 @@ public class JwtService {
         );
     }
 
-    @Transactional
     public String getAccessToken(String refreshToken) {
         JwtSession jwtSession = jwtSessionRepository.findByRefreshToken(refreshToken)
             .orElseThrow(() -> new RuntimeException("유효하지 않은 refresh token"));
@@ -45,6 +43,12 @@ public class JwtService {
         return jwtSession.getAccessToken();
     }
 
+    public void invalidateRefreshToken(String refreshToken) {
+        JwtSession jwtSession = jwtSessionRepository.findByRefreshToken(refreshToken)
+            .orElseThrow(() -> new RuntimeException("유효하지 않은 refresh token"));
+
+        jwtSessionRepository.delete(jwtSession);
+    }
 
     /**
      * 액세스 토큰 생성

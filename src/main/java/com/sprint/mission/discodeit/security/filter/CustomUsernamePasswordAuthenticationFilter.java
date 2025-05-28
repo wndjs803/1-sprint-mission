@@ -22,17 +22,18 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 public class CustomUsernamePasswordAuthenticationFilter extends
     UsernamePasswordAuthenticationFilter {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
     private final RememberMeServices rememberMeServices;
     private final SessionAuthenticationStrategy sessionAuthenticationStrategy;
     private final JwtService jwtService;
 
     public CustomUsernamePasswordAuthenticationFilter(AuthenticationManager authenticationManager,
         RegisterSessionAuthenticationStrategy sessionAuthenticationStrategy,
-        RememberMeServices rememberMeServices, JwtService jwtService) {
+        RememberMeServices rememberMeServices, JwtService jwtService, ObjectMapper objectMapper) {
         this.sessionAuthenticationStrategy = sessionAuthenticationStrategy;
         this.rememberMeServices = rememberMeServices;
         this.jwtService = jwtService;
+        this.objectMapper = objectMapper;
         setAuthenticationManager(authenticationManager);
         setAuthenticationSuccessHandler(new CustomLoginSuccessHandler(objectMapper, jwtService));
         setAuthenticationFailureHandler(new CustomLoginFailureHandler(objectMapper));
