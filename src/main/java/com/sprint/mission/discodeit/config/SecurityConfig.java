@@ -1,11 +1,10 @@
 package com.sprint.mission.discodeit.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sprint.mission.discodeit.mapper.UserMapper;
-import com.sprint.mission.discodeit.security.CustomSessionInformationExpiredStrategy;
 import com.sprint.mission.discodeit.security.SecurityMatchers;
 import com.sprint.mission.discodeit.security.filter.CustomUsernamePasswordAuthenticationFilter;
 import com.sprint.mission.discodeit.security.handler.SessionRegistryLogoutHandler;
+import com.sprint.mission.discodeit.security.jwt.JwtService;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
@@ -16,10 +15,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -36,7 +35,6 @@ import org.springframework.security.web.authentication.session.RegisterSessionAu
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.session.ConcurrentSessionFilter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.session.MapSession;
 import org.springframework.session.MapSessionRepository;
@@ -78,10 +76,7 @@ public class SecurityConfig {
         // session
         http
             .sessionManagement(session -> session
-                .sessionFixation().migrateSession()
-                .maximumSessions(1)
-                .maxSessionsPreventsLogin(false)
-                .sessionRegistry(sessionRegistry())
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             );
 
         // remember-me
@@ -96,23 +91,20 @@ public class SecurityConfig {
 
         // 기본 설정 및 커스텀 필터 추가
         http
-            .httpBasic(Customizer.withDefaults())
+            .httpBasic(AbstractHttpConfigurer::disable)
             .formLogin(AbstractHttpConfigurer::disable)
-            .csrf(csrf -> csrf
-                .ignoringRequestMatchers(SecurityMatchers.LOGOUT)
-                .csrfTokenRepository(customCookieCsrfTokenRepository())
-            )
+            .csrf(AbstractHttpConfigurer::disable)
             .logout(logout ->
                 logout
                     .logoutRequestMatcher(SecurityMatchers.LOGOUT)
                     .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler())
                     .addLogoutHandler(new SessionRegistryLogoutHandler(sessionRegistry))
             )
-            .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class)
-            .addFilter(
-                new ConcurrentSessionFilter(sessionRegistry,
-                    new CustomSessionInformationExpiredStrategy(objectMapper))
-            );
+            .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class);
+//            .addFilter(
+//                new ConcurrentSessionFilter(sessionRegistry,
+//                    new CustomSessionInformationExpiredStrategy(objectMapper))
+//            );
 
         return http.build();
     }
@@ -140,13 +132,11 @@ public class SecurityConfig {
 
     @Bean
     public CustomUsernamePasswordAuthenticationFilter customUsernamePasswordAuthenticationFilter(
-        AuthenticationManager authenticationManager, UserMapper userMapper,
-        HttpSessionSecurityContextRepository httpSessionSecurityContextRepository,
+        AuthenticationManager authenticationManager,
         RegisterSessionAuthenticationStrategy sessionAuthenticationStrategy,
-        SessionRegistry sessionRegistry, RememberMeServices rememberMeServices) {
-        return new CustomUsernamePasswordAuthenticationFilter(authenticationManager, userMapper,
-            httpSessionSecurityContextRepository,
-            sessionAuthenticationStrategy, sessionRegistry, rememberMeServices);
+        RememberMeServices rememberMeServices, JwtService jwtService) {
+        return new CustomUsernamePasswordAuthenticationFilter(authenticationManager,
+            sessionAuthenticationStrategy, rememberMeServices, jwtService);
     }
 
     @Bean

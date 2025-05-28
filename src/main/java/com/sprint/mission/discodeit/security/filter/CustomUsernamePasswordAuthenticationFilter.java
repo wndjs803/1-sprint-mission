@@ -2,9 +2,9 @@ package com.sprint.mission.discodeit.security.filter;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sprint.mission.discodeit.mapper.UserMapper;
 import com.sprint.mission.discodeit.security.handler.CustomLoginFailureHandler;
 import com.sprint.mission.discodeit.security.handler.CustomLoginSuccessHandler;
+import com.sprint.mission.discodeit.security.jwt.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -13,7 +13,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
@@ -24,24 +23,18 @@ public class CustomUsernamePasswordAuthenticationFilter extends
     UsernamePasswordAuthenticationFilter {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final UserMapper userMapper;
-    private final HttpSessionSecurityContextRepository contextRepository;
-    private final SessionRegistry sessionRegistry;
     private final RememberMeServices rememberMeServices;
     private final SessionAuthenticationStrategy sessionAuthenticationStrategy;
+    private final JwtService jwtService;
 
     public CustomUsernamePasswordAuthenticationFilter(AuthenticationManager authenticationManager,
-        UserMapper userMapper,
-        HttpSessionSecurityContextRepository httpSessionSecurityContextRepository,
         RegisterSessionAuthenticationStrategy sessionAuthenticationStrategy,
-        SessionRegistry sessionRegistry, RememberMeServices rememberMeServices) {
-        this.userMapper = userMapper;
-        this.contextRepository = httpSessionSecurityContextRepository;
+        RememberMeServices rememberMeServices, JwtService jwtService) {
         this.sessionAuthenticationStrategy = sessionAuthenticationStrategy;
-        this.sessionRegistry = sessionRegistry;
         this.rememberMeServices = rememberMeServices;
+        this.jwtService = jwtService;
         setAuthenticationManager(authenticationManager);
-        setAuthenticationSuccessHandler(new CustomLoginSuccessHandler(objectMapper));
+        setAuthenticationSuccessHandler(new CustomLoginSuccessHandler(objectMapper, jwtService));
         setAuthenticationFailureHandler(new CustomLoginFailureHandler(objectMapper));
         setSecurityContextRepository(new HttpSessionSecurityContextRepository());
         setSessionAuthenticationStrategy(sessionAuthenticationStrategy);
@@ -74,57 +67,4 @@ public class CustomUsernamePasswordAuthenticationFilter extends
             throw new RuntimeException("Invalid login request", e);
         }
     }
-
-//    @Override
-//    protected void successfulAuthentication(HttpServletRequest request,
-//        HttpServletResponse response,
-//        FilterChain chain, Authentication authResult) throws IOException {
-//        CustomUserDetails customUserDetails = (CustomUserDetails) authResult.getPrincipal(); // UserDetails 구현체
-//        User user = customUserDetails.getUser();
-//
-//        boolean online = false;
-//        List<Object> principals = sessionRegistry.getAllPrincipals();
-//        for (Object principal : principals) {
-//            if (Objects.equals(((UserDetails) principal).getUsername(), user.getName())) {
-//                online = true;
-//            }
-//        }
-//
-//        UserDto userDto = userMapper.toUserDto(user, online);
-//
-//        response.setStatus(HttpServletResponse.SC_OK);
-//        response.setContentType("application/json");
-//        objectMapper.writeValue(response.getWriter(), userDto);
-//
-//        // 1. SecurityContext 생성
-//        SecurityContext context = SecurityContextHolder.createEmptyContext();
-//        context.setAuthentication(authResult);
-//        SecurityContextHolder.setContext(context);
-//
-//        // 2. 세션 저장을 위한 SecurityContextRepository 사용
-//        contextRepository.saveContext(context, request, response);
-//
-//        sessionAuthenticationStrategy.onAuthentication(authResult, request, response);
-//    }
-//
-//    @Override
-//    protected void unsuccessfulAuthentication(HttpServletRequest request,
-//        HttpServletResponse response,
-//        AuthenticationException failed) throws IOException, ServletException {
-//        super.unsuccessfulAuthentication(request, response, failed);
-//
-//        ErrorResponse errorResponse = new ErrorResponse(
-//            Instant.now(),
-//            ErrorCode.UNAUTHORIZED.getCode(),
-//            ErrorCode.UNAUTHORIZED.getMessage(),
-//            new HashMap<>(),
-//            failed.getClass().getSimpleName(),
-//            HttpServletResponse.SC_UNAUTHORIZED
-//        );
-//
-//        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-//        response.setContentType("application/json");
-//        objectMapper.writeValue(response.getWriter(), errorResponse);
-//    }
 }
-
