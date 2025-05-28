@@ -35,6 +35,7 @@ public class JwtService {
     private final JwtProperties jwtProperties;
     private final UserValidator userValidator;
     private final UserMapper userMapper;
+    private final JwtBlacklist jwtBlacklist;
 
     public void saveJwtSession(UserDto userDto, String accessToken, String refreshToken) {
         jwtSessionRepository.save(
@@ -54,6 +55,10 @@ public class JwtService {
             .orElseThrow(() -> new RuntimeException("유효하지 않은 refresh token"));
 
         jwtSessionRepository.delete(jwtSession);
+
+        String accessToken = jwtSession.getAccessToken();
+        Date expirationTime = getExpiration(accessToken);
+        jwtBlacklist.addAccessToken(accessToken, expirationTime);
     }
 
     @Transactional
@@ -105,7 +110,7 @@ public class JwtService {
     public boolean validate(String token) {
         try {
             getClaims(token);
-            return true;
+            return !jwtBlacklist.isBlacklisted(token);
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
