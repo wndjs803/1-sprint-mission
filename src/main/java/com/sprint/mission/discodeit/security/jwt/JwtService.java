@@ -188,7 +188,7 @@ public class JwtService {
         }
 
         return roles.stream()
-            .map(Object::toString)
+            .map(object -> "ROLE_".concat(object.toString())) // ROLE_ 접두사!!!
             .map(SimpleGrantedAuthority::new)
             .collect(Collectors.toList());
     }
