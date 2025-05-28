@@ -3,10 +3,12 @@ package com.sprint.mission.discodeit.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sprint.mission.discodeit.security.SecurityMatchers;
 import com.sprint.mission.discodeit.security.filter.CustomUsernamePasswordAuthenticationFilter;
+import com.sprint.mission.discodeit.security.filter.JwtAuthenticationFilter;
 import com.sprint.mission.discodeit.security.handler.SessionRegistryLogoutHandler;
 import com.sprint.mission.discodeit.security.jwt.JwtService;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.sql.DataSource;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
@@ -44,10 +46,13 @@ import org.springframework.session.config.annotation.web.http.EnableSpringHttpSe
 @Configuration
 @EnableMethodSecurity // 메소드 레벨 security 활성화
 @EnableSpringHttpSession // HttpSession 을 Spring Session 으로 변환
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     private static final String KEY = "mySuperSecretKey123!"; // 추후 환경 변수 등으로 관리
     private static final int REMEMBER_ME_COOKIE_EXPIRED_TIME = 60 * 60 * 24 * 21;
+
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
@@ -69,7 +74,7 @@ public class SecurityConfig {
                     "/api/auth/**",
                     "/api/users"
                 ).permitAll()
-                .requestMatchers("api/auth/role").hasRole("ADMIN")
+                .requestMatchers("/api/auth/role").hasRole("ADMIN")
                 .anyRequest().hasRole("USER")
             );
 
@@ -100,11 +105,8 @@ public class SecurityConfig {
                     .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler())
                     .addLogoutHandler(new SessionRegistryLogoutHandler(sessionRegistry))
             )
+            .addFilterBefore(jwtAuthenticationFilter, loginFilter.getClass())
             .addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class);
-//            .addFilter(
-//                new ConcurrentSessionFilter(sessionRegistry,
-//                    new CustomSessionInformationExpiredStrategy(objectMapper))
-//            );
 
         return http.build();
     }
