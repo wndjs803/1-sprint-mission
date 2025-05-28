@@ -26,4 +26,23 @@ public class ErrorResponse {
         this.exceptionType = exception.getClass().getSimpleName();
         this.status = status;
     }
+
+    public ErrorResponse(String code, String message, String exception,
+        int status) {
+        this.timestamp = Instant.now();
+        this.errorCode = code;
+        this.errorMessage = message;
+        this.exceptionType = exception;
+        this.status = status;
+    }
+
+    public static ErrorResponse of(int status, String code, String message) {
+        return new ErrorResponse(
+            code,
+            message,
+            "JwtException",
+            status
+        );
+    }
+
 }
