@@ -1,11 +1,17 @@
 package com.sprint.mission.discodeit.security.jwt;
 
 import com.sprint.mission.discodeit.dto.user.UserDto;
+import com.sprint.mission.discodeit.entity.CustomUserDetails;
+import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.mapper.UserMapper;
+import com.sprint.mission.discodeit.validator.UserValidator;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Collection;
@@ -20,7 +26,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,6 +34,8 @@ public class JwtService {
 
     private final JwtSessionRepository jwtSessionRepository;
     private final JwtProperties jwtProperties;
+    private final UserValidator userValidator;
+    private final UserMapper userMapper;
 
     public void saveJwtSession(UserDto userDto, String accessToken, String refreshToken) {
         jwtSessionRepository.save(
@@ -48,6 +55,22 @@ public class JwtService {
             .orElseThrow(() -> new RuntimeException("유효하지 않은 refresh token"));
 
         jwtSessionRepository.delete(jwtSession);
+    }
+
+    public String refresh(String refreshToken, UserDto userDto, HttpServletResponse response) {
+        invalidateRefreshToken(refreshToken);
+
+        String newAccessToken = generateAccessToken(userDto);
+        String newRefreshToken = generateAccessToken(userDto);
+
+        Cookie refreshTokenCookie = new Cookie("refreshToken", newRefreshToken);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setPath("/"); // 모든 경로에 쿠키 적용
+        refreshTokenCookie.setMaxAge(
+            (int) getExpiration(refreshToken).getTime()); // 초 단위
+        response.addCookie(refreshTokenCookie);
+
+        return newAccessToken;
     }
 
     /**
@@ -117,8 +140,13 @@ public class JwtService {
         Claims claims = getClaims(token);
 
         Collection<SimpleGrantedAuthority> authorities = getAuthorities(claims);
-        User principal = new User(claims.getSubject(), "", authorities);
-
+        String username = getUsername(token);
+        User user = userValidator.validateUserExistsByUserName(username);
+        UserDto userDto = userMapper.toUserDto(user, true);
+        CustomUserDetails principal = new CustomUserDetails(
+            userDto,
+            user.getPassword()
+        );
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
 
