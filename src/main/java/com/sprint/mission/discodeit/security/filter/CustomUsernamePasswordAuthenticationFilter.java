@@ -59,11 +59,11 @@ public class CustomUsernamePasswordAuthenticationFilter extends
             UsernamePasswordAuthenticationToken authRequest =
                 new UsernamePasswordAuthenticationToken(username, password);
 
-            super.setDetails(request, authRequest);
+            setDetails(request, authRequest);
 
             rememberMeServices.loginSuccess(request, response, authRequest);
 
-            return super.getAuthenticationManager().authenticate(authRequest);
+            return getAuthenticationManager().authenticate(authRequest);
         } catch (IOException e) {
             throw new RuntimeException("Invalid login request", e);
         }
