@@ -1,13 +1,10 @@
 package com.sprint.mission.discodeit.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sprint.mission.discodeit.security.SecurityMatchers;
 import com.sprint.mission.discodeit.security.filter.CustomUsernamePasswordAuthenticationFilter;
 import com.sprint.mission.discodeit.security.filter.JwtAuthenticationFilter;
 import com.sprint.mission.discodeit.security.filter.JwtExceptionHandlingFilter;
 import com.sprint.mission.discodeit.security.handler.JwtLogoutHandler;
-import com.sprint.mission.discodeit.security.jwt.JwtService;
-import java.util.concurrent.ConcurrentHashMap;
 import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -40,14 +37,9 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
-import org.springframework.session.MapSession;
-import org.springframework.session.MapSessionRepository;
-import org.springframework.session.SessionRepository;
-import org.springframework.session.config.annotation.web.http.EnableSpringHttpSession;
 
 @Configuration
 @EnableMethodSecurity // 메소드 레벨 security 활성화
-@EnableSpringHttpSession // HttpSession 을 Spring Session 으로 변환
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -61,8 +53,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
         CustomUsernamePasswordAuthenticationFilter loginFilter,
-        UserDetailsService userDetailsService, PersistentTokenRepository tokenRepository,
-        SessionRegistry sessionRegistry, ObjectMapper objectMapper)
+        UserDetailsService userDetailsService, PersistentTokenRepository tokenRepository)
         throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
@@ -138,15 +129,6 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CustomUsernamePasswordAuthenticationFilter customUsernamePasswordAuthenticationFilter(
-        AuthenticationManager authenticationManager,
-        RegisterSessionAuthenticationStrategy sessionAuthenticationStrategy,
-        RememberMeServices rememberMeServices, JwtService jwtService, ObjectMapper objectMapper) {
-        return new CustomUsernamePasswordAuthenticationFilter(authenticationManager,
-            sessionAuthenticationStrategy, rememberMeServices, jwtService, objectMapper);
-    }
-
-    @Bean
     public SessionRegistry sessionRegistry() {
         return new SessionRegistryImpl();
     }
@@ -165,12 +147,6 @@ public class SecurityConfig {
     public HttpSessionSecurityContextRepository httpSessionSecurityContextRepository() {
         return new HttpSessionSecurityContextRepository();
     }
-
-    @Bean
-    public SessionRepository<MapSession> sessionRepository() {
-        return new MapSessionRepository(new ConcurrentHashMap<>());
-    }
-
 
     @Bean
     public PersistentTokenRepository persistentTokenRepository(DataSource dataSource) {
