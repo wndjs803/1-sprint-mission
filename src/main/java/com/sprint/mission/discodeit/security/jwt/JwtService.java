@@ -6,7 +6,6 @@ import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.mapper.UserMapper;
 import com.sprint.mission.discodeit.validator.UserValidator;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -18,7 +17,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.crypto.SecretKey;
@@ -27,6 +25,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -57,6 +56,7 @@ public class JwtService {
         jwtSessionRepository.delete(jwtSession);
     }
 
+    @Transactional
     public String refresh(String refreshToken, UserDto userDto, HttpServletResponse response) {
         invalidateRefreshToken(refreshToken);
 
@@ -69,6 +69,10 @@ public class JwtService {
         refreshTokenCookie.setMaxAge(
             (int) getExpiration(refreshToken).getTime()); // 초 단위
         response.addCookie(refreshTokenCookie);
+
+        jwtSessionRepository.save(
+            new JwtSession(userDto.id(), newAccessToken, newRefreshToken)
+        );
 
         return newAccessToken;
     }
@@ -96,32 +100,6 @@ public class JwtService {
     }
 
     /**
-     * 커스텀 클레임을 포함한 토큰 생성
-     */
-    public String generateTokenWithClaims(UserDto userDto, Map<String, Object> extraClaims) {
-        Instant now = Instant.now();
-        Instant expiry = now.plusSeconds(jwtProperties.getAccessToken().getValiditySeconds());
-
-        JwtBuilder builder = Jwts.builder()
-            .header()
-            .add("typ", "JWT")
-            .and()
-            .issuer(jwtProperties.getIssuer())
-            .subject(userDto.username())
-            .issuedAt(Date.from(now))
-            .expiration(Date.from(expiry))
-            .id(UUID.randomUUID().toString()) // JTI
-            .claim("type", TokenType.ACCESS.name());
-
-        // 커스텀 클레임 추가
-        extraClaims.forEach(builder::claim);
-
-        return builder
-            .signWith(getSigningKey(), Jwts.SIG.HS256)
-            .compact();
-    }
-
-    /**
      * 토큰 유효성(서명 및 만료 여부) 검증 (예외 없음)
      */
     public boolean validate(String token) {
@@ -146,7 +124,7 @@ public class JwtService {
         CustomUserDetails principal = new CustomUserDetails(
             userDto,
             user.getPassword()
-        );
+        ); // 추후 수정
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
 
