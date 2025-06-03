@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.config;
 
+import com.sprint.mission.discodeit.common.async.ContextPropagatingTaskDecorator;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
 import org.springframework.context.annotation.Bean;
@@ -25,6 +26,7 @@ public class AsyncConfig implements AsyncConfigurer {
         executor.setRejectedExecutionHandler(      // 거부 정책
             new ThreadPoolExecutor.CallerRunsPolicy()
         );
+        executor.setTaskDecorator(new ContextPropagatingTaskDecorator()); // 컨텍스트 전파
         executor.initialize();
         return executor;
     }
