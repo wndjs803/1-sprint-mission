@@ -10,7 +10,10 @@ import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.BinaryContentUploadStatus;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
+import com.sprint.mission.discodeit.entity.NotificationType;
+import com.sprint.mission.discodeit.entity.ReadStatus;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.event.CreateMessageEvent;
 import com.sprint.mission.discodeit.execption.message.MessageNotFoundException;
 import com.sprint.mission.discodeit.execption.message.NotMessageCreatorException;
 import com.sprint.mission.discodeit.mapper.MessageMapper;
@@ -18,6 +21,7 @@ import com.sprint.mission.discodeit.mapper.PageResponseMapper;
 import com.sprint.mission.discodeit.mapper.UserMapper;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.repository.MessageRepository;
+import com.sprint.mission.discodeit.repository.ReadStatusRepository;
 import com.sprint.mission.discodeit.service.MessageService;
 import com.sprint.mission.discodeit.storage.BinaryContentStorage;
 import com.sprint.mission.discodeit.validator.ChannelValidator;
@@ -30,6 +34,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -46,6 +51,7 @@ public class BasicMessageService implements MessageService {
 
     private final MessageRepository messageRepository;
     private final BinaryContentRepository binaryContentRepository;
+    private final ReadStatusRepository readStatusRepository;
 
     private final UserValidator userValidator;
     private final ChannelValidator channelValidator;
@@ -57,6 +63,7 @@ public class BasicMessageService implements MessageService {
     private final MultipartFileConverter multipartFileConverter;
     private final BinaryContentStorage binaryContentStorage;
     private final LoginStatusChecker loginStatusChecker;
+    private final ApplicationEventPublisher publisher;
 
     @Override
     @Transactional
@@ -102,6 +109,20 @@ public class BasicMessageService implements MessageService {
 
                 message.addAttachment(savedContent);
             });
+
+        List<ReadStatus> readStatuses = readStatusRepository.findAllReadStatusByChannel(
+            foundChannel);
+        readStatuses.forEach(
+            readStatus -> {
+                if (readStatus.isNotificationEnabled()) {
+                    publisher.publishEvent(new CreateMessageEvent(
+                        NotificationType.NEW_MESSAGE,
+                        foundChannel,
+                        message
+                    ));
+                }
+            }
+        );
 
         return messageMapper.toMessageDto(message,
             loginStatusChecker.getOnline(message.getSender()), userMapper);

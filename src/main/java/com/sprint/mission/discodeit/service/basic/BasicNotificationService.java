@@ -1,14 +1,26 @@
 package com.sprint.mission.discodeit.service.basic;
 
 import com.sprint.mission.discodeit.dto.notification.NotificationDto;
+import com.sprint.mission.discodeit.entity.Channel;
+import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.Notification;
+import com.sprint.mission.discodeit.entity.NotificationType;
+import com.sprint.mission.discodeit.entity.ReadStatus;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.repository.ReadStatusRepository;
 import com.sprint.mission.discodeit.repository.jpa.NotificationRepository;
 import com.sprint.mission.discodeit.service.NotificationService;
 import com.sprint.mission.discodeit.validator.UserValidator;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.QueryTimeoutException;
+import org.springframework.dao.TransientDataAccessException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,11 +29,22 @@ public class BasicNotificationService implements NotificationService {
 
     private final NotificationRepository notificationRepository;
     private final UserValidator userValidator;
+    private final ReadStatusRepository readStatusRepository;
 
     @Override
     public List<NotificationDto> findAllNotifications(UUID receiverId) {
         User receiver = userValidator.validateUserExistsByUserId(receiverId);
-        return notificationRepository.findAllByReceiver(receiver);
+        List<Notification> notifications = notificationRepository.findAllByReceiver(receiver);
+
+        return notifications.stream().map(notification -> new NotificationDto(
+            notification.getId(),
+            notification.getCreatedAt(),
+            notification.getReceiver().getId(),
+            notification.getTitle(),
+            notification.getContent(),
+            notification.getNotificationType(),
+            notification.getTargetId() == null ? null : notification.getTargetId()
+        )).collect(Collectors.toList());
     }
 
     @Override
@@ -34,5 +57,32 @@ public class BasicNotificationService implements NotificationService {
         }
 
         notificationRepository.delete(notification);
+    }
+
+    @Async
+    @Retryable(
+        retryFor = {TransientDataAccessException.class, QueryTimeoutException.class},
+        maxAttempts = 2,
+        backoff = @Backoff
+    )
+    @Override
+    public CompletableFuture<Void> createNotification(NotificationType notificationType,
+        Channel channel, Message message) {
+
+        List<ReadStatus> readStatuses = readStatusRepository.findAllReadStatusByChannel(channel);
+        readStatuses.forEach(
+            readStatus -> {
+                Notification notification = new Notification(
+                    "메세지가 도착했습니다.",
+                    message.getContent(),
+                    notificationType,
+                    readStatus.getUser(),
+                    channel.getId()
+                );
+                notificationRepository.save(notification);
+            }
+        );
+
+        return CompletableFuture.completedFuture(null);
     }
 }
