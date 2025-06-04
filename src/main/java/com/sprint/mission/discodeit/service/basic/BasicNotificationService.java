@@ -85,4 +85,20 @@ public class BasicNotificationService implements NotificationService {
 
         return CompletableFuture.completedFuture(null);
     }
+
+    @Async
+    @Override
+    public CompletableFuture<Void> createNotification(NotificationType notificationType,
+        User user) {
+        Notification notification = new Notification(
+            "사용자 권한이 변경되었습니다.",
+            user.getRole().toString(),
+            notificationType,
+            user,
+            user.getId()
+        );
+        notificationRepository.save(notification);
+
+        return CompletableFuture.completedFuture(null);
+    }
 }
