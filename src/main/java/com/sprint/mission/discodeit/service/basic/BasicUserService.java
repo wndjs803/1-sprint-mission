@@ -59,7 +59,7 @@ public class BasicUserService implements UserService {
         updateProfileImage(user, profileImageFile);
         User savedUser = userRepository.saveUser(user);
 
-        return userMapper.toUserDto(savedUser, loginStatusChecker.getOnline(user));
+        return userMapper.toUserDto(savedUser, false);
     }
 
     @Override
