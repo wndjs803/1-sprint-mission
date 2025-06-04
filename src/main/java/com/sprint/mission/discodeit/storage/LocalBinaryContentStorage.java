@@ -18,6 +18,8 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -43,6 +45,11 @@ public class LocalBinaryContentStorage implements BinaryContentStorage {
     }
 
     @Async
+    @Retryable(
+        retryFor = {RuntimeException.class},
+        maxAttempts = 2,
+        backoff = @Backoff
+    )
     @Override
     public CompletableFuture<UUID> put(UUID id, byte[] content) {
         save(resolvePath(id), content);
