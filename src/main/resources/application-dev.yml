@@ -5,7 +5,7 @@ spring:
     password: discodeit1234
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
     show-sql: true
     properties:
       hibernate:
