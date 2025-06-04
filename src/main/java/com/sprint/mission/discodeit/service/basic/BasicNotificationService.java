@@ -101,4 +101,21 @@ public class BasicNotificationService implements NotificationService {
 
         return CompletableFuture.completedFuture(null);
     }
+
+    @Override
+    public CompletableFuture<Void> createNotification(NotificationType notificationType,
+        String taskName, String username) {
+        User user = userValidator.validateUserExistsByUserName(username);
+
+        Notification notification = new Notification(
+            "비동기 작업이 실패했습니다.",
+            taskName,
+            notificationType,
+            user,
+            null
+        );
+        notificationRepository.save(notification);
+
+        return CompletableFuture.completedFuture(null);
+    }
 }

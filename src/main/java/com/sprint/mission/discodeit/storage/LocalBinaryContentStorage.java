@@ -2,6 +2,9 @@ package com.sprint.mission.discodeit.storage;
 
 import com.sprint.mission.discodeit.dto.binaryContent.BinaryContentDto;
 import com.sprint.mission.discodeit.entity.AsyncTaskFailure;
+import com.sprint.mission.discodeit.entity.CustomUserDetails;
+import com.sprint.mission.discodeit.entity.NotificationType;
+import com.sprint.mission.discodeit.event.AsyncTaskFailureEvent;
 import com.sprint.mission.discodeit.execption.ErrorCode;
 import com.sprint.mission.discodeit.repository.jpa.AsyncTaskFailureRepository;
 import jakarta.annotation.PreDestroy;
@@ -17,6 +20,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import org.slf4j.MDC;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -25,6 +29,8 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -33,11 +39,14 @@ public class LocalBinaryContentStorage implements BinaryContentStorage {
 
     private final Path root;
     private final AsyncTaskFailureRepository asyncTaskFailureRepository;
+    private final ApplicationEventPublisher publisher;
 
     public LocalBinaryContentStorage(Path root,
-        AsyncTaskFailureRepository asyncTaskFailureRepository) {
+        AsyncTaskFailureRepository asyncTaskFailureRepository,
+        ApplicationEventPublisher publisher) {
         this.root = root;
         this.asyncTaskFailureRepository = asyncTaskFailureRepository;
+        this.publisher = publisher;
         init();
     }
 
@@ -72,6 +81,13 @@ public class LocalBinaryContentStorage implements BinaryContentStorage {
 
         AsyncTaskFailure failure = new AsyncTaskFailure(taskName, requestId, e.getMessage());
         asyncTaskFailureRepository.save(failure);
+
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        CustomUserDetails userDetails = (CustomUserDetails) securityContext.getAuthentication()
+            .getPrincipal();
+
+        publisher.publishEvent(new AsyncTaskFailureEvent(NotificationType.ASYNC_FAILED, taskName,
+            userDetails.getUsername()));
 
         return CompletableFuture.failedFuture(e);
     }

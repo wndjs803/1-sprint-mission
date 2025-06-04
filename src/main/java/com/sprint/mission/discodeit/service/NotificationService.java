@@ -19,4 +19,7 @@ public interface NotificationService {
         Message message);
 
     CompletableFuture<Void> createNotification(NotificationType notificationType, User user);
+
+    CompletableFuture<Void> createNotification(NotificationType notificationType, String taskName,
+        String username);
 }
