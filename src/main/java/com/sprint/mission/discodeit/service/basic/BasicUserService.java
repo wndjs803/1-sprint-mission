@@ -21,6 +21,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -107,8 +109,16 @@ public class BasicUserService implements UserService {
                     BinaryContent.of(file.getOriginalFilename(), file.getSize(),
                         file.getContentType()));
 
-                binaryContentStorage.put(binaryContent.getId(),
-                    multipartFileConverter.toByteArray(file));
+                TransactionSynchronizationManager.registerSynchronization(
+                    new TransactionSynchronization() {
+                        @Override
+                        public void afterCommit() {
+                            binaryContentStorage.put(binaryContent.getId(),
+                                multipartFileConverter.toByteArray(file));
+                        }
+                    }
+                );
+
                 user.updateProfileImage(binaryContent);
             });
     }

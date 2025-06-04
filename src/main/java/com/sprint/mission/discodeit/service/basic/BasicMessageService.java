@@ -34,6 +34,8 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -74,8 +76,16 @@ public class BasicMessageService implements MessageService {
                         multipartFile.getContentType())
                 );
 
-                binaryContentStorage.put(savedContent.getId(),
-                    multipartFileConverter.toByteArray(multipartFile));
+                TransactionSynchronizationManager.registerSynchronization(
+                    new TransactionSynchronization() {
+                        @Override
+                        public void afterCommit() {
+                            binaryContentStorage.put(savedContent.getId(),
+                                multipartFileConverter.toByteArray(multipartFile));
+                        }
+                    }
+                );
+
                 message.addAttachment(savedContent);
             });
 
