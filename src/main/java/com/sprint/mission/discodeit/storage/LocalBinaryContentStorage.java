@@ -1,7 +1,9 @@
 package com.sprint.mission.discodeit.storage;
 
 import com.sprint.mission.discodeit.dto.binaryContent.BinaryContentDto;
+import com.sprint.mission.discodeit.entity.AsyncTaskFailure;
 import com.sprint.mission.discodeit.execption.ErrorCode;
+import com.sprint.mission.discodeit.repository.jpa.AsyncTaskFailureRepository;
 import jakarta.annotation.PreDestroy;
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,12 +15,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import org.slf4j.MDC;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -28,9 +32,12 @@ import org.springframework.stereotype.Component;
 public class LocalBinaryContentStorage implements BinaryContentStorage {
 
     private final Path root;
+    private final AsyncTaskFailureRepository asyncTaskFailureRepository;
 
-    public LocalBinaryContentStorage(Path root) {
+    public LocalBinaryContentStorage(Path root,
+        AsyncTaskFailureRepository asyncTaskFailureRepository) {
         this.root = root;
+        this.asyncTaskFailureRepository = asyncTaskFailureRepository;
         init();
     }
 
@@ -52,9 +59,23 @@ public class LocalBinaryContentStorage implements BinaryContentStorage {
     )
     @Override
     public CompletableFuture<UUID> put(UUID id, byte[] content) {
+        MDC.put("taskName", "putBinaryContent");  // 로그 및 추적용
+
         save(resolvePath(id), content);
         return CompletableFuture.completedFuture(id);
     }
+
+    @Recover
+    public CompletableFuture<Void> recover(RuntimeException e, UUID id, byte[] content) {
+        String taskName = MDC.get("taskName");
+        String requestId = MDC.get("requestId");
+
+        AsyncTaskFailure failure = new AsyncTaskFailure(taskName, requestId, e.getMessage());
+        asyncTaskFailureRepository.save(failure);
+
+        return CompletableFuture.failedFuture(e);
+    }
+
 
     @Override
     public InputStream get(UUID id) {
