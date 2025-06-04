@@ -6,6 +6,7 @@ import com.sprint.mission.discodeit.dto.user.UserDto;
 import com.sprint.mission.discodeit.dto.user.request.CreateUserRequest;
 import com.sprint.mission.discodeit.dto.user.request.UpdateUserRequest;
 import com.sprint.mission.discodeit.entity.BinaryContent;
+import com.sprint.mission.discodeit.entity.BinaryContentUploadStatus;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.mapper.UserMapper;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
@@ -16,6 +17,7 @@ import com.sprint.mission.discodeit.validator.UserValidator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -113,8 +115,20 @@ public class BasicUserService implements UserService {
                     new TransactionSynchronization() {
                         @Override
                         public void afterCommit() {
-                            binaryContentStorage.put(binaryContent.getId(),
-                                multipartFileConverter.toByteArray(file));
+                            CompletableFuture<UUID> uuidCompletableFuture =
+                                binaryContentStorage.put(binaryContent.getId(),
+                                    multipartFileConverter.toByteArray(file));
+
+                            uuidCompletableFuture.whenComplete((uuid, throwable) -> {
+                                if (throwable != null) {
+                                    binaryContent.updateBinaryContentUploadStatus(
+                                        BinaryContentUploadStatus.FAILED);
+                                } else {
+                                    binaryContent.updateBinaryContentUploadStatus(
+                                        BinaryContentUploadStatus.SUCCESS);
+                                }
+                                binaryContentRepository.saveBinaryContent(binaryContent);
+                            });
                         }
                     }
                 );

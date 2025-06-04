@@ -7,6 +7,7 @@ import com.sprint.mission.discodeit.dto.message.request.CreateMessageRequest;
 import com.sprint.mission.discodeit.dto.message.request.UpdateMessageRequest;
 import com.sprint.mission.discodeit.dto.response.PageResponse;
 import com.sprint.mission.discodeit.entity.BinaryContent;
+import com.sprint.mission.discodeit.entity.BinaryContentUploadStatus;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -80,8 +82,20 @@ public class BasicMessageService implements MessageService {
                     new TransactionSynchronization() {
                         @Override
                         public void afterCommit() {
-                            binaryContentStorage.put(savedContent.getId(),
-                                multipartFileConverter.toByteArray(multipartFile));
+                            CompletableFuture<UUID> uuidCompletableFuture =
+                                binaryContentStorage.put(savedContent.getId(),
+                                    multipartFileConverter.toByteArray(multipartFile));
+
+                            uuidCompletableFuture.whenComplete((uuid, throwable) -> {
+                                if (throwable != null) {
+                                    savedContent.updateBinaryContentUploadStatus(
+                                        BinaryContentUploadStatus.FAILED);
+                                } else {
+                                    savedContent.updateBinaryContentUploadStatus(
+                                        BinaryContentUploadStatus.SUCCESS);
+                                }
+                                binaryContentRepository.saveBinaryContent(savedContent);
+                            });
                         }
                     }
                 );
