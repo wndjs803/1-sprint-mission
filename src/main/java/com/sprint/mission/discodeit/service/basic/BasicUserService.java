@@ -20,7 +20,6 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -81,7 +80,7 @@ public class BasicUserService implements UserService {
             .collect(Collectors.toList());
     }
 
-    @CacheEvict(cacheNames = "users", allEntries = true)
+    //    @CacheEvict(cacheNames = "users", allEntries = true)
     @Override
     @Transactional
     public UserDto updateUser(UUID userId, UpdateUserRequest updateUserRequest,

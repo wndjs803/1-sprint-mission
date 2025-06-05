@@ -1,30 +1,46 @@
 package com.sprint.mission.discodeit.config;
 
-import com.github.benmanes.caffeine.cache.Caffeine;
-import java.util.concurrent.TimeUnit;
-import org.springframework.cache.CacheManager;
+import java.time.Duration;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 @EnableCaching
 public class CacheConfig {
 
     @Bean
-    public Caffeine<Object, Object> caffeineSpec() {
-        return Caffeine.newBuilder()
-            .expireAfterAccess(10, TimeUnit.MINUTES)      // 무사용 10분 후 만료 (TTI)
-            .expireAfterWrite(30, TimeUnit.MINUTES)       // 쓰기 후 30분 후 만료 (TTL)
-            .maximumSize(5000)                            // 최대 5,000개 엔트리 유지 (LRU)
-            .recordStats();                                // 통계 수집 활성화 (모니터링용)
+    public RedisConnectionFactory redisConnectionFactory() {
+        return new LettuceConnectionFactory("localhost", 6379); // Redis 연결을 위한 Bean 등록
     }
 
     @Bean
-    public CacheManager caffeineCacheManager(Caffeine<Object, Object> caffeine) {
-        CaffeineCacheManager manager = new CaffeineCacheManager("users", "channels");
-        manager.setCaffeine(caffeine);  // Caffeine 설정 적용
-        return manager;
+    public RedisCacheConfiguration cacheConfiguration() {
+        return RedisCacheConfiguration.defaultCacheConfig()
+            .entryTtl(Duration.ofMinutes(30))        // TTL 30분
+            .disableCachingNullValues()
+            .serializeKeysWith(
+                RedisSerializationContext.SerializationPair.fromSerializer(
+                    new StringRedisSerializer())
+            )
+            .serializeValuesWith(
+                RedisSerializationContext.SerializationPair.fromSerializer(
+                    new GenericJackson2JsonRedisSerializer())
+            );
+    }
+
+    @Bean
+    public RedisCacheManager cacheManager(RedisConnectionFactory factory) {
+        return RedisCacheManager.builder(factory) // RedisConnectionFactory로 캐시 매니저 구
+            .cacheDefaults(cacheConfiguration()) // 위에서 세팅한 기본 캐시 설정 적용
+            .transactionAware()                     // 트랜잭션 내 캐시 반영
+            .build(); // RedisCacheManager 인스턴스를 생성하고 등록해 줌
     }
 }
