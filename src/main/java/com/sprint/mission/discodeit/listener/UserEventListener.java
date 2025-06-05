@@ -1,8 +1,8 @@
 package com.sprint.mission.discodeit.listener;
 
 import com.sprint.mission.discodeit.event.UpdateUserRoleEvent;
-import com.sprint.mission.discodeit.service.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
 
@@ -10,13 +10,10 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @RequiredArgsConstructor
 public class UserEventListener {
 
-    private final NotificationService notificationService;
+    private final KafkaTemplate<String, UpdateUserRoleEvent> kafkaTemplate;
 
     @TransactionalEventListener
     public void createNotification(UpdateUserRoleEvent event) {
-        notificationService.createNotification(
-            event.notificationType(),
-            event.user()
-        );
+        kafkaTemplate.send("user", event);
     }
 }
