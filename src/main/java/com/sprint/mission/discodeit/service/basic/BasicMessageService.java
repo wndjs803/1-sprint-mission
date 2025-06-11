@@ -90,8 +90,14 @@ public class BasicMessageService implements MessageService {
                         @Override
                         public void afterCommit() {
                             CompletableFuture<UUID> uuidCompletableFuture =
-                                binaryContentStorage.put(savedContent.getId(),
+                                null;
+                            try {
+                                uuidCompletableFuture = binaryContentStorage.putAsync(
+                                    savedContent.getId(),
                                     multipartFileConverter.toByteArray(multipartFile));
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
 
                             uuidCompletableFuture.whenComplete((uuid, throwable) -> {
                                 if (throwable != null) {

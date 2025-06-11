@@ -67,11 +67,17 @@ public class LocalBinaryContentStorage implements BinaryContentStorage {
         backoff = @Backoff
     )
     @Override
-    public CompletableFuture<UUID> put(UUID id, byte[] content) {
+    public CompletableFuture<UUID> putAsync(UUID id, byte[] content) throws InterruptedException {
         MDC.put("taskName", "putBinaryContent");  // 로그 및 추적용
 
         save(resolvePath(id), content);
+        Thread.sleep(10000);
         return CompletableFuture.completedFuture(id);
+    }
+
+    public void put(UUID id, byte[] content) throws InterruptedException {
+        save(resolvePath(id), content);
+        Thread.sleep(10000);
     }
 
     @Recover

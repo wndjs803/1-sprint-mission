@@ -119,8 +119,14 @@ public class BasicUserService implements UserService {
                         @Override
                         public void afterCommit() {
                             CompletableFuture<UUID> uuidCompletableFuture =
-                                binaryContentStorage.put(binaryContent.getId(),
+                                null;
+                            try {
+                                uuidCompletableFuture = binaryContentStorage.putAsync(
+                                    binaryContent.getId(),
                                     multipartFileConverter.toByteArray(file));
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
 
                             uuidCompletableFuture.whenComplete((uuid, throwable) -> {
                                 if (throwable != null) {

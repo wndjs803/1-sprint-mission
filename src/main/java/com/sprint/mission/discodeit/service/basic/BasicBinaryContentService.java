@@ -40,8 +40,13 @@ public class BasicBinaryContentService implements BinaryContentService {
                 @Override
                 public void afterCommit() {
                     CompletableFuture<UUID> uuidCompletableFuture =
-                        binaryContentStorage.put(binaryContent.getId(),
+                        null;
+                    try {
+                        uuidCompletableFuture = binaryContentStorage.putAsync(binaryContent.getId(),
                             multipartFileConverter.toByteArray(multipartFile));
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
 
                     uuidCompletableFuture.whenComplete((uuid, throwable) -> {
                         if (throwable != null) {

@@ -40,7 +40,7 @@ public class S3BinaryContentStorage implements BinaryContentStorage {
     private int presignedUrlExpiration;
 
     @Override
-    public CompletableFuture<UUID> put(UUID id, byte[] content) {
+    public CompletableFuture<UUID> putAsync(UUID id, byte[] content) {
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
             .bucket(bucket)
             .key(id.toString())
@@ -50,6 +50,11 @@ public class S3BinaryContentStorage implements BinaryContentStorage {
         s3Client.putObject(putObjectRequest, RequestBody.fromBytes(content));
 
         return CompletableFuture.completedFuture(id);
+    }
+
+    @Override
+    public void put(UUID id, byte[] content) throws InterruptedException {
+
     }
 
     @Override

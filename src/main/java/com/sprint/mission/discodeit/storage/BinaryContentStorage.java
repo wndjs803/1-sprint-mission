@@ -8,7 +8,9 @@ import org.springframework.http.ResponseEntity;
 
 public interface BinaryContentStorage {
 
-    CompletableFuture<UUID> put(UUID id, byte[] content);
+    CompletableFuture<UUID> putAsync(UUID id, byte[] content) throws InterruptedException;
+
+    void put(UUID id, byte[] content) throws InterruptedException;
 
     InputStream get(UUID id);
 
